@@ -1,0 +1,6 @@
+# Local tests
+main.py
+
+# Compiled Python Files
+*.pyc
+__pycache__/
