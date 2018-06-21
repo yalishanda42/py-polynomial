@@ -1,5 +1,5 @@
-"""Package handling mathematical single-variable polynoms."""
+"""Package handling mathematical single-variable polynomials."""
 
-__all__ = ("Polynoimal",
+__all__ = ("Polynomial",
            "Trinomial",
            "Binomial")
