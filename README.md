@@ -22,9 +22,8 @@ ax^2 + bx + c
 ```
 
 ```shell
-from Trinomial import QuadraticTrinomial
-from Polynomial import Monomial
-
+>>> from Trinomial import QuadraticTrinomial
+>>> from Polynomial import Monomial
 >>> y = QuadraticTrinomial(1, -2, 1)
 >>> y
 x^2 - 2x + 1
