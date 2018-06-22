@@ -163,9 +163,15 @@ class Polynomial:
                 sum += ak * (x ** k)
             return sum
 
-    def get_monomials(self):
-        """Return a list with all terms in the form of monomials."""
-        return [Monomial(k, deg) for deg, k in enumerate(self._vector)]
+    def get_monomials(self, reverse=True):
+        """Return a list with all terms in the form of monomials.
+
+        List is sorted from the highest degree term to the lowest
+        by default.
+        """
+        return sorted(
+                      [Monomial(k, deg) for deg, k in enumerate(self._vector)],
+                      reverse=reverse)
 
 
 class Monomial(Polynomial):
@@ -178,10 +184,33 @@ class Monomial(Polynomial):
             coeffs.append(0)
         Polynomial.__init__(self, coeffs)
         self.a = coefficient
+        self.coefficient = coefficient  # other name for self.a
 
     def __mul__(self, other):
         """Multiply two monomials and return the product."""
         return Monomial(self.a * other.a, self.degree + other.degree)
+
+    def __lt__(self, other):
+        """Equivalent to self < other.
+
+        Compares the degrees of the monomials and then, if
+        they are equal, compares their coefficients.
+        """
+        if self.degree == other.degree:
+            return self.a < other.a
+        else:
+            return self.degree < other.degree
+
+    def __gt__(self, other):
+        """Equivalent to self > other.
+
+        Compares the degrees of the monomials and then, if
+        they are equal, compares their coefficients.
+        """
+        if self.degree == other.degree:
+            return self.a > other.a
+        else:
+            return self.degree > other.degree
 
 
 class Constant(Monomial):
