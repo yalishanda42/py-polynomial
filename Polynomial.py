@@ -46,7 +46,7 @@ class Polynomial:
             for mon in iterable[1:]:
                 self._vector[mon.degree] += mon.a
         else:
-            iterable = list(reversed(iterable))  # a more convenient way
+            iterable = list(reversed(list(iterable)))  # a more convenient way
             while iterable != []:
                 if not iterable[-1] or iterable[-1] == "0":
                     iterable.pop()
@@ -73,8 +73,12 @@ class Polynomial:
             degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         self._vector[degree] = new_value
 
+    def __iter__(self):
+        """Return the coefficients from the highest degree to the lowest."""
+        return iter(reversed(self._vector))
+    
     def __repr__(self):
-        """Return the polynomial in human-friendly form."""
+        """Return repr(self) in human-friendly form."""
         if self.degree == -1: return "0"
 
         def remove_ones(ak, k):
@@ -102,7 +106,7 @@ class Polynomial:
         return joined_terms
 
     def __eq__(self, other):
-        """Equivalent to self == other.
+        """Return self == other.
 
         self == 0 <==> self == Polynomial()
         """
@@ -112,7 +116,7 @@ class Polynomial:
         return self.degree == other.degree and self._vector == other._vector
 
     def __ne__(self, other):
-        """Equivalent to self != other.
+        """Return self != other.
 
         self != 0 <==> self != Polynomial()
         """
@@ -121,12 +125,12 @@ class Polynomial:
 
         return self._vector != other._vector
 
-    def __not__(self):
-        """Equivalent to not self <==> self == 0."""
-        return self == 0
+    def __bool__(self):
+        """Return not self == 0."""
+        return not self == 0
 
     def __add__(self, other):
-        """Equivalent to self + other."""
+        """Return self + other."""
         if self == 0:
             return other
         elif other == 0:
@@ -148,7 +152,7 @@ class Polynomial:
             return Polynomial(list(reversed(new_vector)))
 
     def __mul__(self, other):
-        """Equivalent to self * other."""
+        """Return self * other."""
         self_mon = self.get_monomials()
         other_mon = other.get_monomials()
         return list(accumulate([x*y for x in self_mon for y in other_mon]))[-1]
@@ -191,7 +195,7 @@ class Monomial(Polynomial):
         return Monomial(self.a * other.a, self.degree + other.degree)
 
     def __lt__(self, other):
-        """Equivalent to self < other.
+        """Return self < other.
 
         Compares the degrees of the monomials and then, if
         they are equal, compares their coefficients.
@@ -202,7 +206,7 @@ class Monomial(Polynomial):
             return self.degree < other.degree
 
     def __gt__(self, other):
-        """Equivalent to self > other.
+        """Return self > other.
 
         Compares the degrees of the monomials and then, if
         they are equal, compares their coefficients.
