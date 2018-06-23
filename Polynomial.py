@@ -131,11 +131,11 @@ class Polynomial:
 
     def __add__(self, other):
         """Return self + other."""
-        if self == 0:
+        if not self:
             return other
-        elif other == 0:
+        elif not other:
             return self
-        else:
+        elif isinstance(other, Polynomial):
             new_vector = []
             max_iterations = max(self.degree, other.degree) + 1
             for i in range(max_iterations):
@@ -150,12 +150,27 @@ class Polynomial:
                     pass
                 new_vector.append(a+b)
             return Polynomial(list(reversed(new_vector)))
+        else:
+            return self + Constant(other)
+
+    def __radd__(self, other):
+        """Return other + self."""
+        return self + other
 
     def __mul__(self, other):
         """Return self * other."""
-        self_mon = self.get_monomials()
-        other_mon = other.get_monomials()
-        return list(accumulate([x*y for x in self_mon for y in other_mon]))[-1]
+        if not self or not other:
+            return ZeroPolynomial()
+        elif isinstance(other, Polynomial):
+            self_m = self.get_monomials()
+            other_m = other.get_monomials()
+            return list(accumulate([x*y for x in self_m for y in other_m]))[-1]
+        else:
+            return self * Constant(other)
+
+    def __rmul__(self, other):
+        """Return other * self."""
+        return self * other
 
     def calculate(self, x):
         """Calculate the value of the polynomial for a given x."""
@@ -191,8 +206,17 @@ class Monomial(Polynomial):
         self.coefficient = coefficient  # other name for self.a
 
     def __mul__(self, other):
-        """Multiply two monomials and return the product."""
-        return Monomial(self.a * other.a, self.degree + other.degree)
+        """Return self * other."""
+        if isinstance(other, Monomial):
+            return Monomial(self.a * other.a, self.degree + other.degree)
+        elif isinstance(other, Polynomial):
+            return Polynomial(self) * other  # avoiding stack overflow
+        else:
+            return self * Constant(other)
+
+    def __rmul__(self, other):
+        """Return other * self."""
+        return self * other
 
     def __lt__(self, other):
         """Return self < other.
