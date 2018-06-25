@@ -240,6 +240,28 @@ class Monomial(Polynomial):
         else:
             return self.degree > other.degree
 
+    def __getattr__(self, name):
+        """Implement getattr(self, name).
+
+        Allows self.A <==> self.a
+        """
+        if name in ("A", "B", "C"):
+            return getattr(self, name.lower())
+        return object.__getattr__(self, name)
+
+    def __setattr__(self, name, value):
+        """Implements setattr(self, name, value).
+
+        Makes sure that when setting a the monomial is changed
+        accordingly.
+        """
+        if name == "a":
+            # set the corresponding value in the polynomial vector also
+            self._vector[self.degree] = value
+        elif name == "A":
+            return setattr(self, name.lower(), value)
+        return object.__setattr__(self, name, value)
+
 
 class Constant(Monomial):
     """Implements constants as monomials of degree 0."""
