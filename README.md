@@ -29,14 +29,18 @@ ax^2 + bx + c
 x^2 - 2x + 1
 >>> y.discriminant
 0
->>> y.get_roots()
-(1.0, 1.0)
+>>> y.get_real_roots()
+(1, 1)
+>>> y.get_real_factors()
+(1, x - 1, x - 1)  # y = 1(x-1)(x-1)
 >>> Monomial(5, 3)
 5x^3
 >>> y += Monomial(9, 2)
 >>> y
 10x^2 - 2x + 1
->>> y.get_roots()
+>>> (y.a, y.b, y.c)
+(10, -2, 1)
+>>> y.get_complex_roots()
 ((0.1 + 0.3j), (0.1 - 0.3j))  # supports complex numbers
 
 # more functionality to be added...
