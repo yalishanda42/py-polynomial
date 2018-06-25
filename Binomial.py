@@ -39,7 +39,7 @@ class LinearBinomial(Binomial):
         return object.__getattr__(self, name)
 
     def __setattr__(self, name, value):
-        """Implements setattr(self, name, value).
+        """Implement setattr(self, name, value).
 
         Makes sure that when setting a,b the polynomial is changed
         accordingly.

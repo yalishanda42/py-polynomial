@@ -33,18 +33,17 @@ class Polynomial:
         if from_monomials:
             iterable = list(iterable)
             for i, monomial in enumerate(iterable):
-                if type(monomial) != Monomial and len(monomial) == 2:
+                if not isinstance(monomial, Monomial) and len(monomial) == 2:
                     iterable[i] = Monomial(monomial[0], monomial[1])
-                elif type(monomial) != Monomial:
+                elif not isinstance(monomial, Monomial):
                     raise TypeError("{} cannot be a monomial.".
                                     format(type(monomial)))
             iterable.sort(reverse=True, key=lambda m: m.degree)
-            self._vector = [iterable[0].a]
-            for i in range(iterable[0].degree):
-                self._vector.append(0)
-            self._vector = list(reversed(self._vector))
-            for mon in iterable[1:]:
-                self._vector[mon.degree] += mon.a
+            self._vector = [0 for _ in range(iterable[0].degree + 1)]
+            if self._vector:
+                self._vector[-1] = iterable[0].a
+                for mon in iterable[1:]:
+                    self._vector[mon.degree] += mon.a
         else:
             iterable = list(reversed(list(iterable)))  # a more convenient way
             while iterable != []:
@@ -76,7 +75,7 @@ class Polynomial:
     def __iter__(self):
         """Return the coefficients from the highest degree to the lowest."""
         return iter(reversed(self._vector))
-    
+
     def __repr__(self):
         """Return repr(self) in human-friendly form."""
         if self.degree == -1: return "0"
@@ -188,9 +187,13 @@ class Polynomial:
         List is sorted from the highest degree term to the lowest
         by default.
         """
-        return sorted(
-                      [Monomial(k, deg) for deg, k in enumerate(self._vector)],
+        return sorted([Monomial(k, deg) for deg, k in enumerate(self._vector)],
                       reverse=reverse)
+
+    def get_derivative(self):
+        """Return a polynomial object which is the derivative of self."""
+        return Polynomial(reversed([i*self[i] for i in range(1,
+                                                             self.degree+1)]))
 
 
 class Monomial(Polynomial):
@@ -198,9 +201,10 @@ class Monomial(Polynomial):
 
     def __init__(self, coefficient=0, degree=0):
         """Initialize the following monomial: coefficient * x^(degree)."""
-        coeffs = [coefficient]
-        for i in range(degree):
-            coeffs.append(0)
+        if degree < 0:
+            raise ValueError('polynomials cannot have negative-degree terms.')
+        coeffs = [0 for i in range(degree+1)]
+        if coeffs: coeffs[0] = coefficient
         Polynomial.__init__(self, coeffs)
         self.a = coefficient
         self.coefficient = coefficient  # other name for self.a
@@ -250,14 +254,17 @@ class Monomial(Polynomial):
         return object.__getattr__(self, name)
 
     def __setattr__(self, name, value):
-        """Implements setattr(self, name, value).
+        """Implement setattr(self, name, value).
 
         Makes sure that when setting a the monomial is changed
         accordingly.
         """
-        if name == "a":
+        if name in ("a", "coefficient"):
             # set the corresponding value in the polynomial vector also
+            if not self._vector:
+                self._vector = [0]
             self._vector[self.degree] = value
+            if not value: self._vector = []
         elif name == "A":
             return setattr(self, name.lower(), value)
         return object.__setattr__(self, name, value)

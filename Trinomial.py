@@ -41,7 +41,7 @@ class QuadraticTrinomial(Trinomial):
         return object.__getattr__(self, name)
 
     def __setattr__(self, name, value):
-        """Implements setattr(self, name, value).
+        """Implement setattr(self, name, value).
 
         Makes sure that when setting a,b,c the polynomial is changed
         accordingly.
@@ -67,7 +67,6 @@ class QuadraticTrinomial(Trinomial):
         sqrtD = sqrt(D) if D >= 0 else sqrt(-D)*1j
         return (-self.b + sqrtD)/(2*self.a), (-self.b - sqrtD)/(2*self.a)
 
-
     def get_real_roots(self):
         """Return a 2-tuple with the real roots if self.discriminant>=0.
 
@@ -75,7 +74,7 @@ class QuadraticTrinomial(Trinomial):
         """
         if self.discriminant < 0: return tuple()
         return self.get_complex_roots()
-    
+
     def get_complex_factors(self):
         """Return (a, (x-x_0), (x+x_1)), where x_0 and x_1 are the roots."""
         roots = self.get_complex_roots()
