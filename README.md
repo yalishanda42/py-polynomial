@@ -6,11 +6,13 @@ Sample functionality:
 >>> a = P(1,2,3,4)
 >>> a
 x^3 + 2x^2 + 3x + 4
->>> b = P([x for x in range(4, 0, -1)])
+>>> b = P(map(lambda x: 4-x, range(4)))
 >>> b
 4x^3 + 3x^2 + 2x + 1
 >>> a + b
 5x^3 + 5x^2 + 5x + 5
+>>> b.get_derivative()
+12x^2 + 6x + 2
 >>> (a+b).calculate(5)
 780
 >>> P(1,2) * P(1,2)
