@@ -276,7 +276,18 @@ class Constant(Monomial):
     def __init__(self, const=1):
         """Initialize the constant with value const."""
         Monomial.__init__(self, const)
+    
+    def __int__(self):
+        """Return int(self)."""
+        return int(self._vector[0])
 
+    def __float__(self):
+        """Return float(self)."""
+        return float(self._vector[0])
+
+    def __complex__(self):
+        """Return complex(self)."""
+        return complex(self._vector[0])
 
 class ZeroPolynomial(Polynomial):
     """The zero polynomial."""
@@ -284,3 +295,15 @@ class ZeroPolynomial(Polynomial):
     def __init__(self):
         """Equivalent to Polynomial()."""
         Polynomial.__init__(self)
+
+    def __int__(self):
+        """Return 0."""
+        return 0
+
+    def __float__(self):
+        """Return 0.0."""
+        return 0.0
+
+    def __complex__(self):
+        """Return 0j."""
+        return 0j
