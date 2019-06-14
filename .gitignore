@@ -4,3 +4,6 @@ main.py
 # Compiled Python Files
 *.pyc
 __pycache__/
+
+# Distribution
+dist/
