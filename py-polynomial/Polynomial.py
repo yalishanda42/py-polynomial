@@ -276,7 +276,7 @@ class Constant(Monomial):
     def __init__(self, const=1):
         """Initialize the constant with value const."""
         Monomial.__init__(self, const)
-    
+
     def __int__(self):
         """Return int(self)."""
         return int(self._vector[0])
@@ -288,6 +288,7 @@ class Constant(Monomial):
     def __complex__(self):
         """Return complex(self)."""
         return complex(self._vector[0])
+
 
 class ZeroPolynomial(Polynomial):
     """The zero polynomial."""
