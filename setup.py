@@ -1,16 +1,15 @@
-#from distutils.core import setup
 from setuptools import setup
 
 setup(
   name='py-polynomial',
   packages=['polynomial'],
-  version='0.2',
+  version='0.3',
   license='MIT',
   description='Package handling mathematical single-variable polynomials.',
   author='Alexander Ignatov',
   author_email='yalishanda@abv.bg',
   url='https://github.com/allexks/py-polynomial',
-  download_url='https://github.com/allexks/py-polynomial/archive/0.2.tar.gz',
+  download_url='https://github.com/allexks/py-polynomial/archive/0.3.tar.gz',
   keywords=['polynomial', 'maths', 'derivative', 'roots', 'algebra', 'linear'],
   install_requires=[],
   classifiers=[
