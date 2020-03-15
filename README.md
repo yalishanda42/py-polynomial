@@ -1,8 +1,11 @@
-# Python Package for handling of various polynomials (not finished).
+# Python Package for handling of various polynomials
+
+[![Latest Version][mdversion-button]][md-pypi]
+[![Python Versions][pyversion-button]][md-pypi]
 
 Sample functionality:
-```shell
->>> from Polynomial import Polynomial as P
+``` python-repl
+>>> from polynomial.Polynomial import Polynomial as P
 >>> a = P(1,2,3,4)
 >>> a
 x^3 + 2x^2 + 3x + 4
@@ -23,9 +26,9 @@ ax^2 + bx + c
 # more functionality to be added...
 ```
 
-```shell
->>> from Trinomial import QuadraticTrinomial
->>> from Polynomial import Monomial
+``` python-repl
+>>> from polynomial.Trinomial import QuadraticTrinomial
+>>> from polynomial.Polynomial import Monomial
 >>> y = QuadraticTrinomial(1, -2, 1)
 >>> y
 x^2 - 2x + 1
