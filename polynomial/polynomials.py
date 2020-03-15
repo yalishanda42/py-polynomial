@@ -337,12 +337,12 @@ class QuadraticTrinomial(Trinomial):
         """
         if self.discriminant < 0:
             return tuple()
-        return self.complex_roots()
+        return self.complex_roots
 
     @property
     def complex_factors(self):
         """Return (a, (x-x_0), (x+x_1)), where x_0 and x_1 are the roots."""
-        roots = self.complex_roots()
+        roots = self.complex_roots
         return (Constant(self.a),
                 Polynomial(1, -roots[0]),
                 Polynomial(1, -roots[1]))
@@ -352,7 +352,7 @@ class QuadraticTrinomial(Trinomial):
         """Return (self,) if D < 0. Return the factors otherwise."""
         if self.discriminant < 0:
             return self,
-        return self.complex_factors()
+        return self.complex_factors
 
 
 class Binomial(Polynomial):
