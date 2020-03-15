@@ -74,7 +74,8 @@ class Polynomial:
     @property
     def derivative(self):
         """Return a polynomial object which is the derivative of self."""
-        return Polynomial(reversed(i*self[i] for i in range(1, self.degree+1)))
+        return Polynomial(reversed([i * self[i]
+                                    for i in range(1, self.degree + 1)]))
 
     @property
     def monomials(self, reverse=True):
