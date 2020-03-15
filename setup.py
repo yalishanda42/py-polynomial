@@ -1,7 +1,7 @@
 from distutils.core import setup
 setup(
   name='py-polynomial',
-  packages=['pypolynomial'],
+  packages=['polynomial'],
   version='0.2',
   license='MIT',
   description='Package handling mathematical single-variable polynomials.',
