@@ -1,5 +1,7 @@
 # Python Package for handling of various polynomials
 
+[![PyPI version](https://badge.fury.io/py/py-polynomial.svg)](https://badge.fury.io/py/py-polynomial)
+
 Sample functionality:
 ``` pycon
 >>> from polynomial.Polynomial import Polynomial as P
