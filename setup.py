@@ -17,7 +17,7 @@ setup(
   author='Alexander Ignatov',
   author_email='yalishanda@abv.bg',
   url='https://github.com/allexks/py-polynomial',
-  download_url='https://github.com/allexks/py-polynomial/archive/0.3.tar.gz',
+  download_url='https://github.com/allexks/py-polynomial/archive/0.3.1.tar.gz',
   keywords=['polynomial', 'maths', 'derivative', 'roots', 'algebra', 'linear'],
   install_requires=[],
   classifiers=[
