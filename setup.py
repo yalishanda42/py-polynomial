@@ -9,7 +9,7 @@ README = (HERE / "README.md").read_text()
 setup(
   name='py-polynomial',
   packages=find_packages(exclude=("tests",)),
-  version='0.3',
+  version='0.3.1',
   license='MIT',
   description='Package defining mathematical single-variable polynomials.',
   long_description=README,
