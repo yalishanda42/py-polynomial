@@ -4,7 +4,8 @@
 """
 
 from itertools import accumulate
-from math import sqrt
+from math import sqrt, inf
+import string
 
 
 def accepts_many_arguments(function):
@@ -14,7 +15,7 @@ def accepts_many_arguments(function):
             function(self, args[0], kwargs)
         else:
             function(self, args, kwargs)
-            return decorated
+    return decorated
 
 
 class Polynomial:
@@ -30,9 +31,9 @@ class Polynomial:
         it automatically transofrms into a single iterable.
         If the from_monomials flag is True then it can accept many
         monomials or a single iterable with monomials which altogether
-        add up to form this polynom.
+        add up to form this polynomial.
 
-        Sample usage:
+        Example usage:
         Polynomial([1,2,3,4,5])
         Polynomial(1,2,3,4,5)
         Polynomial(range(1, 6))
@@ -46,7 +47,7 @@ class Polynomial:
                     iterable[i] = Monomial(monomial[0], monomial[1])
                 elif not isinstance(monomial, Monomial):
                     raise TypeError("{} cannot be a monomial.".
-                                    format(type(monomial)))
+                                    format(monomial))
             iterable.sort(reverse=True, key=lambda m: m.degree)
             self._vector = [0 for _ in range(iterable[0].degree + 1)]
             if self._vector:
@@ -65,20 +66,63 @@ class Polynomial:
     @property
     def degree(self):
         """Return the degree of the polynomial."""
-        return len(self._vector)-1  # thus the degree of the 0-polynomial is -1
+        if not self:
+            return -inf  # the degree of the zero polynomial is -infinity
+
+        return len(self._vector) - 1
+
+    @property
+    def derivative(self):
+        """Return a polynomial object which is the derivative of self."""
+        return Polynomial(reversed(i*self[i] for i in range(1, self.degree+1)))
+
+    @property
+    def monomials(self, reverse=True):
+        """Return a list with all terms in the form of monomials.
+
+        List is sorted from the highest degree term to the lowest
+        by default.
+        """
+        return sorted([Monomial(k, deg) for deg, k in enumerate(self._vector)],
+                      reverse=reverse)
+
+    def calculate(self, x):
+        """Calculate the value of the polynomial at a given point."""
+        if self.degree < 0:
+            return 0
+
+        return sum(ak * (x ** k) for k, ak in enumerate(self._vector))
+
+    def __getattr__(self, name):
+        """Get coefficient by letter name: ax^n + bx^{n-1} + ... + yx + z."""
+        if len(name) == 1 and name in string.ascii_uppercase:
+            return self.__getattr__(name.lower())
+        if len(name) == 1 and name in string.ascii_lowercase:
+            return self[self.degree - (ord(name) - ord('a'))]
+
+        return object.__getattr__(self, name)
+
+    def __setattr__(self, name, new_value):
+        """Set coefficient by letter name: ax^n + bx^{n-1} + ... + yx + z."""
+        if len(name) == 1 and name in string.ascii_uppercase:
+            self.__setattr__(name.lower(), new_value)
+        elif len(name) == 1 and name in string.ascii_lowercase:
+            self[self.degree - (ord(name) - ord('a'))] = new_value
+        else:
+            object.__setattr__(self, name, new_value)
 
     def __getitem__(self, degree):
         """Get the coefficient of the term with the given degree."""
-        if degree > self.degree:
+        if degree > self.degree or degree < 0:
             raise IndexError("Attempt to get coefficient of term with \
-            degree {0} of a {1}-degree polynomial".format(degree, self.degree))
+degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         return self._vector[degree]
 
     def __setitem__(self, degree, new_value):
         """Set the coefficient of the term with the given degree."""
         if degree > self.degree:
             raise IndexError("Attempt to set coefficient of term with \
-            degree {0} of a {1}-degree polynomial".format(degree, self.degree))
+degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         self._vector[degree] = new_value
 
     def __iter__(self):
@@ -87,10 +131,10 @@ class Polynomial:
 
     def __repr__(self):
         """Return repr(self) in human-friendly form."""
-        if self.degree == -1:
+        if self.degree < 0:
             return "0"
 
-        def remove_ones(ak, k):
+        def ones_removed(ak, k):
             #  the  coefficients before the non-zero-degree terms
             #  should not be explicitly displayed if they are
             #  1 or -1
@@ -102,8 +146,7 @@ class Polynomial:
                 return ak
 
         terms = ["{0}x^{1}".
-                 format(remove_ones(ak, k),
-                        k)
+                 format(ones_removed(ak, k), k)
                  for k, ak in enumerate(self._vector)
                  if ak != 0]
         joined_terms = " + ".join(reversed(terms))
@@ -181,44 +224,30 @@ class Polynomial:
         """Return other * self."""
         return self * other
 
-    def calculate(self, x):
-        """Calculate the value of the polynomial for a given x."""
-        if self.degree == -1:
-            return 0
-        else:
-            sum = 0
-            for k, ak in enumerate(self._vector):
-                sum += ak * (x ** k)
-            return sum
-
-    def get_monomials(self, reverse=True):
-        """Return a list with all terms in the form of monomials.
-
-        List is sorted from the highest degree term to the lowest
-        by default.
-        """
-        return sorted([Monomial(k, deg) for deg, k in enumerate(self._vector)],
-                      reverse=reverse)
-
-    def get_derivative(self):
-        """Return a polynomial object which is the derivative of self."""
-        return Polynomial(reversed([i*self[i] for i in range(1,
-                                                             self.degree+1)]))
-
 
 class Monomial(Polynomial):
     """Implements a single-variable monomial. A single-term polynomial."""
 
     def __init__(self, coefficient=0, degree=0):
         """Initialize the following monomial: coefficient * x^(degree)."""
+        if type(degree) is not int:
+            raise ValueError("Monomial's degree should be a natural number.")
         if degree < 0:
-            raise ValueError('polynomials cannot have negative-degree terms.')
+            raise ValueError("Polynomials cannot have negative-degree terms.")
         coeffs = [0 for i in range(degree+1)]
         if coeffs:
             coeffs[0] = coefficient
         Polynomial.__init__(self, coeffs)
-        self.a = coefficient
-        self.coefficient = coefficient  # other name for self.a
+
+    @property
+    def coefficient(self):
+        """Return the coefficient of the monomial."""
+        return self.a
+
+    @coefficient.setter
+    def coefficient(self, new_value):
+        """Set the coefficient of the monomial."""
+        self.a = new_value
 
     def __mul__(self, other):
         """Return self * other."""
@@ -255,32 +284,6 @@ class Monomial(Polynomial):
         else:
             return self.degree > other.degree
 
-    def __getattr__(self, name):
-        """Implement getattr(self, name).
-
-        Allows self.A <==> self.a
-        """
-        if name in ("A", "B", "C"):
-            return getattr(self, name.lower())
-        return object.__getattr__(self, name)
-
-    def __setattr__(self, name, value):
-        """Implement setattr(self, name, value).
-
-        Makes sure that when setting a the monomial is changed
-        accordingly.
-        """
-        if name in ("a", "coefficient"):
-            # set the corresponding value in the polynomial vector also
-            if not self._vector:
-                self._vector = [0]
-            self._vector[self.degree] = value
-            if not value:
-                self._vector = []
-        elif name == "A":
-            return setattr(self, name.lower(), value)
-        return object.__setattr__(self, name, value)
-
 
 class Trinomial(Polynomial):
     """Implements single-variable mathematical trinomials."""
@@ -304,41 +307,19 @@ class QuadraticTrinomial(Trinomial):
     def __init__(self, a=1, b=0, c=0):
         """Initialize the trinomial as ax^2 + bx + c."""
         if a == 0:
-            raise ValueError("object not a quadratic trinomial since a=0!")
+            raise ValueError("object not a quadratic trinomial since a==0!")
         Polynomial.__init__(self, a, b, c)
         self.a = a
         self.b = b
         self.c = c
-
-    def __getattr__(self, name):
-        """Implement getattr(self, name).
-
-        Allows access to properties a,b,c with their capitalized letters.
-        (e.g. self.A <==> self.a, etc.)
-        """
-        if name in ("A", "B", "C"):
-            return getattr(self, name.lower())
-        return object.__getattr__(self, name)
-
-    def __setattr__(self, name, value):
-        """Implement setattr(self, name, value).
-
-        Makes sure that when setting a,b,c the polynomial is changed
-        accordingly.
-        """
-        if name in ("a", "b", "c"):
-            # set the corresponding value in the polynomial vector also
-            self._vector[2 - ord(name) + ord("a")] = value
-        elif name in ("A", "B", "C"):
-            return setattr(self, name.lower(), value)
-        return object.__setattr__(self, name, value)
 
     @property
     def discriminant(self):
         """Return the discriminant of ax^2 + bx + c = 0."""
         return self.b**2 - 4*self.a*self.c
 
-    def get_complex_roots(self):
+    @property
+    def complex_roots(self):
         """Return a 2-tuple with the 2 complex roots of ax^2 + bx + c = 0.
 
         + root is first, - root is second.
@@ -347,27 +328,30 @@ class QuadraticTrinomial(Trinomial):
         sqrtD = sqrt(D) if D >= 0 else sqrt(-D)*1j
         return (-self.b + sqrtD)/(2*self.a), (-self.b - sqrtD)/(2*self.a)
 
-    def get_real_roots(self):
+    @property
+    def real_roots(self):
         """Return a 2-tuple with the real roots if self.discriminant>=0.
 
         Return an empty tuple otherwise.
         """
         if self.discriminant < 0:
             return tuple()
-        return self.get_complex_roots()
+        return self.complex_roots()
 
-    def get_complex_factors(self):
+    @property
+    def complex_factors(self):
         """Return (a, (x-x_0), (x+x_1)), where x_0 and x_1 are the roots."""
-        roots = self.get_complex_roots()
+        roots = self.complex_roots()
         return (Constant(self.a),
                 Polynomial(1, -roots[0]),
                 Polynomial(1, -roots[1]))
 
-    def get_real_factors(self):
+    @property
+    def real_factors(self):
         """Return (self,) if D < 0. Return the factors otherwise."""
         if self.discriminant < 0:
             return self,
-        return self.get_complex_factors()
+        return self.complex_factors()
 
 
 class Binomial(Polynomial):
@@ -391,33 +375,9 @@ class LinearBinomial(Binomial):
         if a == 0:
             raise ValueError("object not a linear binomial since a = 0!")
         Polynomial.__init__(self, a, b)
-        self.a = a
-        self.b = b
 
-    def __getattr__(self, name):
-        """Implement getattr(self, name).
-
-        Allows access to properties a,b with their capitalized letters.
-        (e.g. self.A <==> self.a, etc.)
-        """
-        if name in ("A", "B"):
-            return getattr(self, name.lower())
-        return object.__getattr__(self, name)
-
-    def __setattr__(self, name, value):
-        """Implement setattr(self, name, value).
-
-        Makes sure that when setting a,b the polynomial is changed
-        accordingly.
-        """
-        if name in ("a", "b"):
-            # set the corresponding value in the polynomial vector also
-            self._vector[1 - ord(name) + ord("a")] = value
-        elif name in ("A", "B", "C"):
-            return setattr(self, name.lower(), value)
-        return object.__setattr__(self, name, value)
-
-    def get_root(self):
+    @property
+    def root(self):
         """Solve for ax + b = 0."""
         return -self.b / self.a
 
