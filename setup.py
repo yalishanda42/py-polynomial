@@ -1,14 +1,14 @@
 """Setup script."""
 
 import pathlib
-from setuptools import setup
+from setuptools import setup, find_packages
 
 HERE = pathlib.Path(__file__).parent
 README = (HERE / "README.md").read_text()
 
 setup(
   name='py-polynomial',
-  packages=['polynomial'],
+  packages=find_packages(exclude=("tests",)),
   version='0.3',
   license='MIT',
   description='Package defining mathematical single-variable polynomials.',
