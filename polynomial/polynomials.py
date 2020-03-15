@@ -1,6 +1,6 @@
 """This module focuses on an exhaustive implementation of polynomials.
 
-2018 Yalishanda
+(c) Yalishanda <yalishanda@abv.bg>
 """
 
 from itertools import accumulate
@@ -8,6 +8,7 @@ from math import sqrt
 
 
 def accepts_many_arguments(function):
+    """Make a function that accepts an iterable handle many *args."""
     def decorated(self, *args, **kwargs):
         if len(args) == 1 and type(args[0]) not in [int, float, complex]:
             function(self, args[0], kwargs)
@@ -30,6 +31,13 @@ class Polynomial:
         If the from_monomials flag is True then it can accept many
         monomials or a single iterable with monomials which altogether
         add up to form this polynom.
+
+        Sample usage:
+        Polynomial([1,2,3,4,5])
+        Polynomial(1,2,3,4,5)
+        Polynomial(range(1, 6))
+        Polynomial([(1,4), (2,3), (3,2), (4,1), (5,0)], from_monomials=True)
+        Polynomial(((i + 1, 4 - i) for i in range(5)), from_monomials=True)
         """
         if from_monomials:
             iterable = list(iterable)
@@ -79,7 +87,8 @@ class Polynomial:
 
     def __repr__(self):
         """Return repr(self) in human-friendly form."""
-        if self.degree == -1: return "0"
+        if self.degree == -1:
+            return "0"
 
         def remove_ones(ak, k):
             #  the  coefficients before the non-zero-degree terms
@@ -205,7 +214,8 @@ class Monomial(Polynomial):
         if degree < 0:
             raise ValueError('polynomials cannot have negative-degree terms.')
         coeffs = [0 for i in range(degree+1)]
-        if coeffs: coeffs[0] = coefficient
+        if coeffs:
+            coeffs[0] = coefficient
         Polynomial.__init__(self, coeffs)
         self.a = coefficient
         self.coefficient = coefficient  # other name for self.a
@@ -265,7 +275,8 @@ class Monomial(Polynomial):
             if not self._vector:
                 self._vector = [0]
             self._vector[self.degree] = value
-            if not value: self._vector = []
+            if not value:
+                self._vector = []
         elif name == "A":
             return setattr(self, name.lower(), value)
         return object.__setattr__(self, name, value)
@@ -341,7 +352,8 @@ class QuadraticTrinomial(Trinomial):
 
         Return an empty tuple otherwise.
         """
-        if self.discriminant < 0: return tuple()
+        if self.discriminant < 0:
+            return tuple()
         return self.get_complex_roots()
 
     def get_complex_factors(self):
@@ -353,7 +365,8 @@ class QuadraticTrinomial(Trinomial):
 
     def get_real_factors(self):
         """Return (self,) if D < 0. Return the factors otherwise."""
-        if self.discriminant < 0: return self,
+        if self.discriminant < 0:
+            return self,
         return self.get_complex_factors()
 
 
