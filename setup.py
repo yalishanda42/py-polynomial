@@ -1,11 +1,19 @@
+"""Setup script."""
+
+import pathlib
 from setuptools import setup
+
+HERE = pathlib.Path(__file__).parent
+README = (HERE / "README.md").read_text()
 
 setup(
   name='py-polynomial',
   packages=['polynomial'],
   version='0.3',
   license='MIT',
-  description='Package handling mathematical single-variable polynomials.',
+  description='Package defining mathematical single-variable polynomials.',
+  long_description=README,
+  long_description_content_type="text/markdown",
   author='Alexander Ignatov',
   author_email='yalishanda@abv.bg',
   url='https://github.com/allexks/py-polynomial',
