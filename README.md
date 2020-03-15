@@ -4,7 +4,7 @@
 [![Python Versions][pyversion-button]][md-pypi]
 
 Sample functionality:
-``` python-repl
+``` pycon
 >>> from polynomial.Polynomial import Polynomial as P
 >>> a = P(1,2,3,4)
 >>> a
@@ -26,7 +26,7 @@ ax^2 + bx + c
 # more functionality to be added...
 ```
 
-``` python-repl
+``` pycon
 >>> from polynomial.Trinomial import QuadraticTrinomial
 >>> from polynomial.Polynomial import Monomial
 >>> y = QuadraticTrinomial(1, -2, 1)
