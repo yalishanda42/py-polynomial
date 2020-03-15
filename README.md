@@ -1,8 +1,13 @@
 # Python Package for handling of various polynomials
 
 [![PyPI version](https://badge.fury.io/py/py-polynomial.svg)](https://badge.fury.io/py/py-polynomial)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.python.org/pypi/ansicolortags/)
+[![PyPI license](https://img.shields.io/pypi/l/ansicolortags.svg)](https://pypi.python.org/pypi/ansicolortags/)
 
-Sample functionality:
+## Installation
+`pip3 install py-polynomial`
+
+## Sample functionality
 ``` pycon
 >>> from polynomial.Polynomial import Polynomial as P
 >>> a = P(1,2,3,4)
