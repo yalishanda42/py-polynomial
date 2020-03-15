@@ -7,6 +7,11 @@ __pycache__/
 
 # Distribution
 dist/
+build/
+py_polynomial.egg-info/
 
 # Editors
 .vscode
+
+# Mac OS
+*.DS_Store
