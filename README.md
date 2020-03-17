@@ -10,7 +10,7 @@
 
 ## Sample functionality
 ``` pycon
->>> from polynomial.polynomials import Polynomial as P
+>>> from polynomial import Polynomial as P
 >>> a = P(1, 2, 3, 4)
 >>> a
 x^3 + 2x^2 + 3x + 4
@@ -36,7 +36,7 @@ ax^2 + bx + c
 ```
 
 ``` pycon
->>> from polynomial.polynomials import QuadraticTrinomial, Monomial
+>>> from polynomial import QuadraticTrinomial, Monomial
 >>> y = QuadraticTrinomial(1, -2, 1)
 >>> y
 x^2 - 2x + 1
