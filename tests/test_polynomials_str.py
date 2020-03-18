@@ -1,24 +1,21 @@
-"""Unit-testing module defining polynomials repr test cases."""
+"""Unit-testing module defining polynomials __str__ test cases."""
 
 import unittest
 from polynomial import *
 
 
-class TestPolynomialsRepr(unittest.TestCase):
-    """Defines polynomials repr test cases."""
+class TestPolynomialsStr(unittest.TestCase):
+    """Defines polynomials __str__ test cases."""
 
     def test_smoke(self):
         """Perform a test case containing all possible complicated inputs."""
         coeffs = [0, 0, -2, 0, 4.6666666666, -(69+420j), -1, 1337]
 
         expect_str = "-2x^5 + 4.6666666666x^3 + (-69-420j)x^2 - x + 1337"
-        expect_repr = "Polynomial(-2, 0, 4.6666666666, (-69-420j), -1, 1337)"
 
         s = str(Polynomial(coeffs))
-        r = repr(Polynomial(coeffs))
 
         self.assertEqual(expect_str, s)
-        self.assertEqual(expect_repr, r)
 
     def test_negative_coefficient_replaces_plus_with_minus(self):
         """Test that negative coefficients replace the + between the terms."""
@@ -74,8 +71,8 @@ class TestPolynomialsRepr(unittest.TestCase):
 
         self.assertEqual(r, expect)
 
-    def test_canonical_string_repr(self):
-        """Test a string coefficients repr."""
+    def test_canonical_string(self):
+        """Test with string coefficients."""
         coeffs = "abcdef"
         expect = "ax^5 + bx^4 + cx^3 + dx^2 + ex + f"
 
@@ -83,8 +80,8 @@ class TestPolynomialsRepr(unittest.TestCase):
 
         self.assertEqual(expect, r)
 
-    def test_zero_polynomial_repr_is_zero(self):
-        """Test that the 0-polynomial repr is just '0'."""
+    def test_zero_polynomial_str_is_zero(self):
+        """Test that the 0-polynomial is just '0'."""
         r = str(ZeroPolynomial())
 
         self.assertEqual(r, "0")
