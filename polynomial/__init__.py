@@ -230,6 +230,11 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         """Return other + self."""
         return self + other
 
+    def __iadd__(self, other):
+        """Implement self += other."""
+        result = self + other
+        self._vector = result._vector
+
     def __mul__(self, other):
         """Return self * other."""
         if not self or not other:
@@ -244,6 +249,11 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     def __rmul__(self, other):
         """Return other * self."""
         return self * other
+
+    def __imul__(self, other):
+        """Implement self *= other."""
+        result = self * other
+        self._vector = result._vector
 
 
 class Monomial(Polynomial):
