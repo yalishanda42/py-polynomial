@@ -31,7 +31,6 @@ jobs:
           command: |
             . polynomialenv/bin/activate
             python3 -m pydocstyle polynomial
-            python3 -m pydocstyle tests
 workflows:
   version: 2
   workflow:
