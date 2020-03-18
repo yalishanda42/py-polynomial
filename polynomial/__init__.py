@@ -161,10 +161,9 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
             #  1 or -1
             if ak == 1 and k != 0:
                 return ""
-            elif ak == -1 and k != 0:
+            if ak == -1 and k != 0:
                 return "-"
-            else:
-                return ak
+            return ak
 
         terms = ["{0}x^{1}".
                  format(ones_removed(ak, k), k)
