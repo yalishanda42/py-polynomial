@@ -257,6 +257,29 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         self._vector = result._vector
         return self
 
+    def __pos__(self):
+        """Return +self."""
+        return self
+
+    def __neg__(self):
+        """Return -self."""
+        result_vector = list(map(lambda k: -k, self._vector))
+        return Polynomial(result_vector[::-1])
+
+    def __sub__(self, other):
+        """Return self - other."""
+        return self + (-other)
+
+    def __rsub__(self, other):
+        """Return other - self."""
+        return other + (-self)
+
+    def __isub__(self, other):
+        """Implement self -= other."""
+        result = self - other
+        self._vector = result._vector
+        return self
+
 
 class Monomial(Polynomial):
     """Implements a single-variable monomial. A single-term polynomial."""
