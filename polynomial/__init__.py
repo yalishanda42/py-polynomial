@@ -120,7 +120,7 @@ class Polynomial:
     def __getitem__(self, degree):
         """Get the coefficient of the term with the given degree."""
         if isinstance(degree, slice):
-            indices = degree.indices(self.degree)
+            indices = degree.indices(self.degree + 1)
             return [self._vector[degree] for degree in range(*indices)]
 
         if degree > self.degree or degree < 0:
@@ -129,12 +129,12 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         return self._vector[degree]
 
     def __setitem__(self, degree, new_value):
+        """Set the coefficient of the term with the given degree."""
         if isinstance(degree, slice):
-            indices = degree.indices(self.degree)
+            indices = degree.indices(self.degree + 1)
             for degree, value in zip(range(*indices), new_value):
                 self._vector[degree] = value
 
-        """Set the coefficient of the term with the given degree."""
         if degree > self.degree:
             raise IndexError("Attempt to set coefficient of term with \
 degree {0} of a {1}-degree polynomial".format(degree, self.degree))
@@ -145,6 +145,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         return reversed(self._vector)
 
     def __repr__(self):
+        """Return repr(self)."""
         terms = ', '.join([str(ak) for ak in self._vector][::-1])
         return "Polynomial({0})".format(terms)
 
@@ -204,11 +205,11 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         """Return self + other."""
         if not self:
             try:
-                return Polynomial(*other._vector)
+                return Polynomial(*other._vector[::-1])
             except AttributeError:
                 return Constant(other)
         elif not other:
-            return Polynomial(*self._vector)
+            return Polynomial(*self._vector[::-1])
         other = other if isinstance(other, Polynomial) else Constant(other)
         max_iterations = max(self.degree, other.degree) + 1
         new_vector = [None] * max_iterations
