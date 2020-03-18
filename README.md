@@ -67,7 +67,7 @@ x^2 - 2x + 1
 (1, 1)
 
 >>> y.real_factors
-(1, x - 1, x - 1)
+(1, Polynomial(1, -1), Polynomial(1, -1))
 
 >>> str(Monomial(5, 3))
 5x^3
