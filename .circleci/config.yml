@@ -31,3 +31,9 @@ jobs:
           command: |
             . venv/bin/activate
             python3 -m pydocstyle .
+workflows:
+  version: 2
+  workflow:
+    jobs:
+    - test
+    - pydocstyle
