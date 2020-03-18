@@ -234,6 +234,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         """Implement self += other."""
         result = self + other
         self._vector = result._vector
+        return self
 
     def __mul__(self, other):
         """Return self * other."""
@@ -254,6 +255,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         """Implement self *= other."""
         result = self * other
         self._vector = result._vector
+        return self
 
 
 class Monomial(Polynomial):
