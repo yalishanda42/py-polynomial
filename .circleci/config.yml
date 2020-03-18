@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  test:
+  unittests:  # Run the unit tests from the tests package.
     docker:
       - image: circleci/python:3.7
 
@@ -12,7 +12,7 @@ jobs:
           name: run tests
           command: |
             python3 -m unittest discover -s tests
-  pydocstyle:
+  pydocstyle:  # Check for code documentation style with pydocstyle
     docker:
       - image: circleci/python:3.7
 
@@ -23,17 +23,18 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            python3 -m venv venv
-            . venv/bin/activate
+            python3 -m venv polynomialenv
+            . polynomialenv/bin/activate
             pip3 install pydocstyle
       - run:
           name: run tests
           command: |
-            . venv/bin/activate
-            python3 -m pydocstyle .
+            . polynomialenv/bin/activate
+            python3 -m pydocstyle polynomial
+            python3 -m pydocstyle tests
 workflows:
   version: 2
   workflow:
     jobs:
-    - test
+    - unittests
     - pydocstyle
