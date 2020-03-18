@@ -89,7 +89,8 @@ class Polynomial:
         List is sorted from the highest degree term to the lowest
         by default.
         """
-        return sorted([Monomial(k, deg) for deg, k in enumerate(self._vector)], reverse=reverse)
+        return sorted([Monomial(k, deg) for deg, k in enumerate(self._vector)],
+         reverse=reverse)
 
     def calculate(self, x):
         """Calculate the value of the polynomial at a given point."""
