@@ -105,8 +105,7 @@ class Polynomial:
             return object.__getattribute__(self, name)
         if name in string.ascii_letters:
             return self[self.degree - ord(name.lower()) + ord('a')]
-        raise AttributeError("attribute {0} is not defined for Polynomial."
-                             .format(name))
+        raise AttributeError("attribute {0} is not defined for Polynomial.".format(name))
 
     def __setattr__(self, name, new_value):
         """Set coefficient by letter name: ax^n + bx^{n-1} + ... + yx + z."""
