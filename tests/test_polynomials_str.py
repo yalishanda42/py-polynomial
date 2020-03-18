@@ -1,7 +1,7 @@
 """Unit-testing module defining polynomials __str__ test cases."""
 
 import unittest
-from polynomial import *
+from polynomial import Polynomial, ZeroPolynomial
 
 
 class TestPolynomialsStr(unittest.TestCase):
