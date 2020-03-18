@@ -151,7 +151,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
                 return ak
 
         terms = ["{0}x^{1}".
-                     format(ones_removed(ak, k), k)
+                 format(ones_removed(ak, k), k)
                  for k, ak in enumerate(self._vector)
                  if ak != 0]
         joined_terms = " + ".join(reversed(terms))
