@@ -150,7 +150,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         return "Polynomial({0})".format(terms)
 
     def __str__(self):
-        """Return repr(self) in human-friendly form."""
+        """Return str(self)."""
         if self.degree < 0:
             return "0"
 

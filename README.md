@@ -13,32 +13,50 @@
 >>> from polynomial import Polynomial as P
 >>> a = P(1, 2, 3, 4)
 >>> a
+Polynomial(1, 2, 3, 4)
+
+>>> str(a)
 x^3 + 2x^2 + 3x + 4
 
 >>> b = P(map(lambda x: 4-x, range(4)))
->>> b
+>>> str(b)
 4x^3 + 3x^2 + 2x + 1
 
->>> a + b
-5x^3 + 5x^2 + 5x + 5
-
 >>> b.derivative
+Polynomial(12, 6, 2)
+
+>>> str(b.derivative)
 12x^2 + 6x + 2
+
+>>> str(a + b)
+5x^3 + 5x^2 + 5x + 5
 
 >>> (a + b).calculate(5)
 780
 
->>> P(1, 2) * P(1, 2)
-x^2 + 4x + 4
+>>> c = P(1, 2) * P(1, 2)
+>>> c
+Polynomial(1, 4, 4)
 
->>> P("abc")
+>>> c[0] = -4
+>>> c
+Polynomial(1, 4, -4)
+
+>>> c.A = -1
+>>> c
+Polynomial(-1, 4, -4)
+
+>>> str(c)
+-x^2 + 4x - 4
+
+>>> str(P("abc"))
 ax^2 + bx + c
 ```
 
 ``` pycon
 >>> from polynomial import QuadraticTrinomial, Monomial
 >>> y = QuadraticTrinomial(1, -2, 1)
->>> y
+>>> str(y)
 x^2 - 2x + 1
 
 >>> y.discriminant
@@ -50,11 +68,14 @@ x^2 - 2x + 1
 >>> y.real_factors
 (1, x - 1, x - 1)
 
->>> Monomial(5, 3)
+>>> str(Monomial(5, 3))
 5x^3
 
 >>> y += Monomial(9, 2)
 >>> y
+Polynomial(10, -2, 1)
+
+>>> str(y)
 10x^2 - 2x + 1
 
 >>> (y.a, y.b, y.c)
