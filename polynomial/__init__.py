@@ -131,7 +131,12 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         return iter(reversed(self._vector))
 
     def __repr__(self):
-        """Return repr(self) in human-friendly form."""
+        """Return repr(self)."""
+        terms = ', '.join([str(ak) for ak in self._vector][::-1])
+        return "Polynomial({0})".format(terms)
+
+    def __str__(self):
+        """Return str(self)."""
         if self.degree < 0:
             return "0"
 

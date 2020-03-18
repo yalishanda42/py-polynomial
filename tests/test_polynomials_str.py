@@ -1,37 +1,28 @@
-"""Unit-testing module defining polynomials repr test cases."""
+"""Unit-testing module defining polynomials __str__ test cases."""
 
 import unittest
 from polynomial import *
 
 
-class TestPolynomialsRepr(unittest.TestCase):
-    """Defines polynomials repr test cases."""
-
-    def test_repr_equals_str(self):
-        """Test that the output of repr is equal to that of str."""
-        coeffs = [0, 0, -2, 0, 3, 4.6, -234j, (69+420j), -1, 1337]
-        p = Polynomial(coeffs)
-
-        r = repr(p)
-        s = str(p)
-
-        self.assertEqual(r, s)
+class TestPolynomialsStr(unittest.TestCase):
+    """Defines polynomials __str__ test cases."""
 
     def test_smoke(self):
         """Perform a test case containing all possible complicated inputs."""
         coeffs = [0, 0, -2, 0, 4.6666666666, -(69+420j), -1, 1337]
-        expect = "-2x^5 + 4.6666666666x^3 + (-69-420j)x^2 - x + 1337"
 
-        r = repr(Polynomial(coeffs))
+        expect_str = "-2x^5 + 4.6666666666x^3 + (-69-420j)x^2 - x + 1337"
 
-        self.assertEqual(r, expect)
+        s = str(Polynomial(coeffs))
+
+        self.assertEqual(expect_str, s)
 
     def test_negative_coefficient_replaces_plus_with_minus(self):
         """Test that negative coefficients replace the + between the terms."""
         coeffs = [3, -2, 0, 0]
         expect = "3x^3 - 2x^2"
 
-        r = repr(Polynomial(coeffs))
+        r = str(Polynomial(coeffs))
 
         self.assertEqual(r, expect)
 
@@ -40,7 +31,7 @@ class TestPolynomialsRepr(unittest.TestCase):
         coeffs = [2, 0]
         expect = "2x"
 
-        r = repr(Polynomial(coeffs))
+        r = str(Polynomial(coeffs))
 
         self.assertEqual(r, expect)
 
@@ -49,7 +40,7 @@ class TestPolynomialsRepr(unittest.TestCase):
         coeffs = [2]
         expect = "2"
 
-        r = repr(Polynomial(coeffs))
+        r = str(Polynomial(coeffs))
 
         self.assertEqual(r, expect)
 
@@ -58,7 +49,7 @@ class TestPolynomialsRepr(unittest.TestCase):
         coeffs = [1, 2]
         expect = "x + 2"
 
-        r = repr(Polynomial(coeffs))
+        r = str(Polynomial(coeffs))
 
         self.assertEqual(r, expect)
 
@@ -67,7 +58,7 @@ class TestPolynomialsRepr(unittest.TestCase):
         coeffs = [1, 0, 1]
         expect = "x^2 + 1"
 
-        r = repr(Polynomial(coeffs))
+        r = str(Polynomial(coeffs))
 
         self.assertEqual(r, expect)
 
@@ -76,22 +67,22 @@ class TestPolynomialsRepr(unittest.TestCase):
         coeffs = [-1, 0, 2]
         expect = "-x^2 + 2"
 
-        r = repr(Polynomial(coeffs))
+        r = str(Polynomial(coeffs))
 
         self.assertEqual(r, expect)
 
-    def test_canonical_string_repr(self):
-        """Test a string coefficients repr."""
+    def test_canonical_string(self):
+        """Test with string coefficients."""
         coeffs = "abcdef"
         expect = "ax^5 + bx^4 + cx^3 + dx^2 + ex + f"
 
-        r = repr(Polynomial(coeffs))
+        r = str(Polynomial(coeffs))
 
-        self.assertEqual(r, expect)
+        self.assertEqual(expect, r)
 
-    def test_zero_polynomial_repr_is_zero(self):
-        """Test that the 0-polynomial repr is just '0'."""
-        r = repr(ZeroPolynomial())
+    def test_zero_polynomial_str_is_zero(self):
+        """Test that the 0-polynomial is just '0'."""
+        r = str(ZeroPolynomial())
 
         self.assertEqual(r, "0")
 

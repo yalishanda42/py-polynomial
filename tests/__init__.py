@@ -2,5 +2,5 @@
 
 __all__ = [
     "test_polynomials_init",
-    "test_polynomials_repr",
+    "test_polynomials_str",
 ]
