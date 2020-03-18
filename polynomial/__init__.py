@@ -103,10 +103,10 @@ class Polynomial:
         """Get coefficient by letter name: ax^n + bx^{n-1} + ... + yx + z."""
         if len(name) != 1:
             return object.__getattribute__(self, name)
-        elif name in string.ascii_letters:
+        if name in string.ascii_letters:
             return self[self.degree - ord(name.lower()) + ord('a')]
-        else:
-            raise AttributeError("attribute {0} is not defined for Polynomial.".format(name))
+        raise AttributeError("attribute {0} is not defined for Polynomial."
+                             .format(name))
 
     def __setattr__(self, name, new_value):
         """Set coefficient by letter name: ax^n + bx^{n-1} + ... + yx + z."""
@@ -115,7 +115,8 @@ class Polynomial:
         elif name in string.ascii_letters:
             self[self.degree - ord(name.lower()) + ord('a')] = new_value
         else:
-            raise AttributeError("attribute {0} is not defined for Polynomial.".format(name))
+            raise AttributeError("attribute {0} is not defined for Polynomial."
+                                 .format(name))
 
     def __getitem__(self, degree):
         """Get the coefficient of the term with the given degree."""
@@ -132,8 +133,8 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         """Set the coefficient of the term with the given degree."""
         if isinstance(degree, slice):
             indices = degree.indices(self.degree + 1)
-            for degree, value in zip(range(*indices), new_value):
-                self._vector[degree] = value
+            for deg, value in zip(range(*indices), new_value):
+                self._vector[deg] = value
 
         if degree > self.degree:
             raise IndexError("Attempt to set coefficient of term with \
@@ -272,10 +273,9 @@ class Monomial(Polynomial):
         """Return self * other."""
         if isinstance(other, Monomial):
             return Monomial(self.a * other.a, self.degree + other.degree)
-        elif isinstance(other, Polynomial):
+        if isinstance(other, Polynomial):
             return Polynomial(self) * other  # avoiding stack overflow
-        else:
-            return self * Constant(other)
+        return self * Constant(other)
 
     def __rmul__(self, other):
         """Return other * self."""
@@ -289,8 +289,7 @@ class Monomial(Polynomial):
         """
         if self.degree == other.degree:
             return self.a < other.a
-        else:
-            return self.degree < other.degree
+        return self.degree < other.degree
 
     def __gt__(self, other):
         """Return self > other.
@@ -300,8 +299,7 @@ class Monomial(Polynomial):
         """
         if self.degree == other.degree:
             return self.a > other.a
-        else:
-            return self.degree > other.degree
+        return self.degree > other.degree
 
 
 class Trinomial(Polynomial):
@@ -326,11 +324,8 @@ class QuadraticTrinomial(Trinomial):
     def __init__(self, a=1, b=0, c=0):
         """Initialize the trinomial as ax^2 + bx + c."""
         if a == 0:
-            raise ValueError("object not a quadratic trinomial since a==0!")
+            raise ValueError("Object not a quadratic trinomial since a==0!")
         Polynomial.__init__(self, a, b, c)
-        self.a = a
-        self.b = b
-        self.c = c
 
     @property
     def discriminant(self):
@@ -345,7 +340,8 @@ class QuadraticTrinomial(Trinomial):
         """
         D = self.discriminant
         sqrtD = sqrt(D) if D >= 0 else sqrt(-D) * 1j
-        return (-self.b + sqrtD) / (2 * self.a), (-self.b - sqrtD) / (2 * self.a)
+        return ((-self.b + sqrtD) / (2 * self.a),
+                (-self.b - sqrtD) / (2 * self.a))
 
     @property
     def real_roots(self):
@@ -359,7 +355,7 @@ class QuadraticTrinomial(Trinomial):
 
     @property
     def complex_factors(self):
-        """Return (a, (x-x_0), (x+x_1)), where x_0 and x_1 are the roots."""
+        """Return (a, (x-x_0), (x-x_1)), where x_0 and x_1 are the roots."""
         roots = self.complex_roots
         return (Constant(self.a),
                 Polynomial([1, -roots[0]]),
@@ -369,7 +365,7 @@ class QuadraticTrinomial(Trinomial):
     def real_factors(self):
         """Return (self,) if D < 0. Return the factors otherwise."""
         if self.discriminant < 0:
-            return self,
+            return (self,)
         return self.complex_factors
 
 
@@ -438,4 +434,3 @@ class ZeroPolynomial(Polynomial):
     def __complex__(self):
         """Return 0j."""
         return 0j
-
