@@ -3,18 +3,19 @@
 (c) Yalishanda <yalishanda@abv.bg>
 """
 
-from itertools import accumulate
 from math import sqrt, inf
 import string
 
 
 def accepts_many_arguments(function):
     """Make a function that accepts an iterable handle many *args."""
+
     def decorated(self, *args, **kwargs):
-        if len(args) == 1 and type(args[0]) not in [int, float, complex]:
+        if len(args) == 1 and not isinstance(args[0], (int, float, complex)):
             function(self, args[0], kwargs)
         else:
             function(self, args, kwargs)
+
     return decorated
 
 
@@ -22,13 +23,13 @@ class Polynomial:
     """Implements a single-variable mathematical polynom."""
 
     @accepts_many_arguments
-    def __init__(self, iterable=[], from_monomials=False):
+    def __init__(self, iterable=None, from_monomials=False):
         """Initialize the polynomial.
 
         iterable ::= the coefficients from the highest degree term
         to the lowest.
         The method is decorated so that it can accept many *args which
-        it automatically transofrms into a single iterable.
+        it automatically transforms into a single iterable.
         If the from_monomials flag is True then it can accept many
         monomials or a single iterable with monomials which altogether
         add up to form this polynomial.
@@ -40,28 +41,33 @@ class Polynomial:
         Polynomial([(1,4), (2,3), (3,2), (4,1), (5,0)], from_monomials=True)
         Polynomial(((i + 1, 4 - i) for i in range(5)), from_monomials=True)
         """
+        if iterable is None:
+            iterable = []
+
         if from_monomials:
             iterable = list(iterable)
             for i, monomial in enumerate(iterable):
-                if not isinstance(monomial, Monomial) and len(monomial) == 2:
+                if isinstance(monomial, Monomial):
+                    continue
+                if len(monomial) == 2:
                     iterable[i] = Monomial(monomial[0], monomial[1])
-                elif not isinstance(monomial, Monomial):
+                else:
                     raise TypeError("{} cannot be a monomial.".
                                     format(monomial))
-            iterable.sort(reverse=True, key=lambda m: m.degree)
-            self._vector = [0 for _ in range(iterable[0].degree + 1)]
-            if self._vector:
-                self._vector[-1] = iterable[0].a
-                for mon in iterable[1:]:
-                    self._vector[mon.degree] += mon.a
+            leading_monomial = max(iterable, key=lambda m: m.degree)
+            self._vector = [0 for _ in range(leading_monomial.degree + 1)]
+            for mon in iterable:
+                self._vector[mon.degree] += mon.a
         else:
-            iterable = list(reversed(list(iterable)))  # a more convenient way
-            while iterable != []:
-                if not iterable[-1] or iterable[-1] == "0":
-                    iterable.pop()
+            first_index = 0
+            iterable = list(iterable)
+            for i, val in enumerate(iterable):
+                if val in (0, "0"):
+                    first_index = i + 1
                 else:
                     break
-            self._vector = iterable
+
+            self._vector = iterable[first_index:][::-1]
 
     @property
     def degree(self):
@@ -74,8 +80,7 @@ class Polynomial:
     @property
     def derivative(self):
         """Return a polynomial object which is the derivative of self."""
-        return Polynomial(reversed([i * self[i]
-                                    for i in range(1, self.degree + 1)]))
+        return Polynomial([i * self[i] for i in range(self.degree, 0, -1)])
 
     @property
     def monomials(self, reverse=True):
@@ -96,30 +101,39 @@ class Polynomial:
 
     def __getattr__(self, name):
         """Get coefficient by letter name: ax^n + bx^{n-1} + ... + yx + z."""
-        if len(name) == 1 and name in string.ascii_uppercase:
-            return self.__getattr__(name.lower())
-        if len(name) == 1 and name in string.ascii_lowercase:
-            return self[self.degree - (ord(name) - ord('a'))]
-
-        return object.__getattr__(self, name)
+        if len(name) != 1:
+            return object.__getattribute__(self, name)
+        elif name in string.ascii_letters:
+            return self[self.degree - ord(name.lower()) + ord('a')]
+        else:
+            raise AttributeError("attribute {0} is not defined for Polynomial.".format(name))
 
     def __setattr__(self, name, new_value):
         """Set coefficient by letter name: ax^n + bx^{n-1} + ... + yx + z."""
-        if len(name) == 1 and name in string.ascii_uppercase:
-            self.__setattr__(name.lower(), new_value)
-        elif len(name) == 1 and name in string.ascii_lowercase:
-            self[self.degree - (ord(name) - ord('a'))] = new_value
-        else:
+        if len(name) != 1:
             object.__setattr__(self, name, new_value)
+        elif name in string.ascii_letters:
+            self[self.degree - ord(name.lower()) + ord('a')] = new_value
+        else:
+            raise AttributeError("attribute {0} is not defined for Polynomial.".format(name))
 
     def __getitem__(self, degree):
         """Get the coefficient of the term with the given degree."""
+        if isinstance(degree, slice):
+            indices = degree.indices(self.degree)
+            return [self._vector[degree] for degree in range(*indices)]
+
         if degree > self.degree or degree < 0:
             raise IndexError("Attempt to get coefficient of term with \
 degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         return self._vector[degree]
 
     def __setitem__(self, degree, new_value):
+        if isinstance(degree, slice):
+            indices = degree.indices(self.degree)
+            for degree, value in zip(range(*indices), new_value):
+                self._vector[degree] = value
+
         """Set the coefficient of the term with the given degree."""
         if degree > self.degree:
             raise IndexError("Attempt to set coefficient of term with \
@@ -128,9 +142,13 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
     def __iter__(self):
         """Return the coefficients from the highest degree to the lowest."""
-        return iter(reversed(self._vector))
+        return reversed(self._vector)
 
     def __repr__(self):
+        terms = ', '.join([str(ak) for ak in self._vector][::-1])
+        return "Polynomial({0})".format(terms)
+
+    def __str__(self):
         """Return repr(self) in human-friendly form."""
         if self.degree < 0:
             return "0"
@@ -180,31 +198,32 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
     def __bool__(self):
         """Return not self == 0."""
-        return not self == 0
+        return self != 0
 
     def __add__(self, other):
         """Return self + other."""
         if not self:
-            return other
+            try:
+                return Polynomial(*other._vector)
+            except AttributeError:
+                return Constant(other)
         elif not other:
-            return self
-        elif isinstance(other, Polynomial):
-            new_vector = []
-            max_iterations = max(self.degree, other.degree) + 1
-            for i in range(max_iterations):
-                a, b = 0, 0
-                try:
-                    a = self[i]
-                except IndexError:
-                    pass
-                try:
-                    b = other[i]
-                except IndexError:
-                    pass
-                new_vector.append(a+b)
-            return Polynomial(list(reversed(new_vector)))
-        else:
-            return self + Constant(other)
+            return Polynomial(*self._vector)
+        other = other if isinstance(other, Polynomial) else Constant(other)
+        max_iterations = max(self.degree, other.degree) + 1
+        new_vector = [None] * max_iterations
+        for i in range(max_iterations):
+            a, b = 0, 0
+            try:
+                a = self[i]
+            except IndexError:
+                pass
+            try:
+                b = other[i]
+            except IndexError:
+                pass
+            new_vector[-i - 1] = a + b
+        return Polynomial(new_vector)
 
     def __radd__(self, other):
         """Return other + self."""
@@ -214,12 +233,12 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         """Return self * other."""
         if not self or not other:
             return ZeroPolynomial()
-        elif isinstance(other, Polynomial):
-            self_m = self.get_monomials()
-            other_m = other.get_monomials()
-            return list(accumulate([x*y for x in self_m for y in other_m]))[-1]
-        else:
-            return self * Constant(other)
+        other = other if isinstance(other, Polynomial) else Constant(other)
+        result = Polynomial()
+        for s_m in self.monomials:
+            for o_m in other.monomials:
+                result += s_m * o_m
+        return result
 
     def __rmul__(self, other):
         """Return other * self."""
@@ -231,13 +250,11 @@ class Monomial(Polynomial):
 
     def __init__(self, coefficient=0, degree=0):
         """Initialize the following monomial: coefficient * x^(degree)."""
-        if type(degree) is not int:
+        if not isinstance(degree, int):
             raise ValueError("Monomial's degree should be a natural number.")
         if degree < 0:
             raise ValueError("Polynomials cannot have negative-degree terms.")
-        coeffs = [0 for i in range(degree+1)]
-        if coeffs:
-            coeffs[0] = coefficient
+        coeffs = [coefficient] + [0] * degree
         Polynomial.__init__(self, coeffs)
 
     @property
@@ -317,7 +334,7 @@ class QuadraticTrinomial(Trinomial):
     @property
     def discriminant(self):
         """Return the discriminant of ax^2 + bx + c = 0."""
-        return self.b**2 - 4*self.a*self.c
+        return self.b ** 2 - 4 * self.a * self.c
 
     @property
     def complex_roots(self):
@@ -326,8 +343,8 @@ class QuadraticTrinomial(Trinomial):
         + root is first, - root is second.
         """
         D = self.discriminant
-        sqrtD = sqrt(D) if D >= 0 else sqrt(-D)*1j
-        return (-self.b + sqrtD)/(2*self.a), (-self.b - sqrtD)/(2*self.a)
+        sqrtD = sqrt(D) if D >= 0 else sqrt(-D) * 1j
+        return (-self.b + sqrtD) / (2 * self.a), (-self.b - sqrtD) / (2 * self.a)
 
     @property
     def real_roots(self):
@@ -344,8 +361,8 @@ class QuadraticTrinomial(Trinomial):
         """Return (a, (x-x_0), (x+x_1)), where x_0 and x_1 are the roots."""
         roots = self.complex_roots
         return (Constant(self.a),
-                Polynomial(1, -roots[0]),
-                Polynomial(1, -roots[1]))
+                Polynomial([1, -roots[0]]),
+                Polynomial([1, -roots[1]]))
 
     @property
     def real_factors(self):
@@ -364,8 +381,7 @@ class Binomial(Polynomial):
         The arguments can also be 2-tuples in the form:
             (coefficient, degree)
         """
-        args = [monomial1, monomial2]
-        Polynomial.__init__(self, args, from_monomials=True)
+        Polynomial.__init__(self, [monomial1, monomial2], from_monomials=True)
 
 
 class LinearBinomial(Binomial):
@@ -375,7 +391,7 @@ class LinearBinomial(Binomial):
         """Initialize the binomial as ax + b."""
         if a == 0:
             raise ValueError("object not a linear binomial since a = 0!")
-        Polynomial.__init__(self, a, b)
+        Polynomial.__init__(self, [a, b])
 
     @property
     def root(self):
@@ -421,3 +437,4 @@ class ZeroPolynomial(Polynomial):
     def __complex__(self):
         """Return 0j."""
         return 0j
+
