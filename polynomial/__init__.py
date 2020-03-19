@@ -21,8 +21,9 @@ def accepts_many_arguments(function):
 
 
 def extract_polynomial(method):
-    """Attempt to extract a Polynomial from the second argument to the
-    method.
+    """Call method with the second argument as a Polynomial.
+
+    If casting is not possible or not appropriate, raise a ValueError.
     """
 
     def decorated(self, other):
@@ -224,7 +225,6 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     @extract_polynomial
     def __add__(self, other):
         """Return self + other."""
-
         if not self:
             return deepcopy(other)
 
