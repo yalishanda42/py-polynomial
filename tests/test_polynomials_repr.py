@@ -16,7 +16,7 @@ class TestPolynomialsRepr(unittest.TestCase):
 
         self.assertEqual(expect, r)
 
-    def test_negative_coefficient_replaces_plus_with_minus(self):
+    def test_negative_coefficient_unchanged(self):
         """Test that negative coefficients replace the + between the terms."""
         coeffs = [3, -2, 0, 0]
         expect = "Polynomial(3, -2, 0, 0)"
@@ -25,7 +25,7 @@ class TestPolynomialsRepr(unittest.TestCase):
 
         self.assertEqual(expect, r)
 
-    def test_first_degree_term_does_not_display_variable_power(self):
+    def test_trailing_zero_kept(self):
         """Test that the first-degree-term ends with 'x' and not 'x^1'."""
         coeffs = [2, 0]
         expect = "Polynomial(2, 0)"
@@ -34,7 +34,7 @@ class TestPolynomialsRepr(unittest.TestCase):
 
         self.assertEqual(r, expect)
 
-    def test_constant_does_not_display_variable_power(self):
+    def test_constant_kept(self):
         """Test that the constant term does not end with 'x' or 'x^0'."""
         coeffs = [2]
         expect = "Polynomial(2)"
@@ -43,28 +43,10 @@ class TestPolynomialsRepr(unittest.TestCase):
 
         self.assertEqual(expect, r)
 
-    def test_unit_coefficient_is_not_displayed_if_not_constant(self):
-        """Test that coefficients with value 1 are not displayed."""
-        coeffs = [1, 2]
-        expect = "Polynomial(1, 2)"
-
-        r = repr(Polynomial(coeffs))
-
-        self.assertEqual(expect, r)
-
-    def test_unit_coefficient_is_displayed_if_constant_term(self):
+    def test_internal_zero_kept(self):
         """Test that constants with value 1 are displayed properly."""
         coeffs = [1, 0, 1]
         expect = "Polynomial(1, 0, 1)"
-
-        r = repr(Polynomial(coeffs))
-
-        self.assertEqual(expect, r)
-
-    def test_negative_coefficient_at_the_beggining_puts_short_minus(self):
-        """Test that there is a short minus sign if the first coeff is < 0."""
-        coeffs = [-1, 0, 2]
-        expect = "Polynomial(-1, 0, 2)"
 
         r = repr(Polynomial(coeffs))
 
@@ -80,7 +62,7 @@ class TestPolynomialsRepr(unittest.TestCase):
         self.assertEqual(expect, r)
 
     def test_zero_polynomial_repr_is_constructor(self):
-        """Test that the 0-polynomial is just '0'."""
+        """Test that the 0-polynomial is ZeroPolynomial()'."""
         r = repr(ZeroPolynomial())
 
         self.assertEqual("ZeroPolynomial()", r)
@@ -107,7 +89,7 @@ class TestPolynomialsRepr(unittest.TestCase):
         self.assertEqual(expect, r)
 
     def test_quadratic_trinomial(self):
-        expect = "QuadraticBinomial(1, -4, 4)"
+        expect = "QuadraticTrinomial(1, -4, 4)"
 
         r = repr(QuadraticTrinomial(1, -4, 4))
 
