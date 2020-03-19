@@ -147,7 +147,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
     def __repr__(self):
         """Return repr(self)."""
-        terms = ', '.join([str(ak) for ak in self._vector][::-1])
+        terms = ', '.join([repr(ak) for ak in self._vector][::-1])
         return "Polynomial({0})".format(terms)
 
     def __str__(self):
@@ -335,6 +335,10 @@ class Monomial(Polynomial):
             return self.a > other.a
         return self.degree > other.degree
 
+    def __repr__(self):
+        """Return repr(self)."""
+        return "Monomial({0!r}, {1!r})".format(self.a, self.degree)
+
 
 class Trinomial(Polynomial):
     """Implements single-variable mathematical trinomials."""
@@ -402,6 +406,12 @@ class QuadraticTrinomial(Trinomial):
             return (self,)
         return self.complex_factors
 
+    def __repr__(self):
+        """Return repr(self)."""
+        return (
+            "QuadraticTrinomial({0!r}, {1!r}, {2!r})"
+            .format(self.a, self.b, self.c)
+        )
 
 class Binomial(Polynomial):
     """Implements single-variable mathematical binomials."""
@@ -429,6 +439,10 @@ class LinearBinomial(Binomial):
         """Solve for ax + b = 0."""
         return -self.b / self.a
 
+    def __repr__(self):
+        """Return repr(self)."""
+        return "LinearBinomial({0!r}, {1!r})".format(self.a, self.b)
+
 
 class Constant(Monomial):
     """Implements constants as monomials of degree 0."""
@@ -437,17 +451,31 @@ class Constant(Monomial):
         """Initialize the constant with value const."""
         Monomial.__init__(self, const)
 
+    @property
+    def const(self):
+        """Return the constant term."""
+        return self._vector[0]
+
+    @const.setter
+    def const(self, val):
+        """Set the constant term."""
+        self._vector[0] = val
+
     def __int__(self):
         """Return int(self)."""
-        return int(self._vector[0])
+        return int(self.const)
 
     def __float__(self):
         """Return float(self)."""
-        return float(self._vector[0])
+        return float(self.const)
 
     def __complex__(self):
         """Return complex(self)."""
-        return complex(self._vector[0])
+        return complex(self.const)
+
+    def __repr__(self):
+        """Return repr(self)."""
+        return "Constant({0!r})".format(self.const)
 
 
 class ZeroPolynomial(Polynomial):
@@ -468,3 +496,7 @@ class ZeroPolynomial(Polynomial):
     def __complex__(self):
         """Return 0j."""
         return 0j
+
+    def __repr__(self):
+        """Return repr(self)."""
+        return "ZeroPolynomial()"
