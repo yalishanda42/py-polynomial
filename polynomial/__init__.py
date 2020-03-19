@@ -453,12 +453,12 @@ class Constant(Monomial):
 
     @property
     def const(self):
-        """ Return the constant term. """
+        """Return the constant term."""
         return self._vector[0]
 
     @const.setter
     def const(self, val):
-        """ Set the constant term. """
+        """Set the constant term."""
         self._vector[0] = val
 
     def __int__(self):
