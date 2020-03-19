@@ -204,19 +204,21 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
     def __add__(self, other):
         """Return self + other."""
-        if not self:
-            if isinstance(other, Polynomial):
-                return deepcopy(other)
-            elif isinstance(other, (int, float, complex)):
-                return Constant(other)
+    def __add__(self, other):
+        """Return self + other."""
+        if not isinstance(other, Polynomial):
+            if isinstance(other, (int, float, complex)):
+                other = Constant(other)
             else:
                 raise ValueError(
                     "Can only add Polynomial or number to Polynomial."
                 )
+            
+        if not self:
+            return deepcopy(other)
         elif not other:
             return deepcopy(self)
 
-        other = other if isinstance(other, Polynomial) else Constant(other)
         max_iterations = max(self.degree, other.degree) + 1
         new_vector = [None] * max_iterations
 
@@ -288,14 +290,14 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         return self
 
     def __copy__(self):
-        """Creates a shallow copy of self. _vector is not copied."""
+        """Create a shallow copy of self. _vector is not copied."""
         cls = self.__class__
         result = cls.__new__(cls)
         result.__dict__.update(self.__dict__)
         return result
 
     def __deepcopy__(self, memo):
-        """ Creates a deep copy of self."""
+        """Create a deep copy of self."""
         cls = self.__class__
         result = cls.__new__(cls)
         memo[id(self)] = result
@@ -433,7 +435,7 @@ class QuadraticTrinomial(Trinomial):
         """Return repr(self)."""
         return (
             "QuadraticTrinomial({0!r}, {1!r}, {2!r})"
-                .format(self.a, self.b, self.c)
+            .format(self.a, self.b, self.c)
         )
 
 
