@@ -336,6 +336,7 @@ class Monomial(Polynomial):
         return self.degree > other.degree
 
     def __repr__(self):
+        """Return repr(self)."""
         return "Monomial({0!r}, {1!r})".format(self.a, self.degree)
 
 
@@ -406,8 +407,11 @@ class QuadraticTrinomial(Trinomial):
         return self.complex_factors
 
     def __repr__(self):
-        return "QuadraticTrinomial({0!r}, {1!r}, {2!r})".format(self.a, self.b, self.c)
-
+        """Return repr(self)."""
+        return (
+            "QuadraticTrinomial({0!r}, {1!r}, {2!r})"
+            .format(self.a, self.b, self.c)
+        )
 
 class Binomial(Polynomial):
     """Implements single-variable mathematical binomials."""
@@ -436,6 +440,7 @@ class LinearBinomial(Binomial):
         return -self.b / self.a
 
     def __repr__(self):
+        """Return repr(self)."""
         return "LinearBinomial({0!r}, {1!r})".format(self.a, self.b)
 
 
@@ -467,6 +472,7 @@ class Constant(Monomial):
         return complex(self.const)
 
     def __repr__(self):
+        """Return repr(self)."""
         return "Constant({0!r})".format(self.const)
 
 
@@ -490,4 +496,5 @@ class ZeroPolynomial(Polynomial):
         return 0j
 
     def __repr__(self):
+        """Return repr(self)."""
         return "ZeroPolynomial()"
