@@ -33,8 +33,12 @@ def extract_polynomial(method):
             return method(self, Constant(other))
 
         raise ValueError(
-            "{0} requires a Polynomial or number."
-            .format(method.__qualname__)
+            "{0}.{1} requires a Polynomial or number, got {2}."
+            .format(
+                self.__class__.__name__,
+                method.__name__,
+                type(other).__name__
+            )
         )
 
     return decorated
