@@ -1,7 +1,14 @@
 """Unit-testing module defining polynomials __str__ test cases."""
 
 import unittest
-from polynomial import Polynomial, ZeroPolynomial, Monomial, Constant, LinearBinomial, QuadraticTrinomial
+from polynomial import (
+    Constant,
+    LinearBinomial,
+    Monomial,
+    Polynomial,
+    QuadraticTrinomial
+    ZeroPolynomial,
+)
 
 
 class TestPolynomialsRepr(unittest.TestCase):
