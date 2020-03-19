@@ -20,6 +20,25 @@ def accepts_many_arguments(function):
     return decorated
 
 
+def extract_polynomial(method):
+    """Attempt to extract a Polynomial from the second argument to the
+    method.
+    """
+
+    def decorated(self, other):
+        if isinstance(other, Polynomial):
+            return method(self, other)
+        if isinstance(other, (int, float, complex)):
+            return method(self, Constant(other))
+
+        raise ValueError(
+            "{0} requires a Polynomial or number."
+            .format(method.__qualname__)
+        )
+
+    return decorated
+
+
 class Polynomial:
     """Implements a single-variable mathematical polynom."""
 
@@ -202,15 +221,9 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         """Return not self == 0."""
         return self != 0
 
+    @extract_polynomial
     def __add__(self, other):
         """Return self + other."""
-        if not isinstance(other, Polynomial):
-            if isinstance(other, (int, float, complex)):
-                other = Constant(other)
-            else:
-                raise ValueError(
-                    "Can only add Polynomial or number to Polynomial."
-                )
 
         if not self:
             return deepcopy(other)
@@ -244,11 +257,12 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         self._vector = result._vector
         return self
 
+    @extract_polynomial
     def __mul__(self, other):
         """Return self * other."""
         if not self or not other:
             return ZeroPolynomial()
-        other = other if isinstance(other, Polynomial) else Constant(other)
+
         result = Polynomial()
         for s_m in self.monomials:
             for o_m in other.monomials:
@@ -327,13 +341,14 @@ class Monomial(Polynomial):
         """Set the coefficient of the monomial."""
         self.a = new_value
 
+    @extract_polynomial
     def __mul__(self, other):
         """Return self * other."""
         if isinstance(other, Monomial):
             return Monomial(self.a * other.a, self.degree + other.degree)
         if isinstance(other, Polynomial):
             return Polynomial(self) * other  # avoiding stack overflow
-        return self * Constant(other)
+        return self * other
 
     def __rmul__(self, other):
         """Return other * self."""
