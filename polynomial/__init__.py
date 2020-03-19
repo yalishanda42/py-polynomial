@@ -213,10 +213,11 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
                 raise ValueError(
                     "Can only add Polynomial or number to Polynomial."
                 )
-            
+
         if not self:
             return deepcopy(other)
-        elif not other:
+
+        if not other:
             return deepcopy(self)
 
         max_iterations = max(self.degree, other.degree) + 1
