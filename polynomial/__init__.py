@@ -247,10 +247,12 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
             new_vector[-i - 1] = a + b
         return Polynomial(new_vector)
 
+    @extract_polynomial
     def __radd__(self, other):
         """Return other + self."""
         return self + other
 
+    @extract_polynomial
     def __iadd__(self, other):
         """Implement self += other."""
         result = self + other
@@ -269,10 +271,12 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
                 result += s_m * o_m
         return result
 
+    @extract_polynomial
     def __rmul__(self, other):
         """Return other * self."""
         return self * other
 
+    @extract_polynomial
     def __imul__(self, other):
         """Implement self *= other."""
         result = self * other
@@ -288,14 +292,17 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         result_vector = [-k for k in self]
         return Polynomial(result_vector)
 
+    @extract_polynomial
     def __sub__(self, other):
         """Return self - other."""
         return self + (-other)
 
+    @extract_polynomial
     def __rsub__(self, other):
         """Return other - self."""
         return other + (-self)
 
+    @extract_polynomial
     def __isub__(self, other):
         """Implement self -= other."""
         result = self - other
@@ -350,6 +357,7 @@ class Monomial(Polynomial):
             return Polynomial(self) * other  # avoiding stack overflow
         return self * other
 
+    @extract_polynomial
     def __rmul__(self, other):
         """Return other * self."""
         return self * other
