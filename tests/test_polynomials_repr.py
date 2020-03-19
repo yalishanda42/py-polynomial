@@ -6,7 +6,7 @@ from polynomial import (
     LinearBinomial,
     Monomial,
     Polynomial,
-    QuadraticTrinomial
+    QuadraticTrinomial,
     ZeroPolynomial,
 )
 
