@@ -202,7 +202,6 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         """Return not self == 0."""
         return self != 0
 
-    """Return self + other."""
     def __add__(self, other):
         """Return self + other."""
         if not isinstance(other, Polynomial):
