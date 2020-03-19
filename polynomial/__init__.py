@@ -3,6 +3,7 @@
 (c) Yalishanda <yalishanda@abv.bg>
 """
 
+from copy import copy, deepcopy
 from math import sqrt, inf
 import string
 
@@ -147,7 +148,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
     def __repr__(self):
         """Return repr(self)."""
-        terms = ', '.join([repr(ak) for ak in self._vector][::-1])
+        terms = ', '.join([repr(ak) for ak in self])
         return "Polynomial({0})".format(terms)
 
     def __str__(self):
@@ -204,15 +205,21 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     def __add__(self, other):
         """Return self + other."""
         if not self:
-            try:
-                return Polynomial(*other._vector[::-1])
-            except AttributeError:
+            if isinstance(other, Polynomial):
+                return deepcopy(other)
+            elif isinstance(other, (int, float, complex)):
                 return Constant(other)
+            else:
+                raise ValueError(
+                    "Can only add Polynomial or number to Polynomial."
+                )
         elif not other:
-            return Polynomial(*self._vector[::-1])
+            return deepcopy(self)
+
         other = other if isinstance(other, Polynomial) else Constant(other)
         max_iterations = max(self.degree, other.degree) + 1
         new_vector = [None] * max_iterations
+
         for i in range(max_iterations):
             a, b = 0, 0
             try:
@@ -263,8 +270,8 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
     def __neg__(self):
         """Return -self."""
-        result_vector = list(map(lambda k: -k, self._vector))
-        return Polynomial(result_vector[::-1])
+        result_vector = [-k for k in self]
+        return Polynomial(result_vector)
 
     def __sub__(self, other):
         """Return self - other."""
@@ -279,6 +286,22 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         result = self - other
         self._vector = result._vector
         return self
+
+    def __copy__(self):
+        """Creates a shallow copy of self. _vector is not copied."""
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        return result
+
+    def __deepcopy__(self, memo):
+        """ Creates a deep copy of self."""
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            setattr(result, k, deepcopy(v, memo))
+        return result
 
 
 class Monomial(Polynomial):
@@ -410,8 +433,9 @@ class QuadraticTrinomial(Trinomial):
         """Return repr(self)."""
         return (
             "QuadraticTrinomial({0!r}, {1!r}, {2!r})"
-            .format(self.a, self.b, self.c)
+                .format(self.a, self.b, self.c)
         )
+
 
 class Binomial(Polynomial):
     """Implements single-variable mathematical binomials."""
