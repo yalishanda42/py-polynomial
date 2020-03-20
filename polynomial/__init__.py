@@ -89,12 +89,14 @@ class Polynomial:
 
     @property
     def terms(self):
+        """Get the terms of self as a list of tuples in coeff, deg form."""
         s_d = self.degree
         return [(coeff, s_d - deg) for deg, coeff
                 in enumerate(self) if coeff != 0]
 
     @terms.setter
     def terms(self, terms):
+        """Set the terms of self as a list of tuples in coeff, deg form."""
         max_deg = max(terms, key=lambda x: x[1])[1] + 1
         self._vector = [0] * max_deg
         for coeff, deg in terms:
