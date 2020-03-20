@@ -161,19 +161,20 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         def components(ak, k):
             ak = str(ak)
 
-            if is_leading[0]:
-                sign = ""
-                is_leading[0] = False
+            if ak[0] == "-":
+                # Strip - from ak
+                ak = ak[1:]
+                sign = "- "
             else:
-                if ak[0] == "-":
-                    # Strip - from ak
-                    ak = ak[1:]
-                    sign = "- "
-                else:
-                    sign = "+ "
+                sign = "+ "
 
-            # if ak is 1, the 1 is implicit, so strip it.
-            ak = "" if ak == "1" else ak
+            if is_leading[0]:
+                sign = "-" if sign == "- " else sign
+                is_leading[0] = False
+
+            # if ak is 1, the 1 is implicit when raising x to non-zero k,
+            # so strip it.
+            ak = "" if ak == "1" and k != 0 else ak
 
             # set x^k portion.
             if k == 0:
