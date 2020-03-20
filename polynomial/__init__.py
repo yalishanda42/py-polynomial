@@ -169,13 +169,13 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
                  format(ones_removed(ak, k), k)
                  for k, ak in enumerate(self._vector)
                  if ak != 0]
-        joined_terms = " + ".join(reversed(terms))
-        replace_terms = {"x^1": "x",
+        joined_terms = " + ".join(reversed(terms)) + " "
+        replace_terms = {"x^1 ": "x",
                          "x^0": "",
                          " + -": " - "}
         for k, v in replace_terms.items():
             joined_terms = joined_terms.replace(k, v)
-        return joined_terms
+        return joined_terms[:-1]
 
     def __eq__(self, other):
         """Return self == other.
