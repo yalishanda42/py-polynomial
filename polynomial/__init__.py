@@ -176,21 +176,15 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
             return "0"
 
         # Hacky method to check if a component is the leading term.
-        is_leading = [True]
-
-        def components(ak, k):
+        def components(ak, k, is_leading):
             ak = str(ak)
 
             if ak[0] == "-":
                 # Strip - from ak
                 ak = ak[1:]
-                sign = "- "
+                sign = "- " if is_leading else "-"
             else:
-                sign = "+ "
-
-            if is_leading[0]:
-                sign = "-" if sign == "- " else ""
-                is_leading[0] = False
+                sign = "+ " if is_leading else ""
 
             # if ak is 1, the 1 is implicit when raising x to non-zero k,
             # so strip it.
