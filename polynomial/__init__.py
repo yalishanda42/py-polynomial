@@ -182,9 +182,9 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
             if ak[0] == "-":
                 # Strip - from ak
                 ak = ak[1:]
-                sign = "- " if is_leading else "-"
+                sign = "-" if is_leading else "- "
             else:
-                sign = "+ " if is_leading else ""
+                sign = "" if is_leading else "+ "
 
             # if ak is 1, the 1 is implicit when raising x to non-zero k,
             # so strip it.
@@ -204,7 +204,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         # eg. -         5       x^     2
         s_d = self.degree
         terms = ["{0}{1}{2}{3}".
-                 format(*components(ak, k, k==s_d))
+                 format(*components(ak, k, k == s_d))
                  for ak, k in self.terms
                  if ak != 0]
 
