@@ -155,27 +155,44 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         if self.degree < 0:
             return "0"
 
-        def ones_removed(ak, k):
-            #  the  coefficients before the non-zero-degree terms
-            #  should not be explicitly displayed if they are
-            #  1 or -1
-            if ak == 1 and k != 0:
-                return ""
-            if ak == -1 and k != 0:
-                return "-"
-            return ak
+        # Hacky method to check if a component is the leading term.
+        is_leading = [True]
 
-        terms = ["{0}x^{1}".
-                 format(ones_removed(ak, k), k)
-                 for k, ak in enumerate(self._vector)
+        def components(ak, k):
+            ak = str(ak)
+
+            if is_leading[0]:
+                sign = ""
+                is_leading[0] = False
+            else:
+                if ak[0] == "-":
+                    # Strip - from ak
+                    ak = ak[1:]
+                    sign = "- "
+                else:
+                    sign = "+ "
+
+            # if ak is 1, the 1 is implicit, so strip it.
+            ak = "" if ak == "1" else ak
+
+            # set x^k portion.
+            if k == 0:
+                p, k = "", ""
+            elif k == 1:
+                p, k = "x", ""
+            else:
+                p = "x^"
+
+            return sign, ak, p, k
+
+        # 0: sign, 1: coeff, 2: x^, 3: a
+        # eg. -         5       x^     2
+        terms = ["{0}{1}{2}{3}".
+                 format(*components(ak, self.degree - k))
+                 for k, ak in enumerate(self)
                  if ak != 0]
-        joined_terms = " + ".join(reversed(terms)) + " "
-        replace_terms = {"x^1 ": "x",
-                         "x^0": "",
-                         " + -": " - "}
-        for k, v in replace_terms.items():
-            joined_terms = joined_terms.replace(k, v)
-        return joined_terms[:-1]
+
+        return " ".join(terms)
 
     def __eq__(self, other):
         """Return self == other.
