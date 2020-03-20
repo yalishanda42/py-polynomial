@@ -176,7 +176,6 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         if self.degree < 0:
             return "0"
 
-        # Hacky method to check if a component is the leading term.
         def components(ak, k, is_leading):
             ak = str(ak)
 
