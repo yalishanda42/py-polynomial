@@ -169,7 +169,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
                 sign = "+ "
 
             if is_leading[0]:
-                sign = "-" if sign == "- " else sign
+                sign = "-" if sign == "- " else ""
                 is_leading[0] = False
 
             # if ak is 1, the 1 is implicit when raising x to non-zero k,
