@@ -3,6 +3,7 @@
 (c) Yalishanda <yalishanda@abv.bg>
 """
 
+from copy import copy, deepcopy
 from math import sqrt, inf
 import string
 
@@ -15,6 +16,30 @@ def accepts_many_arguments(function):
             function(self, args[0], kwargs)
         else:
             function(self, args, kwargs)
+
+    return decorated
+
+
+def extract_polynomial(method):
+    """Call method with the second argument as a Polynomial.
+
+    If casting is not possible or not appropriate, raise a ValueError.
+    """
+
+    def decorated(self, other):
+        if isinstance(other, Polynomial):
+            return method(self, other)
+        if isinstance(other, (int, float, complex)):
+            return method(self, Constant(other))
+
+        raise ValueError(
+            "{0}.{1} requires a Polynomial or number, got {2}."
+            .format(
+                self.__class__.__name__,
+                method.__name__,
+                type(other).__name__
+            )
+        )
 
     return decorated
 
@@ -147,7 +172,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
     def __repr__(self):
         """Return repr(self)."""
-        terms = ', '.join([repr(ak) for ak in self._vector][::-1])
+        terms = ', '.join([repr(ak) for ak in self])
         return "Polynomial({0})".format(terms)
 
     def __str__(self):
@@ -201,18 +226,18 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         """Return not self == 0."""
         return self != 0
 
+    @extract_polynomial
     def __add__(self, other):
         """Return self + other."""
         if not self:
-            try:
-                return Polynomial(*other._vector[::-1])
-            except AttributeError:
-                return Constant(other)
-        elif not other:
-            return Polynomial(*self._vector[::-1])
-        other = other if isinstance(other, Polynomial) else Constant(other)
+            return deepcopy(other)
+
+        if not other:
+            return deepcopy(self)
+
         max_iterations = max(self.degree, other.degree) + 1
         new_vector = [None] * max_iterations
+
         for i in range(max_iterations):
             a, b = 0, 0
             try:
@@ -226,31 +251,36 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
             new_vector[-i - 1] = a + b
         return Polynomial(new_vector)
 
+    @extract_polynomial
     def __radd__(self, other):
         """Return other + self."""
         return self + other
 
+    @extract_polynomial
     def __iadd__(self, other):
         """Implement self += other."""
         result = self + other
         self._vector = result._vector
         return self
 
+    @extract_polynomial
     def __mul__(self, other):
         """Return self * other."""
         if not self or not other:
             return ZeroPolynomial()
-        other = other if isinstance(other, Polynomial) else Constant(other)
+
         result = Polynomial()
         for s_m in self.monomials:
             for o_m in other.monomials:
                 result += s_m * o_m
         return result
 
+    @extract_polynomial
     def __rmul__(self, other):
         """Return other * self."""
         return self * other
 
+    @extract_polynomial
     def __imul__(self, other):
         """Implement self *= other."""
         result = self * other
@@ -263,22 +293,41 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
     def __neg__(self):
         """Return -self."""
-        result_vector = list(map(lambda k: -k, self._vector))
-        return Polynomial(result_vector[::-1])
+        result_vector = [-k for k in self]
+        return Polynomial(result_vector)
 
+    @extract_polynomial
     def __sub__(self, other):
         """Return self - other."""
         return self + (-other)
 
+    @extract_polynomial
     def __rsub__(self, other):
         """Return other - self."""
         return other + (-self)
 
+    @extract_polynomial
     def __isub__(self, other):
         """Implement self -= other."""
         result = self - other
         self._vector = result._vector
         return self
+
+    def __copy__(self):
+        """Create a shallow copy of self. _vector is not copied."""
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        return result
+
+    def __deepcopy__(self, memo):
+        """Create a deep copy of self."""
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            setattr(result, k, deepcopy(v, memo))
+        return result
 
 
 class Monomial(Polynomial):
@@ -303,14 +352,16 @@ class Monomial(Polynomial):
         """Set the coefficient of the monomial."""
         self.a = new_value
 
+    @extract_polynomial
     def __mul__(self, other):
         """Return self * other."""
         if isinstance(other, Monomial):
             return Monomial(self.a * other.a, self.degree + other.degree)
         if isinstance(other, Polynomial):
             return Polynomial(self) * other  # avoiding stack overflow
-        return self * Constant(other)
+        return self * other
 
+    @extract_polynomial
     def __rmul__(self, other):
         """Return other * self."""
         return self * other
@@ -412,6 +463,7 @@ class QuadraticTrinomial(Trinomial):
             "QuadraticTrinomial({0!r}, {1!r}, {2!r})"
             .format(self.a, self.b, self.c)
         )
+
 
 class Binomial(Polynomial):
     """Implements single-variable mathematical binomials."""
