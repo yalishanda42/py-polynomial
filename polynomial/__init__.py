@@ -78,7 +78,7 @@ class Polynomial:
         ind = 0
         while self._vector[ind] == 0:
             ind += 1
-        
+
         self._vector = self._vector[ind:]
         return len(self._vector) - 1
 
@@ -232,7 +232,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         self != 0 <==> self != Polynomial()
         """
         if other == 0:
-            return self.terms != []
+            return self._vector != []
 
         return self.terms != other.terms
 
