@@ -75,6 +75,11 @@ class Polynomial:
         if not self:
             return -inf  # the degree of the zero polynomial is -infinity
 
+        ind = 0
+        while self._vector[ind] == 0:
+            ind += 1
+        
+        self._vector = self._vector[ind:]
         return len(self._vector) - 1
 
     @property
@@ -83,13 +88,26 @@ class Polynomial:
         return Polynomial([i * self[i] for i in range(self.degree, 0, -1)])
 
     @property
+    def terms(self):
+        s_d = self.degree
+        return [(coeff, s_d - deg) for deg, coeff
+                in enumerate(self) if coeff != 0]
+
+    @terms.setter
+    def terms(self, terms):
+        max_deg = max(terms, key=lambda x: x[1])[1] + 1
+        self._vector = [0] * max_deg
+        for coeff, deg in terms:
+            self._vector[deg] += coeff
+
+    @property
     def monomials(self, reverse=True):
         """Return a list with all terms in the form of monomials.
 
         List is sorted from the highest degree term to the lowest
         by default.
         """
-        return sorted([Monomial(k, deg) for deg, k in enumerate(self._vector)],
+        return sorted([Monomial(k, deg) for k, deg in self.terms],
                       reverse=reverse)
 
     def calculate(self, x):
@@ -97,7 +115,7 @@ class Polynomial:
         if self.degree < 0:
             return 0
 
-        return sum(ak * (x ** k) for k, ak in enumerate(self._vector))
+        return sum(ak * (x ** k) for ak, k in self.terms)
 
     def __getattr__(self, name):
         """Get coefficient by letter name: ax^n + bx^{n-1} + ... + yx + z."""
@@ -188,9 +206,10 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
         # 0: sign, 1: coeff, 2: x^, 3: a
         # eg. -         5       x^     2
+        s_d = self.degree
         terms = ["{0}{1}{2}{3}".
-                 format(*components(ak, self.degree - k))
-                 for k, ak in enumerate(self)
+                 format(*components(ak, k, k==s_d))
+                 for ak, k in self.terms
                  if ak != 0]
 
         return " ".join(terms)
@@ -203,7 +222,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         if other == 0:
             return self._vector == []
 
-        return self.degree == other.degree and self._vector == other._vector
+        return self.degree == other.degree and self.terms == other.terms
 
     def __ne__(self, other):
         """Return self != other.
@@ -211,9 +230,9 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         self != 0 <==> self != Polynomial()
         """
         if other == 0:
-            return self._vector != []
+            return self.terms != []
 
-        return self._vector != other._vector
+        return self.terms != other.terms
 
     def __bool__(self):
         """Return not self == 0."""
@@ -272,7 +291,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     def __imul__(self, other):
         """Implement self *= other."""
         result = self * other
-        self._vector = result._vector
+        self.terms = result.terms
         return self
 
     def __pos__(self):
