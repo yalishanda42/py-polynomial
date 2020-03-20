@@ -70,8 +70,8 @@ class TestPolynomialsStr(unittest.TestCase):
 
         self.assertEqual(expect, s)
 
-def test_power_starting_in_one_kept_if_power_is_not_one(self):
-        """Test that there is a short minus sign if the first coeff is < 0."""
+    def test_power_starting_in_one_kept_if_power_is_not_one(self):
+        """Test x^10 is not converted to x and properly appears as x^10."""
         expect = "5x^10"
 
         s = str(Monomial(5, 10))
