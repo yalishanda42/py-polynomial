@@ -75,12 +75,13 @@ class Polynomial:
         if not self:
             return -inf  # the degree of the zero polynomial is -infinity
 
+        # Trim vector down in case the leading degrees no longer exist.
         ind = 0
-        while self._vector[ind] == 0:
+        while self._vector[-ind-1] == 0:
             ind += 1
 
-        self._vector = self._vector[ind:]
-        return len(self._vector) - 1
+        self._vector = self._vector[:len(self._vector) - ind]
+        return len(self._vector) - 1 if self._vector else -inf
 
     @property
     def derivative(self):
