@@ -195,7 +195,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         elif degree > self.degree:
             raise IndexError("Attempt to set coefficient of term with \
 degree {0} of a {1}-degree polynomial".format(degree, self.degree))
-        
+
         self._vector[degree] = new_value
         self._trim()
 
@@ -550,6 +550,12 @@ class Constant(Monomial):
     def __init__(self, const=1):
         """Initialize the constant with value const."""
         Monomial.__init__(self, const)
+
+    def __eq__(self, other):
+        """Return self == other."""
+        if other == self.const:
+            return True
+        return super().__eq__(other)
 
     @property
     def const(self):
