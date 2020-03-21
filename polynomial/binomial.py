@@ -1,6 +1,6 @@
 """This module defines different types of binomials and their methods."""
 
-from polynomial import Polynomial, Monomial
+from polynomial.polynomial import Polynomial, Monomial
 
 
 class Binomial(Polynomial):
