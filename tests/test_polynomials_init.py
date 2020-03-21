@@ -2,7 +2,7 @@
 
 import unittest
 from polynomial import Polynomial
-
+from math import inf
 
 class TestPolynomialsInit(unittest.TestCase):
     """Defines polynomials initialization test cases."""
@@ -43,6 +43,24 @@ class TestPolynomialsInit(unittest.TestCase):
 
         self.assertEqual(p1, p2)
 
+    def test_polynomial_degree_goes_down_when_zeroed(self):
+        """Test that polynomial degree changes when subtraction sets leading term to zero."""
+        coeffs = [1, 2]
+        p1 = Polynomial(coeffs)
+        p2 = Polynomial(coeffs)
+
+        a = p1 - p2
+
+        self.assertEquals(a.degree, -inf)
+
+    def test_polynomial_degree_goes_down_on_setitem(self):
+        """Test that polynomial degree changes when the leading term is set to zero."""
+        coeffs = [1, 2, 3]
+        p = Polynomial(coeffs)
+
+        p[2] = 0
+
+        self.assertEquals(p.degree, 1)
 
 if __name__ == '__main__':
     unittest.main()
