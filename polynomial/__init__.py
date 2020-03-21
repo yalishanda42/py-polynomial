@@ -88,7 +88,7 @@ class Polynomial:
         self._trim()
 
     def _trim(self):
-        """Trims self._vector to length"""
+        """Trims self._vector to length."""
         if not self._vector:
             return
 
@@ -306,8 +306,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     def __iadd__(self, other):
         """Implement self += other."""
         result = self + other
-        self._vector = result._vector
-        self._trim()
+        self.terms = result.terms
         return self
 
     @extract_polynomial
@@ -320,7 +319,6 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         for s_m in self.monomials:
             for o_m in other.monomials:
                 result += s_m * o_m
-        result._trim()
         return result
 
     @extract_polynomial
