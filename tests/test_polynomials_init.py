@@ -1,8 +1,7 @@
 """Unit-testing module defining polynomials initialization test cases."""
 
 import unittest
-from polynomial import Polynomial
-from math import inf
+from polynomial import Polynomial, Constant, Monomial
 
 
 class TestPolynomialsInit(unittest.TestCase):
@@ -44,24 +43,30 @@ class TestPolynomialsInit(unittest.TestCase):
 
         self.assertEqual(p1, p2)
 
-    def test_polynomial_degree_goes_down_when_zeroed(self):
-        """Test that the degree changes when subtraction sets self to 0."""
-        coeffs = [1, 2]
-        p1 = Polynomial(coeffs)
-        p2 = Polynomial(coeffs)
+    def test_leading_zeroes_are_removed(self):
+        """Test leading terms with coefficients equal to zero are removed."""
+        p1 = Polynomial(1, 2, 3, 0)
+        p2 = Polynomial(0, 0, 0, 1, 2, 3, 0)
 
-        a = p1 - p2
+        self.assertEqual(repr(p1), repr(p2))
+        self.assertEqual(str(p1), str(p2))
+        self.assertEqual(p1, p2)
 
-        self.assertEquals(a.degree, -inf)
+    def test_default_monomial_is_x(self):
+        """Test that the default Monomial is 'x'."""
+        m = Monomial()
+        expect = Monomial(1, 1)
 
-    def test_polynomial_degree_goes_down_on_setitem(self):
-        """Test that the degree changes whenthe  leading term is set to 0."""
-        coeffs = [1, 2, 3]
-        p = Polynomial(coeffs)
+        self.assertEqual(repr(expect), repr(m))
+        self.assertEqual(str(expect), str(m))
+        self.assertEqual(expect, m)
 
-        p[2] = 0
+    def test_default_constant_is_one(self):
+        """Test that the default Constant is '1'."""
+        c = Constant()
+        expect = Constant(1)
 
-        self.assertEquals(p.degree, 1)
+        self.assertEqual(expect, c)
 
 
 if __name__ == '__main__':
