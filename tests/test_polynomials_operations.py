@@ -236,7 +236,7 @@ class TestPolynomialsOperations(unittest.TestCase):
         p2 = Polynomial(coeffs)
         p3 = Polynomial(coeffs)
         p4 = Polynomial(coeffs)
-        z = ZeroPolynomial()
+        z = Polynomial()
 
         result1 = p1 * z
         result2 = z * p2
