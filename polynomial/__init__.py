@@ -212,11 +212,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
     def __str__(self):
         """Return str(self)."""
-        if self.degree < 0:
-            return "0"
-
-        # Constant polynomial = 0
-        if not self.terms:
+        if not self:
             return "0"
 
         def components(ak, k, is_leading):
