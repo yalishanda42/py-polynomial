@@ -83,17 +83,9 @@ class Polynomial:
             self._vector = [0 for _ in range(leading_monomial.degree + 1)]
             for mon in iterable:
                 self._vector[mon.degree] += mon.a
-            self._trim()
         else:
-            first_index = 0
-            iterable = list(iterable)
-            for i, val in enumerate(iterable):
-                if val in (0, "0"):
-                    first_index = i + 1
-                else:
-                    break
-
-            self._vector = iterable[first_index:][::-1]
+            self._vector = list(iterable)[::-1]
+        self._trim()
 
     def _trim(self):
         """Trims self._vector to length"""
@@ -154,8 +146,8 @@ class Polynomial:
         """
         if reverse:
             return [Monomial(k, deg) for k, deg in self.terms]
-        else:
-            return [Monomial(k, deg) for k, deg in reversed(self.terms)]
+
+        return [Monomial(k, deg) for k, deg in reversed(self.terms)]
 
     def calculate(self, x):
         """Calculate the value of the polynomial at a given point."""
