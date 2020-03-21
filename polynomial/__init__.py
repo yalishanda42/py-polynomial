@@ -88,8 +88,8 @@ class Polynomial:
         self._trim()
 
     def _trim(self):
-        """Trims self._vector to length."""
-        if not self._vector or len(self._vector == 0):
+        """Trims self._vector to length. Keeps constant terms."""
+        if not self._vector or len(self._vector) == 1:
             return
 
         ind = len(self._vector)
