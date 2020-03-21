@@ -241,12 +241,12 @@ class TestPolynomialsOperations(unittest.TestCase):
 
         # Multiplication like this can downcast a Polynomial
         # to a ZeroPolynomial.
-        result1 = p1 * z
-        result2 = z * p2
+        result1 = p1 * z0
+        result2 = z0 * p2
         # Inplace multiplication will not downcast a Polynomial.
         # It may however upcast to a Polynomial if the operands
         # are not compatible.
-        p1 *= z
+        p1 *= z0
         p2 *= 0
         p3 *= 0.0
         p4 *= 0j
