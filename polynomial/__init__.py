@@ -3,7 +3,7 @@
 (c) Yalishanda <yalishanda@abv.bg>
 """
 
-from copy import copy, deepcopy
+from copy import deepcopy
 from math import sqrt, inf
 import string
 
@@ -116,7 +116,7 @@ class Polynomial:
     @property
     def terms(self):
         """Get the terms of self as a list of tuples in coeff, deg form.
-        
+
         Terms are returned from largest degree to smallest degree, excluding
         any terms with a zero coefficient.
         """
