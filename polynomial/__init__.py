@@ -74,16 +74,13 @@ class Polynomial:
         if from_monomials:
             for i, monomial in enumerate(iterable):
                 if isinstance(monomial, Monomial):
+                    iterable[i] = (monomial.a, monomial.degree)
+                elif len(monomial) == 2:
                     continue
-                if len(monomial) == 2:
-                    iterable[i] = Monomial(monomial[0], monomial[1])
                 else:
                     raise TypeError("{} cannot be a monomial.".
                                     format(monomial))
-            leading_monomial = max(iterable, key=lambda m: m.degree)
-            self._vector = [0 for _ in range(leading_monomial.degree + 1)]
-            for mon in iterable:
-                self._vector[mon.degree] += mon.a
+            self.terms = iterable
         else:
             self._vector = iterable[::-1]
         self._trim()
