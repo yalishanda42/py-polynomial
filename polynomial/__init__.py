@@ -93,7 +93,8 @@ class Polynomial:
         """Get the terms of self as a list of tuples in coeff, deg form.
         
         Terms are returned from largest degree to smallest degree, excluding
-        any terms with a zero coefficient."""
+        any terms with a zero coefficient.
+        """
         s_d = self.degree
         return [(coeff, s_d - deg) for deg, coeff
                 in enumerate(self) if coeff != 0]
