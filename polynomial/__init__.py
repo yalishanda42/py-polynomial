@@ -83,7 +83,7 @@ class Polynomial:
             self._vector = [0 for _ in range(leading_monomial.degree + 1)]
             for mon in iterable:
                 self._vector[mon.degree] += mon.a
-           self._trim()
+            self._trim()
         else:
             first_index = 0
             iterable = list(iterable)
@@ -97,8 +97,11 @@ class Polynomial:
 
     def _trim(self):
         """Trims self._vector to length"""
-        ind = len(self._vector) - 1
-        while self._vector[ind] == 0 and ind >= 0:
+        if not self._vector:
+            return
+
+        ind = len(self._vector)
+        while self._vector[ind-1] == 0 and ind >= 0:
             ind -= 1
 
         self._vector = self._vector[:ind]
