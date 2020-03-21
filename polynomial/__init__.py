@@ -134,7 +134,7 @@ class Polynomial:
     def terms(self, terms):
         """Set the terms of self as a list of tuples in coeff, deg form."""
         if not terms:
-            self.terms = []
+            self._vector = []
             return
 
         max_deg = max(terms, key=lambda x: x[1])[1] + 1
@@ -197,11 +197,12 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
             indices = degree.indices(self.degree + 1)
             for deg, value in zip(range(*indices), new_value):
                 self._vector[deg] = value
-
-        if degree > self.degree:
+        elif degree > self.degree:
             raise IndexError("Attempt to set coefficient of term with \
 degree {0} of a {1}-degree polynomial".format(degree, self.degree))
+        
         self._vector[degree] = new_value
+        self._trim()
 
     def __iter__(self):
         """Return the coefficients from the highest degree to the lowest."""
