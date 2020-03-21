@@ -111,6 +111,9 @@ class Polynomial:
     @property
     def derivative(self):
         """Return a polynomial object which is the derivative of self."""
+        if not self:
+            return ZeroPolynomial()
+
         return Polynomial([i * self[i] for i in range(self.degree, 0, -1)])
 
     @property
