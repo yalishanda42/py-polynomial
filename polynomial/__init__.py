@@ -89,7 +89,7 @@ class Polynomial:
 
     def _trim(self):
         """Trims self._vector to length."""
-        if not self._vector:
+        if not self._vector or len(self._vector == 0):
             return
 
         ind = len(self._vector)
