@@ -69,30 +69,32 @@ class Polynomial:
         if iterable is None:
             iterable = []
 
+        iterable = list(iterable)
+
         if from_monomials:
-            iterable = list(iterable)
             for i, monomial in enumerate(iterable):
                 if isinstance(monomial, Monomial):
+                    iterable[i] = (monomial.a, monomial.degree)
+                elif len(monomial) == 2:
                     continue
-                if len(monomial) == 2:
-                    iterable[i] = Monomial(monomial[0], monomial[1])
                 else:
                     raise TypeError("{} cannot be a monomial.".
                                     format(monomial))
-            leading_monomial = max(iterable, key=lambda m: m.degree)
-            self._vector = [0 for _ in range(leading_monomial.degree + 1)]
-            for mon in iterable:
-                self._vector[mon.degree] += mon.a
+            self.terms = iterable
         else:
-            first_index = 0
-            iterable = list(iterable)
-            for i, val in enumerate(iterable):
-                if val in (0, "0"):
-                    first_index = i + 1
-                else:
-                    break
+            self._vector = iterable[::-1]
+        self._trim()
 
-            self._vector = iterable[first_index:][::-1]
+    def _trim(self):
+        """Trims self._vector to length. Keeps constant terms."""
+        if not self._vector or len(self._vector) == 1:
+            return
+
+        ind = len(self._vector)
+        while self._vector[ind-1] == 0 and ind > 0:
+            ind -= 1
+
+        self._vector = self._vector[:ind]
 
     @property
     def degree(self):
@@ -100,13 +102,7 @@ class Polynomial:
         if not self:
             return -inf  # the degree of the zero polynomial is -infinity
 
-        # Trim vector down in case the leading degrees no longer exist.
-        ind = 0
-        while self._vector[-ind-1] == 0:
-            ind += 1
-
-        self._vector = self._vector[:len(self._vector) - ind]
-        return len(self._vector) - 1 if self._vector else -inf
+        return len(self._vector) - 1
 
     @property
     def derivative(self):
@@ -130,6 +126,10 @@ class Polynomial:
     @terms.setter
     def terms(self, terms):
         """Set the terms of self as a list of tuples in coeff, deg form."""
+        if not terms:
+            self._vector = [0]
+            return
+
         max_deg = max(terms, key=lambda x: x[1])[1] + 1
         self._vector = [0] * max_deg
         for coeff, deg in terms:
@@ -142,8 +142,10 @@ class Polynomial:
         List is sorted from the highest degree term to the lowest
         by default.
         """
-        return sorted([Monomial(k, deg) for k, deg in self.terms],
-                      reverse=reverse)
+        if reverse:
+            return [Monomial(k, deg) for k, deg in self.terms]
+
+        return [Monomial(k, deg) for k, deg in reversed(self.terms)]
 
     def calculate(self, x):
         """Calculate the value of the polynomial at a given point."""
@@ -188,11 +190,12 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
             indices = degree.indices(self.degree + 1)
             for deg, value in zip(range(*indices), new_value):
                 self._vector[deg] = value
-
-        if degree > self.degree:
+        elif degree > self.degree:
             raise IndexError("Attempt to set coefficient of term with \
 degree {0} of a {1}-degree polynomial".format(degree, self.degree))
+
         self._vector[degree] = new_value
+        self._trim()
 
     def __iter__(self):
         """Return the coefficients from the highest degree to the lowest."""
@@ -200,12 +203,14 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
     def __repr__(self):
         """Return repr(self)."""
+        if not self:
+            return "Polynomial()"
         terms = ', '.join([repr(ak) for ak in self])
         return "Polynomial({0})".format(terms)
 
     def __str__(self):
         """Return str(self)."""
-        if self.degree < 0:
+        if not self:
             return "0"
 
         def components(ak, k, is_leading):
@@ -247,7 +252,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         self == 0 <==> self == Polynomial()
         """
         if other == 0:
-            return self._vector == []
+            return bool(self)
 
         return self.degree == other.degree and self.terms == other.terms
 
@@ -257,13 +262,21 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         self != 0 <==> self != Polynomial()
         """
         if other == 0:
-            return self._vector != []
+            return not self
 
-        return self.terms != other.terms
+        return self.degree != other.degree and self.terms != other.terms
 
     def __bool__(self):
-        """Return not self == 0."""
-        return self != 0
+        """Return True if self is not a zero polynomial, otherwise False."""
+        self._trim()
+
+        if not self._vector:
+            return False
+        if len(self._vector) > 1:
+            return True
+        if self._vector[0] == 0:
+            return False
+        return True
 
     @extract_polynomial
     def __add__(self, other):
@@ -299,7 +312,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     def __iadd__(self, other):
         """Implement self += other."""
         result = self + other
-        self._vector = result._vector
+        self.terms = result.terms
         return self
 
     @extract_polynomial
@@ -328,10 +341,12 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
     def __pos__(self):
         """Return +self."""
+        self._trim()
         return self
 
     def __neg__(self):
         """Return -self."""
+        self._trim()
         result_vector = [-k for k in self]
         return Polynomial(result_vector)
 
@@ -349,7 +364,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     def __isub__(self, other):
         """Implement self -= other."""
         result = self - other
-        self._vector = result._vector
+        self.terms = result.terms
         return self
 
     def __copy__(self):
@@ -552,6 +567,12 @@ class Constant(Monomial):
         """Initialize the constant with value const."""
         Monomial.__init__(self, const, 0)
 
+    def __eq__(self, other):
+        """Return self == other."""
+        if other == self.const:
+            return True
+        return super().__eq__(other)
+
     @property
     def const(self):
         """Return the constant term."""
@@ -579,12 +600,12 @@ class Constant(Monomial):
         return "Constant({0!r})".format(self.const)
 
 
-class ZeroPolynomial(Polynomial):
+class ZeroPolynomial(Constant):
     """The zero polynomial."""
 
     def __init__(self):
         """Equivalent to Polynomial()."""
-        Polynomial.__init__(self)
+        Constant.__init__(self, 0)
 
     def __int__(self):
         """Return 0."""

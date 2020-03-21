@@ -236,21 +236,27 @@ class TestPolynomialsOperations(unittest.TestCase):
         p2 = Polynomial(coeffs)
         p3 = Polynomial(coeffs)
         p4 = Polynomial(coeffs)
-        z = ZeroPolynomial()
+        z0 = ZeroPolynomial()
+        z1 = Polynomial()
 
-        result1 = p1 * z
-        result2 = z * p2
-        p1 *= z
+        # Multiplication like this can downcast a Polynomial
+        # to a ZeroPolynomial.
+        result1 = p1 * z0
+        result2 = z0 * p2
+        # Inplace multiplication will not downcast a Polynomial.
+        # It may however upcast to a Polynomial if the operands
+        # are not compatible.
+        p1 *= z0
         p2 *= 0
         p3 *= 0.0
         p4 *= 0j
 
-        self._assert_polynomials_are_the_same(z, result1)
-        self._assert_polynomials_are_the_same(z, result2)
-        self._assert_polynomials_are_the_same(z, p1)
-        self._assert_polynomials_are_the_same(z, p2)
-        self._assert_polynomials_are_the_same(z, p3)
-        self._assert_polynomials_are_the_same(z, p4)
+        self._assert_polynomials_are_the_same(z0, result1)
+        self._assert_polynomials_are_the_same(z0, result2)
+        self._assert_polynomials_are_the_same(z1, p1)
+        self._assert_polynomials_are_the_same(z1, p2)
+        self._assert_polynomials_are_the_same(z1, p3)
+        self._assert_polynomials_are_the_same(z1, p4)
 
 
 if __name__ == '__main__':
