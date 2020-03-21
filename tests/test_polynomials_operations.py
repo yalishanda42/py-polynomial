@@ -149,6 +149,109 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEqual(p1.monomials, p2.monomials)
         self.assertEqual(p1.degree, p2.degree)
 
+    def test_add_iadd_polynomials_result_same(self):
+        """Test that adding two polynomials works correctly."""
+        p1 = Polynomial(1, 1, 1)
+        p2 = Polynomial(2, 2)
+        expect = Polynomial(1, 3, 3)
+
+        result1 = p1 + p2
+        result2 = p2 + p1
+        p1 += p2
+
+        self._assert_polynomials_are_the_same(expect, result1)
+        self._assert_polynomials_are_the_same(expect, result2)
+        self._assert_polynomials_are_the_same(expect, p1)
+
+    def test_add_radd_iadd_constant_result_same(self):
+        """Test that adding polynomials and constants works correctly."""
+        p = Polynomial(1, 1, 1)
+        c = 2
+        expect = Polynomial(1, 1, 3)
+
+        result1 = p + c
+        result2 = c + p
+        p += c
+
+        self._assert_polynomials_are_the_same(expect, result1)
+        self._assert_polynomials_are_the_same(expect, result2)
+        self._assert_polynomials_are_the_same(expect, p)
+
+    def test_add_zero_result_the_same(self):
+        """Test that adding zero does not change the polynomial."""
+        coeffs = [1, 1, 1]
+        p1 = Polynomial(coeffs)
+        p2 = Polynomial(coeffs)
+        p3 = Polynomial(coeffs)
+        p4 = Polynomial(coeffs)
+        z = ZeroPolynomial()
+        expect = Polynomial(coeffs)
+
+        result1 = p1 + z
+        result2 = z + p1
+        p1 += z
+        p2 += 0
+        p3 += 0.0
+        p4 += 0j
+
+        self._assert_polynomials_are_the_same(p1, result1)
+        self._assert_polynomials_are_the_same(p1, result2)
+        self._assert_polynomials_are_the_same(expect, p1)
+        self._assert_polynomials_are_the_same(expect, p2)
+        self._assert_polynomials_are_the_same(expect, p3)
+        self._assert_polynomials_are_the_same(expect, p4)
+
+    def test_mul_imul_polynomials_result_same(self):
+        """Test that multiplying two polynomials works correctly."""
+        p1 = Polynomial(1, 2, 3)
+        p2 = Polynomial(1, 2, 3)
+        expect = Polynomial(1, 4, 10, 12, 9)
+
+        result1 = p1 * p2
+        result2 = p2 * p1
+        p1 *= p2
+
+        self._assert_polynomials_are_the_same(expect, result1)
+        self._assert_polynomials_are_the_same(expect, result2)
+        self._assert_polynomials_are_the_same(expect, p1)
+
+    def test_mul_rmul_imul_constant_result_same(self):
+        """Test that multiplying polynomials and constants works correctly."""
+        p = Polynomial(1, 1, 1)
+        c = 10
+        expect = Polynomial(10, 10, 10)
+
+        result1 = p * c
+        result2 = c * p
+        p *= c
+
+        self._assert_polynomials_are_the_same(expect, result1)
+        self._assert_polynomials_are_the_same(expect, result2)
+        self._assert_polynomials_are_the_same(expect, p)
+
+    def test_mul_zero_result_zero(self):
+        """Test that multiplying by zero equals zero."""
+        coeffs = [1, 1, 1]
+        p1 = Polynomial(coeffs)
+        p2 = Polynomial(coeffs)
+        p3 = Polynomial(coeffs)
+        p4 = Polynomial(coeffs)
+        z = ZeroPolynomial()
+
+        result1 = p1 * z
+        result2 = z * p2
+        p1 *= z
+        p2 *= 0
+        p3 *= 0.0
+        p4 *= 0j
+
+        self._assert_polynomials_are_the_same(z, result1)
+        self._assert_polynomials_are_the_same(z, result2)
+        self._assert_polynomials_are_the_same(z, p1)
+        self._assert_polynomials_are_the_same(z, p2)
+        self._assert_polynomials_are_the_same(z, p3)
+        self._assert_polynomials_are_the_same(z, p4)
+
 
 if __name__ == '__main__':
     unittest.main()
