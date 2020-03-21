@@ -90,7 +90,10 @@ class Polynomial:
 
     @property
     def terms(self):
-        """Get the terms of self as a list of tuples in coeff, deg form."""
+        """Get the terms of self as a list of tuples in coeff, deg form.
+        
+        Terms are returned from largest degree to smallest degree, excluding
+        any terms with a zero coefficient."""
         s_d = self.degree
         return [(coeff, s_d - deg) for deg, coeff
                 in enumerate(self) if coeff != 0]
@@ -205,8 +208,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         s_d = self.degree
         terms = ["{0}{1}{2}{3}".
                  format(*components(ak, k, k == s_d))
-                 for ak, k in self.terms
-                 if ak != 0]
+                 for ak, k in self.terms]
 
         return " ".join(terms)
 
