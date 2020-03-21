@@ -83,7 +83,7 @@ class Polynomial:
             self.terms = iterable
         else:
             self._vector = iterable[::-1]
-        self._trim()
+            self._trim()
 
     def _trim(self):
         """Trims self._vector to length. Keeps constant terms."""
@@ -134,6 +134,7 @@ class Polynomial:
         self._vector = [0] * max_deg
         for coeff, deg in terms:
             self._vector[deg] += coeff
+        self._trim()
 
     @property
     def monomials(self, reverse=True):
