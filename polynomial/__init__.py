@@ -271,7 +271,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     def __bool__(self):
         """Return True if self is not a zero polynomial, otherwise False."""
         self._trim()
-        
+
         if not self._vector:
             return False
         if len(self._vector) > 1:
