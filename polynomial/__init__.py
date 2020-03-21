@@ -45,7 +45,7 @@ def extract_polynomial(method):
 
 
 class Polynomial:
-    """Implements a single-variable mathematical polynom."""
+    """Implements a single-variable mathematical polynomial."""
 
     @accepts_many_arguments
     def __init__(self, iterable=None, from_monomials=False):
@@ -112,6 +112,7 @@ class Polynomial:
         """Return a polynomial object which is the derivative of self."""
         if not self:
             return ZeroPolynomial()
+
         return Polynomial([i * self[i] for i in range(self.degree, 0, -1)])
 
     @property
@@ -389,7 +390,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 class Monomial(Polynomial):
     """Implements a single-variable monomial. A single-term polynomial."""
 
-    def __init__(self, coefficient=0, degree=0):
+    def __init__(self, coefficient=1, degree=1):
         """Initialize the following monomial: coefficient * x^(degree)."""
         if not isinstance(degree, int):
             raise ValueError("Monomial's degree should be a natural number.")
@@ -451,14 +452,20 @@ class Trinomial(Polynomial):
     """Implements single-variable mathematical trinomials."""
 
     def __init__(self,
-                 monomial1=Monomial(),
-                 monomial2=Monomial(),
-                 monomial3=Monomial()):
+                 monomial1=None,
+                 monomial2=None,
+                 monomial3=None):
         """Initialize the trinomial with 3 monomials.
 
         The arguments can also be 2-tuples in the form:
             (coefficient, degree)
         """
+        if not monomial1:
+            monomial1 = Monomial(1, 1)
+        if not monomial2:
+            monomial2 = Monomial(2, 2)
+        if not monomial3:
+            monomial3 = Monomial(3, 3)
         args = [monomial1, monomial2, monomial3]
         Polynomial.__init__(self, args, from_monomials=True)
 
@@ -524,12 +531,16 @@ class QuadraticTrinomial(Trinomial):
 class Binomial(Polynomial):
     """Implements single-variable mathematical binomials."""
 
-    def __init__(self, monomial1=Monomial(), monomial2=Monomial()):
+    def __init__(self, monomial1=None, monomial2=None):
         """Initialize the binomial with 2 monomials.
 
         The arguments can also be 2-tuples in the form:
             (coefficient, degree)
         """
+        if not monomial1:
+            monomial1 = Monomial(1, 1)
+        if not monomial2:
+            monomial2 = Monomial(2, 2)
         Polynomial.__init__(self, [monomial1, monomial2], from_monomials=True)
 
 
@@ -557,7 +568,7 @@ class Constant(Monomial):
 
     def __init__(self, const=1):
         """Initialize the constant with value const."""
-        Monomial.__init__(self, const)
+        Monomial.__init__(self, const, 0)
 
     def __eq__(self, other):
         """Return self == other."""
