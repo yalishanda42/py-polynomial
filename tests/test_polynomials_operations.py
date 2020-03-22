@@ -258,7 +258,7 @@ class TestPolynomialsOperations(unittest.TestCase):
         self._assert_polynomials_are_the_same(z1, p3)
         self._assert_polynomials_are_the_same(z1, p4)
 
-      def test_divmod_same_polynomial(self):
+    def test_divmod_same_polynomial(self):
         """Test that divmodding two identical polynomials works correctly."""
         p1 = Polynomial(1, 4, 4)
         p2 = Polynomial(1, 4, 4)
