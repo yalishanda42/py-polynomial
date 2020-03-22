@@ -109,7 +109,9 @@ class Polynomial:
     def nth_derivative(self, n=1):
         """Return the polynomial object which is the nth derivative of self."""
         if not isinstance(n, int) or n < 0:
-            raise ValueError("n must be a positive integer (got {0})".format(n))
+            raise ValueError(
+                "n must be a positive integer (got {0})".format(n)
+            )
 
         if not self or n > self.degree:
             # Short circuit since the result would be zero.
