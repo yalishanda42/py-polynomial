@@ -258,6 +258,56 @@ class TestPolynomialsOperations(unittest.TestCase):
         self._assert_polynomials_are_the_same(z1, p3)
         self._assert_polynomials_are_the_same(z1, p4)
 
+      def test_divmod_same_polynomial(self):
+        """Test that divmodding two identical polynomials works correctly."""
+        p1 = Polynomial(1, 4, 4)
+        p2 = Polynomial(1, 4, 4)
+
+        p3, remainder = divmod(p1, p2)
+
+        self.assertEqual(p3, Polynomial(1))
+        self.assertEqual(remainder, Polynomial())
+
+    def test_divmod_no_remainder(self):
+        """Test that divmodding a polynomial with a factor works correctly."""
+        p1 = Polynomial(1, 4, 4)
+        p2 = Polynomial(1, 2)
+
+        p3, remainder = divmod(p1, p2)
+
+        self.assertEqual(p3, Polynomial(1, 2))
+        self.assertEqual(remainder, Polynomial())
+
+    def test_divmod_remainder_exists(self):
+        """Test that divmodding with a non-zero remainder works correctly."""
+        p1 = Polynomial(1, 2, 3)
+        p2 = Polynomial(1, 2)
+
+        p3, remainder = divmod(p1, p2)
+
+        self.assertEqual(p3, Polynomial(1, 0))
+        self.assertEqual(remainder, Polynomial(3))
+
+    def test_divmod_against_constant(self):
+        """Tests that Polynomial(*) divmod a Constant leaves no remainder."""
+        p1 = Polynomial(1, 2, 3)
+        p2 = Constant(5)
+
+        p3, remainder = divmod(p1, p2)
+
+        self.assertEqual(p3, Polynomial(1/5, 2/5, 3/5))
+        self.assertEqual(remainder, Polynomial())
+
+    def test_divmod_against_monomial(self):
+        """Tests that Polynomial(*) divmod a larger monomial leaves polynomial."""
+        p1 = Polynomial(1, 2, 3)
+        p2 = Monomial(1, 10)
+
+        p3, remainder = divmod(p1, p2)
+
+        self.assertEqual(p3, Polynomial())
+        self.assertEqual(p1, remainder)
+
 
 if __name__ == '__main__':
     unittest.main()
