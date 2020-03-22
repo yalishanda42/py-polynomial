@@ -263,6 +263,10 @@ class TestPolynomialsOperations(unittest.TestCase):
         self._assert_polynomials_are_the_same(z1, p3)
         self._assert_polynomials_are_the_same(z1, p4)
 
+    # Note that for the division tests, we don't use
+    # _assert_polynomials_are_the_same because an integer divided by an
+    # integer results in a float.
+
     def test_divmod_same_polynomial(self):
         """Test that divmodding two identical polynomials works correctly."""
         p1 = Polynomial(1, 4, 4)
@@ -313,6 +317,23 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEqual(p3, Polynomial())
         self.assertEqual(p1, remainder)
 
+    def test_inplace_floor_div(self):
+        """Test that a //= x behaves as expected."""
+        p1 = Polynomial(1, 4, 4)
+        p2 = Polynomial(1, 2)
+
+        p1 //= p2
+
+        self.assertEqual(p1, Polynomial(1, 2))
+
+    def test_floor_div(self):
+        """Test that a = b // x behaves as expected."""
+        p1 = Polynomial(1, 4, 4)
+        p2 = Polynomial(1, 2)
+
+        p3 = p1 // p2
+
+        self.assertEqual(p3, Polynomial(1, 2))
 
 if __name__ == '__main__':
     unittest.main()
