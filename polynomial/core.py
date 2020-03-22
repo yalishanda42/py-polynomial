@@ -384,7 +384,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     @extract_polynomial
     def __divmod__(self, other):
         """Return divmod(self, other).
-        
+
         The remainder is any term that would have degree < 0.
         """
         if other.degree == -inf:
