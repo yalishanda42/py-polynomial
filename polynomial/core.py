@@ -250,7 +250,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         self == 0 <==> self == Polynomial()
         """
         if other == 0:
-            return bool(self)
+            return not self
 
         return self.degree == other.degree and self.terms == other.terms
 
@@ -260,7 +260,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         self != 0 <==> self != Polynomial()
         """
         if other == 0:
-            return not self
+            return bool(self)
 
         return self.degree != other.degree and self.terms != other.terms
 
@@ -414,7 +414,10 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         while working.degree >= other.degree:
             val = working.a / other.a
             vec.append(val)
+            wd = working.degree
             working -= other * Monomial(val, working.degree - other.degree)
+            if working.degree != -inf:
+                vec.extend([0] * (wd - working.degree - 1))
 
         return Polynomial(vec), working
 
