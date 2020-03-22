@@ -381,6 +381,32 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
             setattr(result, k, deepcopy(v, memo))
         return result
 
+    @extract_polynomial
+    def __divmod__(self, other):
+        """Return divmod(self, other).
+        
+        The remainder is any term that would have degree < 0.
+        """
+        if other.degree == -inf:
+            raise ZeroDivisionError("Can't divide a Polynomial by 0")
+
+        if isinstance(other, Monomial):
+            vec = self._vector[other.degree:]
+            remainder = self._vector[:other.degree]
+            for i, v in enumerate(vec):
+                vec[i] = v / other.a
+            return Polynomial(vec), Polynomial(remainder)
+
+        working = deepcopy(self)
+        vec = []
+
+        while working.degree >= other.degree:
+            val = working.a / other.a
+            vec.append(val)
+            working -= other * Monomial(val, working.degree - other.degree)
+
+        return Polynomial(vec), working
+
 
 class Monomial(Polynomial):
     """Implements a single-variable monomial. A single-term polynomial."""
