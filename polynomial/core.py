@@ -272,9 +272,8 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
             return False
         if len(self._vector) > 1:
             return True
-        if self._vector[0] == 0:
-            return False
-        return True
+
+        return self._vector[0] != 0
 
     @extract_polynomial
     def __add__(self, other):
@@ -285,21 +284,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         if not other:
             return deepcopy(self)
 
-        max_iterations = max(self.degree, other.degree) + 1
-        new_vector = [None] * max_iterations
-
-        for i in range(max_iterations):
-            a, b = 0, 0
-            try:
-                a = self[i]
-            except IndexError:
-                pass
-            try:
-                b = other[i]
-            except IndexError:
-                pass
-            new_vector[-i - 1] = a + b
-        return Polynomial(new_vector)
+        return Polynomial(self.terms + other.terms, from_monomials=True)
 
     @extract_polynomial
     def __radd__(self, other):
@@ -309,8 +294,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     @extract_polynomial
     def __iadd__(self, other):
         """Implement self += other."""
-        result = self + other
-        self.terms = result.terms
+        self.terms += other.terms
         return self
 
     @extract_polynomial
@@ -345,8 +329,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     def __neg__(self):
         """Return -self."""
         self._trim()
-        result_vector = [-k for k in self]
-        return Polynomial(result_vector)
+        return Polynomial([-k for k in self])
 
     @extract_polynomial
     def __sub__(self, other):
