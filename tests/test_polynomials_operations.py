@@ -1,7 +1,12 @@
 """Unit-testing module for testing various polynomial operations."""
 
 import unittest
-from polynomial import Polynomial, ZeroPolynomial, Constant
+from polynomial import (
+    Constant,
+    Monomial,
+    Polynomial,
+    ZeroPolynomial,
+)
 from math import inf
 
 
@@ -289,7 +294,7 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEqual(remainder, Polynomial(3))
 
     def test_divmod_against_constant(self):
-        """Tests that Polynomial(*) divmod a Constant leaves no remainder."""
+        """Test that Polynomial(*) divmod a Constant leaves no remainder."""
         p1 = Polynomial(1, 2, 3)
         p2 = Constant(5)
 
@@ -299,7 +304,7 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEqual(remainder, Polynomial())
 
     def test_divmod_against_monomial(self):
-        """Tests that Polynomial(*) divmod a larger monomial leaves polynomial."""
+        """Test that divmodding by a larger monomial leaves original val."""
         p1 = Polynomial(1, 2, 3)
         p2 = Monomial(1, 10)
 
