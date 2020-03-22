@@ -351,14 +351,14 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertFalse(Polynomial() != 0)
 
     def test_nth_derivative(self):
-        """Test that the derivative of the zero polynomial is the zero poly."""
+        """Test that the nth derivative is correct for various n."""
         p = Polynomial(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
         pd = p
         for i in range(10):
             result = p.nth_derivative(i)
             self._assert_polynomials_are_the_same(pd, result)
             pd = pd.derivative
-        
+
         result = p.nth_derivative(10)
         self._assert_polynomials_are_the_same(pd, result)
 
