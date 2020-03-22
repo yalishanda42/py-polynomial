@@ -250,7 +250,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         self == 0 <==> self == Polynomial()
         """
         if other == 0:
-            return bool(self)
+            return not self
 
         return self.degree == other.degree and self.terms == other.terms
 
@@ -260,7 +260,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         self != 0 <==> self != Polynomial()
         """
         if other == 0:
-            return not self
+            return bool(self)
 
         return self.degree != other.degree and self.terms != other.terms
 
@@ -380,6 +380,46 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         for k, v in self.__dict__.items():
             setattr(result, k, deepcopy(v, memo))
         return result
+
+    @extract_polynomial
+    def __ifloordiv__(self, other):
+        """Return self //= other."""
+        self.terms = divmod(self, other)[0].terms
+        return self
+
+    @extract_polynomial
+    def __floordiv__(self, other):
+        """Return self // other."""
+        return divmod(self, other)[0]
+
+    @extract_polynomial
+    def __divmod__(self, other):
+        """Return divmod(self, other).
+
+        The remainder is any term that would have degree < 0.
+        """
+        if other.degree == -inf:
+            raise ZeroDivisionError("Can't divide a Polynomial by 0")
+
+        if isinstance(other, Monomial):
+            vec = self._vector[other.degree:]
+            remainder = self._vector[:other.degree]
+            for i, v in enumerate(vec):
+                vec[i] = v / other.a
+            return Polynomial(vec[::-1]), Polynomial(remainder[::-1])
+
+        working = deepcopy(self)
+        vec = []
+
+        while working.degree >= other.degree:
+            val = working.a / other.a
+            vec.append(val)
+            wd = working.degree
+            working -= other * Monomial(val, working.degree - other.degree)
+            if working.degree != -inf:
+                vec.extend([0] * (wd - working.degree - 1))
+
+        return Polynomial(vec), working
 
 
 class Monomial(Polynomial):

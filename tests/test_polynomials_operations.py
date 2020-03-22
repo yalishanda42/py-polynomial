@@ -1,7 +1,12 @@
 """Unit-testing module for testing various polynomial operations."""
 
 import unittest
-from polynomial import Polynomial, ZeroPolynomial, Constant
+from polynomial import (
+    Constant,
+    Monomial,
+    Polynomial,
+    ZeroPolynomial,
+)
 from math import inf
 
 
@@ -258,6 +263,92 @@ class TestPolynomialsOperations(unittest.TestCase):
         self._assert_polynomials_are_the_same(z1, p3)
         self._assert_polynomials_are_the_same(z1, p4)
 
+    # Note that for the division tests, we don't use
+    # _assert_polynomials_are_the_same because an integer divided by an
+    # integer results in a float.
+
+    def test_divmod_same_polynomial(self):
+        """Test that divmodding two identical polynomials works correctly."""
+        p1 = Polynomial(1, 4, 4)
+        p2 = Polynomial(1, 4, 4)
+
+        p3, remainder = divmod(p1, p2)
+
+        self.assertEqual(p3, Polynomial(1))
+        self.assertEqual(remainder, Polynomial())
+
+    def test_divmod_no_remainder(self):
+        """Test that divmodding a polynomial with a factor works correctly."""
+        p1 = Polynomial(1, 4, 4)
+        p2 = Polynomial(1, 2)
+
+        p3, remainder = divmod(p1, p2)
+
+        self.assertEqual(p3, Polynomial(1, 2))
+        self.assertEqual(remainder, Polynomial())
+
+    def test_divmod_remainder_exists(self):
+        """Test that divmodding with a non-zero remainder works correctly."""
+        p1 = Polynomial(1, 2, 3)
+        p2 = Polynomial(1, 2)
+
+        p3, remainder = divmod(p1, p2)
+
+        self.assertEqual(p3, Polynomial(1, 0))
+        self.assertEqual(remainder, Polynomial(3))
+
+    def test_divmod_against_constant(self):
+        """Test that Polynomial(*) divmod a Constant leaves no remainder."""
+        p1 = Polynomial(1, 2, 3)
+        p2 = Constant(5)
+
+        p3, remainder = divmod(p1, p2)
+
+        self.assertEqual(p3, Polynomial(1/5, 2/5, 3/5))
+        self.assertEqual(remainder, Polynomial())
+
+    def test_divmod_against_monomial(self):
+        """Test that divmodding by a larger monomial leaves original val."""
+        p1 = Polynomial(1, 2, 3)
+        p2 = Monomial(1, 10)
+
+        p3, remainder = divmod(p1, p2)
+
+        self.assertEqual(p3, Polynomial())
+        self.assertEqual(p1, remainder)
+
+    def test_inplace_floor_div(self):
+        """Test that a //= x behaves as expected."""
+        p1 = Polynomial(1, 4, 4)
+        p2 = Polynomial(1, 2)
+
+        p1 //= p2
+
+        self.assertEqual(p1, Polynomial(1, 2))
+
+    def test_floor_div(self):
+        """Test that a = b // x behaves as expected."""
+        p1 = Polynomial(1, 4, 4)
+        p2 = Polynomial(1, 2)
+
+        p3 = p1 // p2
+
+        self.assertEqual(p3, Polynomial(1, 2))
+
+    def test_eq_neq_opposite_when_equals(self):
+        """Tests that equal polynomials are truly equal."""
+        self.assertEqual(Polynomial(1, 2, 3), Polynomial(1, 2, 3))
+        self.assertFalse(Polynomial(1, 2, 3) != Polynomial(1, 2, 3))
+
+    def test_eq_neq_opposite_when_one_is_zero(self):
+        """Tests that nonzero polynomial != 0"""
+        self.assertNotEqual(Polynomial(1, 2), 0)
+        self.assertFalse(Polynomial(1, 2) == 0)
+
+    def test_eq_neq_opposite_when_both_are_zero(self):
+        """Tests that zero polynomial == 0"""
+        self.assertEquals(Polynomial(), 0)
+        self.assertFalse(Polynomial() != 0)
 
 if __name__ == '__main__':
     unittest.main()
