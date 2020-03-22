@@ -350,5 +350,48 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEquals(Polynomial(), 0)
         self.assertFalse(Polynomial() != 0)
 
+    def test_in_different_polynomials(self):
+        """Tests that a polynomial is in another polynomial."""
+        p1 = Polynomial(1, 2, 3)
+        p2 = Polynomial(6, 5, 4, 1, 2, 3)
+        self.assertIn(p1, p2)
+        self.assertNotIn(p2, p1)
+
+    def test_membership_with_all_legal_types(self):
+        """Test that all valid types are handled in membership check."""
+        terms = [(1, 2), (2, 1), (3, 0)]
+        p = Polynomial(1, 2, 3)
+
+        # Test that single tuples work.
+        self.assertIn(terms, p)
+        self.assertIn(terms[0], p)
+        self.assertIn(terms[1], p)
+        self.assertIn(terms[2], p)
+
+        # Test that partial matching works as well.
+        self.assertIn(terms[:2], p)
+        self.assertIn(terms[1:], p)
+        self.assertIn([terms[0], terms[2]], p)
+
+        # Test that sets and polynomials are correctly handled.
+        self.assertIn(set(terms), p)
+        self.assertIn(Polynomial(terms, from_monomials=True), p)
+
+    def test_membership_false_on_partial_match(self):
+        """Tests that membership is only true if all elements match."""
+        p1 = Polynomial(1, 2, 3)
+        p2 = Polynomial(1, 2, 4)
+
+        self.assertNotIn(p1, p2)
+        self.assertNotIn(p2, p1)
+
+    def test_membership_matches_degrees(self):
+        """Test that degrees don't change matching behaviour."""
+        p1 = Polynomial(1, 2, 3)
+        p2 = Polynomial(1, 2, 3, 0)
+
+        self.assertNotIn(p1, p2)
+        self.assertNotIn(p2, p1)
+
 if __name__ == '__main__':
     unittest.main()
