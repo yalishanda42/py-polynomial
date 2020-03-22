@@ -406,7 +406,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
             remainder = self._vector[:other.degree]
             for i, v in enumerate(vec):
                 vec[i] = v / other.a
-            return Polynomial(vec), Polynomial(remainder)
+            return Polynomial(vec[::-1]), Polynomial(remainder[::-1])
 
         working = deepcopy(self)
         vec = []
