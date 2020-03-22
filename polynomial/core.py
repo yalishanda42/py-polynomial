@@ -428,7 +428,6 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         or a Polynomial. Each tuple should contain two values, the 
         first being the coefficient and the second being the degree.
         """
-
         if isinstance(item, tuple):
             return item in self.terms
         if isinstance(item, list):
