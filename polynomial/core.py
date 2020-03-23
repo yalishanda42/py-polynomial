@@ -435,6 +435,26 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
         return Polynomial(vec), working
 
+    def __contains__(self, item):
+        """Return item in self.
+
+        Requires item to be a tuple, list of tuples, a set of tuples,
+        or a Polynomial. Each tuple should contain two values, the
+        first being the coefficient and the second being the degree.
+        """
+        if isinstance(item, tuple):
+            return item in self.terms
+        if isinstance(item, list):
+            return set(item).issubset(self.terms)
+        if isinstance(item, set):
+            return item.issubset(self.terms)
+        if isinstance(item, Polynomial):
+            return set(item.terms).issubset(self.terms)
+        raise ValueError(
+            "Can not check {0} for membership. A two-tuple, list of "
+            "two-tuples, a set, or a Polynomial are required."
+            .format(type(item).__name__)
+        )
 
 class Monomial(Polynomial):
     """Implements a single-variable monomial. A single-term polynomial."""
