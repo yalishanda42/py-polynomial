@@ -120,26 +120,28 @@ class Polynomial:
         if n == 0:
             return deepcopy(self)
         if n == 1:
-            return Polynomial([i * self[i] for i in range(self.degree, 0, -1)])
+            factors = range(1, self.degree + 1)
+        else:
+            d = self.degree - n + 1
+            factorial_term = n + 1
+            factors = [1] * d
 
-        d = self.degree - n + 1
-        factorial_term = n + 1
-        factors = [1] * d
+            # Calculate n! for base term.
+            for i in range(1, factorial_term):
+                factors[0] *= i
 
-        # Calculate n! for base term.
-        for i in range(1, factorial_term):
-            factors[0] *= i
+            for i in range(1, d):
+                # The last number is n * (n-1) * (n-2) * ... * i
+                # The next number is (n+1) * n * (n-1) * ... * i + 1
+                # To get the next number, we multiply the last number by
+                # n + 1 and divide by i.
+                factors[i] = (factors[i - 1] // i) * factorial_term
+                factorial_term += 1
 
-        for i in range(1, d):
-            # The last number is n * (n-1) * (n-2) * ... * i
-            # The next number is (n+1) * n * (n-1) * ... * i + 1
-            # To get the next number, we multiply the last number by
-            # n + 1 and divide by i.
-            factors[i] = (factors[i - 1] // i) * factorial_term
-            factorial_term += 1
-
-        terms = [c * x for c, x in zip(self, reversed(factors))]
-        return Polynomial(terms)
+        return Polynomial(
+            [c * x for c, x
+                in zip(self, reversed(factors))]
+        )
 
     @property
     def terms(self):
