@@ -350,5 +350,17 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEquals(Polynomial(), 0)
         self.assertFalse(Polynomial() != 0)
 
+    def test_nth_derivative(self):
+        """Test that the nth derivative is correct for various n."""
+        p = Polynomial(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+        pd = p
+        for i in range(10):
+            result = p.nth_derivative(i)
+            self._assert_polynomials_are_the_same(pd, result)
+            pd = pd.derivative
+
+        result = p.nth_derivative(10)
+        self._assert_polynomials_are_the_same(pd, result)
+
 if __name__ == '__main__':
     unittest.main()

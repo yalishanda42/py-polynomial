@@ -104,10 +104,44 @@ class Polynomial:
     @property
     def derivative(self):
         """Return a polynomial object which is the derivative of self."""
-        if not self:
+        return self.nth_derivative()
+
+    def nth_derivative(self, n=1):
+        """Return the polynomial object which is the nth derivative of self."""
+        if not isinstance(n, int) or n < 0:
+            raise ValueError(
+                "n must be a positive integer (got {0})".format(n)
+            )
+
+        if not self or n > self.degree:
+            # Short circuit since the result would be zero.
             return ZeroPolynomial()
 
-        return Polynomial([i * self[i] for i in range(self.degree, 0, -1)])
+        if n == 0:
+            return deepcopy(self)
+        if n == 1:
+            factors = range(1, self.degree + 1)
+        else:
+            d = self.degree - n + 1
+            factorial_term = n + 1
+            factors = [1] * d
+
+            # Calculate n! for base term.
+            for i in range(1, factorial_term):
+                factors[0] *= i
+
+            for i in range(1, d):
+                # The last number is n * (n-1) * (n-2) * ... * i
+                # The next number is (n+1) * n * (n-1) * ... * i + 1
+                # To get the next number, we multiply the last number by
+                # n + 1 and divide by i.
+                factors[i] = (factors[i - 1] // i) * factorial_term
+                factorial_term += 1
+
+        return Polynomial(
+            [c * x for c, x
+                in zip(self, reversed(factors))]
+        )
 
     @property
     def terms(self):
