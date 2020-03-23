@@ -208,8 +208,7 @@ class Polynomial:
     def __getitem__(self, degree):
         """Get the coefficient of the term with the given degree."""
         if isinstance(degree, slice):
-            indices = degree.indices(self.degree + 1)
-            return [self._vector[degree] for degree in range(*indices)]
+            return self._vector[degree]
 
         if degree > self.degree or degree < 0:
             raise IndexError("Attempt to get coefficient of term with \
@@ -219,9 +218,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     def __setitem__(self, degree, new_value):
         """Set the coefficient of the term with the given degree."""
         if isinstance(degree, slice):
-            indices = degree.indices(self.degree + 1)
-            for deg, value in zip(range(*indices), new_value):
-                self._vector[deg] = value
+            self._vector[degree] = new_value
         elif degree > self.degree:
             raise IndexError("Attempt to set coefficient of term with \
 degree {0} of a {1}-degree polynomial".format(degree, self.degree))
