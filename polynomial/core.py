@@ -456,6 +456,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
             .format(type(item).__name__)
         )
 
+
 class Monomial(Polynomial):
     """Implements a single-variable monomial. A single-term polynomial."""
 

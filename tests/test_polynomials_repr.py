@@ -39,6 +39,7 @@ class TestPolynomialsRepr(unittest.TestCase):
         self.assertEqual("ZeroPolynomial()", r)
 
     def test_monomial_repr(self):
+        """Test that repr() output of a Monomial is valid."""
         expect = "Monomial(1, 2)"
 
         r = repr(Monomial(1, 2))
@@ -46,6 +47,7 @@ class TestPolynomialsRepr(unittest.TestCase):
         self.assertEqual(expect, r)
 
     def test_constant_repr(self):
+        """Test that repr() output of a Constant is valid."""
         expect = "Constant(5)"
 
         r = repr(Constant(5))
@@ -53,6 +55,7 @@ class TestPolynomialsRepr(unittest.TestCase):
         self.assertEqual(expect, r)
 
     def test_linear_binomial(self):
+        """Test that repr() output of a LinearBinomial is valid."""
         expect = "LinearBinomial(5, 2)"
 
         r = repr(LinearBinomial(5, 2))
@@ -60,6 +63,7 @@ class TestPolynomialsRepr(unittest.TestCase):
         self.assertEqual(expect, r)
 
     def test_quadratic_trinomial(self):
+        """Test that repr() output of a QuadraticTrinomial is valid."""
         expect = "QuadraticTrinomial(1, -4, 4)"
 
         r = repr(QuadraticTrinomial(1, -4, 4))

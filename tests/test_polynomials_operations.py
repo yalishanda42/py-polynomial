@@ -341,12 +341,12 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertFalse(Polynomial(1, 2, 3) != Polynomial(1, 2, 3))
 
     def test_eq_neq_opposite_when_one_is_zero(self):
-        """Tests that nonzero polynomial != 0"""
+        """Tests that nonzero polynomial != 0."""
         self.assertNotEqual(Polynomial(1, 2), 0)
         self.assertFalse(Polynomial(1, 2) == 0)
 
     def test_eq_neq_opposite_when_both_are_zero(self):
-        """Tests that zero polynomial == 0"""
+        """Tests that zero polynomial == 0."""
         self.assertEquals(Polynomial(), 0)
         self.assertFalse(Polynomial() != 0)
 
