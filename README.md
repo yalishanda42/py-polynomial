@@ -46,7 +46,7 @@ Polynomial(1, 4, 4)
 >>> p
 Polynomial(1, 4, -4)
 
->>> p[1:] = [4, -1]                    # Slicing
+>>> p[1:] = [4, -1]                   # Slicing
 >>> p
 Polynomial(-1, 4, -4)
 
