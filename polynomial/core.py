@@ -407,6 +407,17 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         return divmod(self, other)[0]
 
     @extract_polynomial
+    def __imod__(self, other):
+        """Return self %= other."""
+        self.terms = divmod(self, other)[1].terms
+        return self
+
+    @extract_polynomial
+    def __mod__(self, other):
+        """Return self % other."""
+        return divmod(self, other)[1]
+
+    @extract_polynomial
     def __divmod__(self, other):
         """Return divmod(self, other).
 
