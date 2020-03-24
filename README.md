@@ -46,14 +46,14 @@ Polynomial(1, 4, 4)
 >>> p
 Polynomial(1, 4, -4)
 
->>> p[1:] = [4, 1]                    # Slicing
+>>> p[1:] = [4, -1]                    # Slicing
 >>> p
-Polynomial(-1, 4, 4)
+Polynomial(-1, 4, -4)
 
 >>> (p.a, p.b, p.c)                   # Accessing coefficients by name convention
-(-1, 4, 4)
+(-1, 4, -4)
 
->>> p.a = 1
+>>> p.a, p.c = 1, 4
 >>> (p.A, p.B, p.C)
 (1, 4, 4)
 
