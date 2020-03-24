@@ -19,38 +19,57 @@ Polynomial(1, 2, 3, 4)
 >>> str(a)
 x^3 + 2x^2 + 3x + 4
 
->>> b = P(map(lambda x: 4-x, range(4)))
+>>> b = P([4 - x for x in range(4)])  # Flexible initialization
 >>> str(b)
 4x^3 + 3x^2 + 2x + 1
 
->>> b.derivative
+>>> b.derivative                      # First derivative
 Polynomial(12, 6, 2)
 
 >>> str(b.derivative)
 12x^2 + 6x + 2
 
->>> str(a + b)
+>>> str(b.nth_derivative(2))          # Second or higher derivative
+24x + 6
+
+>>> str(a + b)                        # Addition
 5x^3 + 5x^2 + 5x + 5
 
->>> (a + b).calculate(5)
+>>> (a + b).calculate(5)              # Calculating value for a given x
 780
 
->>> c = P(1, 2) * P(1, 2)
->>> c
+>>> p = P(1, 2) * P(1, 2)             # Multiplication
+>>> p
 Polynomial(1, 4, 4)
 
->>> c[0] = -4
->>> c
+>>> p[0] = -4                         # Accessing coefficient by degree
+>>> p
 Polynomial(1, 4, -4)
 
->>> c.A = -1
->>> c
-Polynomial(-1, 4, -4)
+>>> p[1:] = [4, 1]                    # Slicing
+>>> p
+Polynomial(-1, 4, 4)
 
->>> str(c)
--x^2 + 4x - 4
+>>> (p.a, p.b, p.c)                   # Accessing coefficients by name convention
+(-1, 4, 4)
 
->>> str(P("abc"))
+>>> p.a = 1
+>>> (p.A, p.B, p.C)
+(1, 4, 4)
+
+>>> q, remainder = divmod(p, P(1, 2)) # Division and remainder
+>>> q
+Polynomial(1.0, 2.0)
+>>> remainder
+Polynomial()
+
+>>> p // P(1, 2)
+Polynomial(1.0, 2.0)
+
+>>> P(2, 1) in P(4, 3, 2, 1)          # Check whether it contains given terms
+True
+
+>>> str(P("abc"))                     # Misc
 ax^2 + bx + c
 ```
 
