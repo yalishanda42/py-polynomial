@@ -66,6 +66,9 @@ Polynomial()
 >>> p // P(1, 2)
 Polynomial(1.0, 2.0)
 
+>>> P(1, 2, 3) % P(1, 2)
+Polynomial(3)
+
 >>> P(2, 1) in P(4, 3, 2, 1)          # Check whether it contains given terms
 True
 
