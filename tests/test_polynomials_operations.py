@@ -335,6 +335,26 @@ class TestPolynomialsOperations(unittest.TestCase):
 
         self.assertEqual(p3, Polynomial(1, 2))
 
+    def test_inplace_mod(self):
+        """Test that a %= x behaves as expected."""
+        p1 = Polynomial(1, 2, 3)
+        p2 = Polynomial(1, 2)
+        expect = Polynomial(3)
+
+        p1 %= p2
+
+        self.assertEqual(expect, p1)
+
+    def test_mod(self):
+        """Test that a = b % x behaves as expected."""
+        p1 = Polynomial(1, 2, 3)
+        p2 = Polynomial(1, 2)
+        expect = Polynomial(3)
+
+        p3 = p1 % p2
+
+        self.assertEqual(expect, p3)
+
     def test_eq_neq_opposite_when_equals(self):
         """Tests that equal polynomials are truly equal."""
         self.assertEqual(Polynomial(1, 2, 3), Polynomial(1, 2, 3))
@@ -347,7 +367,7 @@ class TestPolynomialsOperations(unittest.TestCase):
 
     def test_eq_neq_opposite_when_both_are_zero(self):
         """Tests that zero polynomial == 0."""
-        self.assertEquals(Polynomial(), 0)
+        self.assertEqual(Polynomial(), 0)
         self.assertFalse(Polynomial() != 0)
 
     def test_in_different_polynomials(self):
