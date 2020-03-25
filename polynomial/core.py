@@ -698,3 +698,43 @@ class ZeroPolynomial(Constant):
     def __repr__(self):
         """Return repr(self)."""
         return "ZeroPolynomial()"
+
+class Term:
+    """A term defines constants and unknown variables together"""
+
+    __slots__ = ("variables", "number")
+
+    def __init__(self, variables, num):
+        """Create a term with the given variables and constant num."""
+        self.variables = [variables]
+        self.number = num
+
+    def __repr__(self):
+        """Return repr(self)."""
+        return "Term({0!r}, {1!r})".format(self.variables, self.number)
+
+    def __str__(self):
+        """Return str(self)."""
+        from collections import Counter
+        self.variables = sorted(self.variables)
+
+        def to_word(char, counts):
+            if counts == 1:
+                return char
+            return "{0}^{1}".format(char, counts)
+
+        if self.number == 0:
+            return "0"
+
+        _str = "".join([
+            to_word(char, counts) for char, counts
+                in Counter(self.variables).items()]
+        )
+
+        if self.number == 1:
+            return _str
+        if self.number == -1:
+            return "-" + _str
+        if isinstance(self.number, complex):
+            return "({}){}".format(self.number, _str)
+        return str(self.number) + _str
