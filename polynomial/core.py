@@ -154,7 +154,7 @@ class Polynomial:
     def indefinite_integral(self):
         """Return the polynomial object which is the integral of self."""
         if not self:
-            return Polynomial(0)
+            return Polynomial("C")
 
         return Polynomial(
             [c/x for c, x in
