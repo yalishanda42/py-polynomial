@@ -470,7 +470,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         return result % modulo if modulo is not None else result
 
     def __ipow__(self, other):
-        """Returns self **= power"""
+        """Return self **= power."""
         self.terms = (self ** other).terms
         return self
 
@@ -551,6 +551,13 @@ class Monomial(Polynomial):
         if self.degree == other.degree:
             return self.a > other.a
         return self.degree > other.degree
+
+    def __ipow__(self, other):
+        """Return self **= power."""
+        if not self:
+            return self
+
+        return super().__ipow__(other)
 
     def __repr__(self):
         """Return repr(self)."""
