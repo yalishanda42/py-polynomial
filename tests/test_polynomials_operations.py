@@ -425,6 +425,12 @@ class TestPolynomialsOperations(unittest.TestCase):
         result = p.nth_derivative(10)
         self._assert_polynomials_are_the_same(pd, result)
 
+    def test_zero_raises_err(self):
+        """Test that the ZeroPolynomial raises errors when setting values."""
+        z = ZeroPolynomial()
+
+        self.assertRaises(AttributeError, z.__setattr__, "x", 5)
+        self.assertRaises(AttributeError, z.__setitem__, 0, 5)
 
 if __name__ == '__main__':
     unittest.main()
