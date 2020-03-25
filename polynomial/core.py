@@ -569,12 +569,12 @@ class Monomial(Polynomial):
         Assumes self is mutable.
         Does not mutate in the case that self == 0 and other != 1.
         """
-        if not isinstance(power, int):
+        if not isinstance(other, int):
             raise ValueError(
                 "Can't call Monomial() **= x with a non-integer type."
             )
 
-        if power < 0:
+        if other < 0:
             raise ValueError(
                 "Monomial can only be raised to a non-negative power."
             )
@@ -671,7 +671,7 @@ class ZeroPolynomial(Constant):
         if other == 0:
             return Constant(1)
 
-        # This call simplify enforces the restrictions.
+        # This call simplify enforces other >= 0 and is int.
         # Could be moved out into a decorator.
         return super().__ipow__(other)
 
