@@ -644,6 +644,16 @@ class ZeroPolynomial(Constant):
         """Equivalent to Polynomial()."""
         Constant.__init__(self, 0)
 
+    @property
+    def const(self):
+        """Return self.const, which is always 0."""
+        return 0
+
+    @const.setter
+    def const(self, val):
+        """Block self.const being set."""
+        raise AttributeError("Can not set ZeroPolynomial.const")
+
     def __int__(self):
         """Return 0."""
         return 0
