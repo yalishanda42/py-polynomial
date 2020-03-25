@@ -466,7 +466,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
                 result *= (self ** (power // 2)) ** 2
         else:
             if power == 2:
-                result = self
+                result = Polynomial(self)
             else:
                 result = self ** (power // 2)
             result *= result
@@ -556,9 +556,38 @@ class Monomial(Polynomial):
             return self.a > other.a
         return self.degree > other.degree
 
+    def __pow__(self, power, modulo=None):
+        """Return self ** power or pow(self, other, modulo)."""
+        if not isinstance(power, int):
+            raise ValueError(
+                "Can't call Monomial() ** x with a non-integer type."
+            )
+
+        if power < 0:
+            raise ValueError(
+                "Monomial can only be raised to a positive power."
+            )
+
+        if power == 0:
+            result = Constant(1)
+        elif not self:
+            result = self
+        else:
+            if isinstance(self, Constant):
+                result = Constant(self.const ** power)
+            else:
+                result = Monomial(
+                    self.coefficient ** power,
+                    self.degree * power
+                )
+
+        return result % modulo if modulo is not None else result
+
     def __ipow__(self, other):
         """Return self **= power."""
         if not self:
+            if other == 0:
+                return Constant(1)
             return self
 
         return super().__ipow__(other)
