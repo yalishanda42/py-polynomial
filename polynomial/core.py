@@ -454,7 +454,10 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
             )
 
         if power < 0:
-            raise ValueError("Polynomial can only be raised to a positive power.")
+            raise ValueError(
+                "Polynomial can only be raised to a positive power."
+            )
+
         if power == 0:
             result = Constant(1)
         elif power % 2 == 1:
@@ -467,6 +470,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
             else:
                 result = self ** (power // 2)
             result *= result
+
         return result % modulo if modulo is not None else result
 
     def __ipow__(self, other):
