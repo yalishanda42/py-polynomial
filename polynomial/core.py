@@ -561,11 +561,6 @@ class Constant(Monomial):
 
         return super().__mul__(other)
 
-    @extract_polynomial
-    def __rmul__(self, other):
-        """Return other * self."""
-        return self * other
-
     def __int__(self):
         """Return int(self)."""
         return int(self.const)
