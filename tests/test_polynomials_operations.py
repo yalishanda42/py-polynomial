@@ -441,13 +441,14 @@ class TestPolynomialsOperations(unittest.TestCase):
     def test_pow_zero_case(self):
         """Test pow ** 0 returns 1."""
         one = Constant(1)
+        m_one = Monomial(1, 0)
         c = Constant(5)
         m = Monomial(5, 10)
         z = ZeroPolynomial()
         p = Polynomial(1, 2, 3)
 
         self._assert_polynomials_are_the_same(one, c ** 0)
-        self._assert_polynomials_are_the_same(one, m ** 0)
+        self._assert_polynomials_are_the_same(m_one, m ** 0)
         self._assert_polynomials_are_the_same(one, z ** 0)
         self._assert_polynomials_are_the_same(one, p ** 0)
 
@@ -466,14 +467,11 @@ class TestPolynomialsOperations(unittest.TestCase):
     def test_pow_two_case(self):
         """Test pow ** 2."""
         c = Constant(5)
-        ce = Constant(25)
         m = Monomial(5, 10)
         z = ZeroPolynomial()
         p = Polynomial(1, 2, 3)
 
-        # c * c returns a monomial, while the __pow__ version
-        # returns a constant.
-        self._assert_polynomials_are_the_same(ce, c ** 2)
+        self._assert_polynomials_are_the_same(c * c, c ** 2)
         self._assert_polynomials_are_the_same(m * m, m ** 2)
         self._assert_polynomials_are_the_same(z * z, z ** 2)
         self._assert_polynomials_are_the_same(p * p, p ** 2)
