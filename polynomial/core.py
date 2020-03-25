@@ -529,12 +529,7 @@ class Monomial(Polynomial):
             return ZeroPolynomial()
         if isinstance(other, Monomial):
             return Monomial(self.a * other.a, self.degree + other.degree)
-        if isinstance(other, Polynomial):
-            return Polynomial(self) * other  # avoiding stack overflow
-        raise ValueError(
-            "Should not reach this point - got {0}, expected Polynomial."
-            .format(type(other).__name__)
-        )
+        return super().__mul__(other)
 
     @extract_polynomial
     def __rmul__(self, other):
@@ -624,6 +619,17 @@ class Constant(Monomial):
     def const(self, val):
         """Set the constant term."""
         self._vector[0] = val
+
+    @extract_polynomial
+    def __mul__(self, other):
+        """Return self * other."""
+        if not self or not other:
+            return ZeroPolynomial()
+
+        if isinstance(other, Constant):
+            return Constant(self.const * other.const)
+
+        return super().__mul__(other)
 
     def __int__(self):
         """Return int(self)."""
