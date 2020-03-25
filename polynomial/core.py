@@ -581,6 +581,9 @@ class Monomial(Polynomial):
         if other < 0:
             return self >> -other
 
+        if not self:
+            return ZeroPolynomial()
+
         return Monomial(self.coefficient, self.degree + other)
 
     def __ilshift__(self, other):
@@ -593,6 +596,9 @@ class Monomial(Polynomial):
             self >>= -other
             return self
 
+        if not self:
+            return ZeroPolynomial()
+
         return self << other
 
     def __rshift__(self, other):
@@ -602,10 +608,19 @@ class Monomial(Polynomial):
         """
         if other < 0:
             return self << -other
+
         if other > self.degree:
             return ZeroPolynomial()
 
         return Monomial(self.coefficient, self.degree - other)
+
+    def __irshift__(self, other):
+        """Return self >>= other."""
+        if other < 0:
+            self <<= -other
+            return self
+
+        return self >> other
 
     def __repr__(self):
         """Return repr(self)."""
