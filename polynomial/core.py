@@ -244,6 +244,9 @@ class Polynomial:
     @property
     def indefinite_integral(self):
         """Return the polynomial object which is the integral of self."""
+        if not self:
+            return Polynomial(0)
+
         return Polynomial(
             [c/x for c, x in
                 zip(self, range(self.degree + 1, 0, -1))] + ["C"]
