@@ -1374,6 +1374,40 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEqual(_sub([], [(1, 2), (3, 1)]), [(-1, 2), (-3, 1)])
         self.assertEqual(_sub([(1, 2), (3, 1)], []), [(1, 2), (3, 1)])
 
+    def test_integral_zero(self):
+        """Test that the integral of the zero polynomial is 'C'."""
+        p = Polynomial()
+        z = ZeroPolynomial()
+        e = Polynomial("C")
+
+        self._assert_polynomials_are_the_same(e, z.indefinite_integral)
+        self._assert_polynomials_are_the_same(e, p.indefinite_integral)
+
+    def test_integral_constant(self):
+        """Test that integrating against a constant is correct."""
+        p = Polynomial()
+        z = ZeroPolynomial()
+
+        self.assertEqual(0, z.integral(-1000, 1000))
+        self.assertEqual(0, p.integral(-1000, 1000))
+
+        c = Constant(2)
+        p = Polynomial(3)
+        m = Monomial(1.2, 0)
+
+        self.assertEqual(20, c.integral(-5, 5))
+        self.assertEqual(45, p.integral(-10, 5))
+        self.assertAlmostEqual(48, m.integral(-50.5, -10.5))
+
+    def test_general_integral(self):
+        """Test that integration works as expected."""
+        p = Polynomial(3, 2, 1)
+        expected = Polynomial(1.0, 1.0, 1.0, "C")
+        result = p.indefinite_integral
+        self._assert_polynomials_are_the_same(expected, result)
+        self.assertAlmostEqual(3, p.integral(0, 1))
+        self.assertAlmostEqual(4, p.integral(-1, 1))
+
 
 if __name__ == '__main__':
     unittest.main()
