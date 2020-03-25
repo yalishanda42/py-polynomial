@@ -489,5 +489,12 @@ class TestPolynomialsOperations(unittest.TestCase):
             self.assertIsNot(p, res)
             expected *= p
 
+    def test_setting_zero_const_raises(self):
+        z = ZeroPolynomial()
+        self.assertRaises(AttributeError, setattr, z, "const", None)
+
+    def test_zero_const_is_zero(self):
+        self.assertEqual(0, ZeroPolynomial().const)
+
 if __name__ == '__main__':
     unittest.main()
