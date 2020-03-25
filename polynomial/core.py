@@ -595,6 +595,10 @@ class ZeroPolynomial(FrozenPolynomial, Constant):
     _instance = None
 
     def __new__(cls, *args, **kwargs):
+        """Return the singleton ZeroPolynomial instance.
+
+        Instantiates the ZeroPolynomial instance if necessary.
+        """
         if cls._instance is None:
             cls._instance = super().__new__(cls, *args, **kwargs)
 
