@@ -464,9 +464,10 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         Increases the degree of each term by other.
         """
         if other < 0:
-            return self >>= -other
+            self >>= -other
+        else:
+            self._vector = [0] * other + self._vector
 
-        self._vector = [0] * other + self._vector
         return self
 
     def __rshift__(self, other):
@@ -487,10 +488,11 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         Decreases the degree of each term by other.
         """
         if other < 0:
-            return self <<= -other
+            self <<= -other
+        else:
+            self._vector = self._vector[other:]
+            self._trim()
 
-        self._vector = self._vector[other:]
-        self._trim()
         return self
 
     def __contains__(self, item):
@@ -588,7 +590,8 @@ class Monomial(Polynomial):
         guarantee the same type is returned.
         """
         if other < 0:
-            return self >>= -other
+            self >>= -other
+            return self
 
         return self << other
 
