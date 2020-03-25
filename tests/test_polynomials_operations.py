@@ -425,7 +425,7 @@ class TestPolynomialsOperations(unittest.TestCase):
         result = p.nth_derivative(10)
         self._assert_polynomials_are_the_same(pd, result)
 
-   def test_constant_constant_mul_yields_constant(self):
+    def test_constant_constant_mul_yields_constant(self):
         """Test that Constant * Constant yields Constant."""
         c = Constant(5)
         expected = Constant(25)
