@@ -525,11 +525,16 @@ class Monomial(Polynomial):
     @extract_polynomial
     def __mul__(self, other):
         """Return self * other."""
+        if not self or not other:
+            return ZeroPolynomial()
         if isinstance(other, Monomial):
             return Monomial(self.a * other.a, self.degree + other.degree)
         if isinstance(other, Polynomial):
             return Polynomial(self) * other  # avoiding stack overflow
-        return self * other
+        raise ValueError(
+            "Should not reach this point - got {0}, expected Polynomial."
+            .format(type(other).__name__)
+        )
 
     @extract_polynomial
     def __rmul__(self, other):
