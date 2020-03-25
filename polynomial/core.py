@@ -446,6 +446,55 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
         return Polynomial(vec), working
 
+    def __lshift__(self, other):
+        """Return self << other.
+
+        Increases the degree of each term by other.
+        """
+        if other < 0:
+            return self >> -other
+
+        ret = Polynomial(self)
+        ret <<= other
+        return ret
+
+    def __ilshift__(self, other):
+        """Return self <<= other.
+
+        Increases the degree of each term by other.
+        """
+        if other < 0:
+            self >>= -other
+        else:
+            self._vector = [0] * other + self._vector
+
+        return self
+
+    def __rshift__(self, other):
+        """Return self >> other.
+
+        Decreases the degree of each term by other.
+        """
+        if other < 0:
+            return self << -other
+
+        ret = Polynomial(self)
+        ret >>= other
+        return ret
+
+    def __irshift__(self, other):
+        """Return self >>= other.
+
+        Decreases the degree of each term by other.
+        """
+        if other < 0:
+            self <<= -other
+        else:
+            self._vector = self._vector[other:]
+            self._trim()
+
+        return self
+
     def __contains__(self, item):
         """Return item in self.
 
@@ -521,6 +570,55 @@ class Monomial(Polynomial):
         if self.degree == other.degree:
             return self.a > other.a
         return self.degree > other.degree
+
+    def __lshift__(self, other):
+        """Return self << other.
+
+        Returns a Monomial that is self * x^other.
+        """
+        if other < 0:
+            return self >> -other
+
+        if not self:
+            return ZeroPolynomial()
+
+        return Monomial(self.coefficient, self.degree + other)
+
+    def __ilshift__(self, other):
+        """Return self <<= other.
+
+        Returns a Monomial that is self * x^other. Does not
+        guarantee the same type is returned.
+        """
+        if other < 0:
+            self >>= -other
+            return self
+
+        if not self:
+            return ZeroPolynomial()
+
+        return self << other
+
+    def __rshift__(self, other):
+        """Return self >> other.
+
+        Returns a Monomial that is self / x^other.
+        """
+        if other < 0:
+            return self << -other
+
+        if other > self.degree:
+            return ZeroPolynomial()
+
+        return Monomial(self.coefficient, self.degree - other)
+
+    def __irshift__(self, other):
+        """Return self >>= other."""
+        if other < 0:
+            self <<= -other
+            return self
+
+        return self >> other
 
     def __repr__(self):
         """Return repr(self)."""
