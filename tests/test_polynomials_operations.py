@@ -496,6 +496,94 @@ class TestPolynomialsOperations(unittest.TestCase):
         """Test that ZeroPolynomial.const is always 0."""
         self.assertEqual(0, ZeroPolynomial().const)
 
+    def test_shift_zero(self):
+        """Test that any shift by 0 does nothing."""
+        coeffs = [1, 1, 1]
+        p = Polynomial(coeffs)
+        p1 = Polynomial(coeffs)
+        p2 = Polynomial(coeffs)
+        p3 = Polynomial(coeffs)
+        p4 = Polynomial(coeffs)
+
+        p1 <<= 0
+        p2 >>= 0
+        p3 = p3 << 0
+        p4 = p4 >> 0
+
+        self._assert_polynomials_are_the_same(p, p1)
+        self._assert_polynomials_are_the_same(p, p2)
+        self._assert_polynomials_are_the_same(p, p3)
+        self._assert_polynomials_are_the_same(p, p4)
+
+    def test_lshift_general(self):
+        """Test that lshift behaves correctly for various inputs."""
+        coeffs = [1, 3, 5]
+        p = Polynomial(coeffs)
+        p1 = p << 3
+        p2 = p << 1
+        p3 = p << -1
+
+        self._assert_polynomials_are_the_same(Polynomial(1, 3, 5, 0, 0, 0), p1)
+        self._assert_polynomials_are_the_same(Polynomial(1, 3, 5, 0), p2)
+        self._assert_polynomials_are_the_same(Polynomial(1, 3), p3)
+
+    def test_rshift_general(self):
+        """Test that rshift behaves correctly for various inputs."""
+        coeffs = [1, 3, 5]
+        p = Polynomial(coeffs)
+        p1 = p >> 1
+        p2 = p >> 3
+        p3 = p >> -1
+
+        self._assert_polynomials_are_the_same(Polynomial(1, 3), p1)
+        self._assert_polynomials_are_the_same(Polynomial(), p2)
+        self._assert_polynomials_are_the_same(Polynomial(1, 3, 5, 0), p3)
+
+    def test_lshift_monomial(self):
+        """Test that lshift on a monomial behaves correctly."""
+        m1 = Monomial(1, 5) << 10
+        m2 = Monomial(1, 15) << -10
+        m3 = Constant(5) << 10
+
+        self._assert_polynomials_are_the_same(Monomial(1, 15), m1)
+        self._assert_polynomials_are_the_same(Monomial(1, 5), m2)
+        self._assert_polynomials_are_the_same(Monomial(5, 10), m3)
+
+    def test_rshift_monomial(self):
+        """Test that rshift on a monomial behaves correctly."""
+        m1 = Monomial(1, 5) >> -10
+        m2 = Monomial(1, 15) >> 10
+        self._assert_polynomials_are_the_same(Monomial(1, 15), m1)
+        self._assert_polynomials_are_the_same(Monomial(1, 5), m2)
+
+    def test_shift_polynomial_past_end(self):
+        """Test that shifting a polynomial beyond 0 yields 0."""
+        p1 = Polynomial(*range(1, 11)) >> 15
+        p2 = Polynomial(*range(1, 11)) << -15
+
+        self._assert_polynomials_are_the_same(Polynomial(), p1)
+        self._assert_polynomials_are_the_same(Polynomial(), p2)
+
+    def test_shift_monomial_past_end(self):
+        """Test that shifting a Monomial beyond 0 yields 0."""
+        m1 = Monomial(1, 10) >> 15
+        m2 = Monomial(1, 10) << -15
+
+        self._assert_polynomials_are_the_same(ZeroPolynomial(), m1)
+        self._assert_polynomials_are_the_same(ZeroPolynomial(), m2)
+
+    def test_shifting_constant_not_inplace(self):
+        """Test that constant/zero objects are not modified in place."""
+        c = Constant(5)
+        c1 = c
+        c1 <<= 5
+        z = ZeroPolynomial()
+        z1 = z
+        z1 <<= 5
+
+        self.assertIsNot(c, c1)
+        self.assertIsNot(z, z1)
+
     def test_constant_constant_mul_yields_constant(self):
         """Test that Constant * Constant yields Constant."""
         c = Constant(5)
