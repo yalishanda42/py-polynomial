@@ -486,7 +486,7 @@ class TestPolynomialsOperations(unittest.TestCase):
         for i in range(1, 10):
             res = p ** i
             self._assert_polynomials_are_the_same(expected, res)
-            self.assertNotIs(p, res)
+            self.assertIsNot(p, res)
             expected *= p
 
 if __name__ == '__main__':
