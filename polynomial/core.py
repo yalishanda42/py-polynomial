@@ -558,7 +558,7 @@ class Monomial(Polynomial):
 
     def __pow__(self, power, modulo=None):
         """Return self ** power or pow(self, other, modulo)."""
-        result = copy(self)
+        result = deepcopy(self)
         result **= power
 
         return result % modulo if modulo is not None else result
