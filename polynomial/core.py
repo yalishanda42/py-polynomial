@@ -143,6 +143,21 @@ class Polynomial:
                 in zip(self, reversed(factors))]
         )
 
+    def integral(self, a, b):
+        """Return the integral of self from a to b."""
+        res = self.indefinite_integral
+        # Last term of indefinite integral is C.
+        res[0] = 0
+        return res.calculate(b) - res.calculate(a)
+
+    @property
+    def indefinite_integral(self):
+        """Return the polynomial object which is the integral of self."""
+        return Polynomial(
+            [c/x for c, x in
+                zip(self, range(self.degree + 1, 0, -1))] + ["C"]
+            )
+
     @property
     def terms(self):
         """Get the terms of self as a list of tuples in coeff, deg form.
