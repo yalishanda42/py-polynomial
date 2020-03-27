@@ -110,7 +110,7 @@ class Polynomial:
         """Return the polynomial object which is the nth derivative of self."""
         if not isinstance(n, int) or n < 0:
             raise ValueError(
-                "n must be a positive integer (got {0})".format(n)
+                "n must be a non-negative integer (got {0})".format(n)
             )
 
         if not self or n > self.degree:
@@ -446,6 +446,38 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
         return Polynomial(vec), working
 
+    def __pow__(self, power, modulo=None):
+        """Return self ** power or pow(self, other, modulo)."""
+        if not isinstance(power, int):
+            raise ValueError(
+                "Can't call Polynomial() ** x with a non-integer type."
+            )
+
+        if power < 0:
+            raise ValueError(
+                "Polynomial can only be raised to a non-negative power."
+            )
+
+        if power == 0:
+            result = Constant(1)
+        elif power % 2 == 1:
+            result = Polynomial(self)
+            if power > 1:
+                result *= (self ** (power // 2)) ** 2
+        else:
+            if power == 2:
+                result = Polynomial(self)
+            else:
+                result = self ** (power // 2)
+            result *= result
+
+        return result % modulo if modulo is not None else result
+
+    def __ipow__(self, other):
+        """Return self **= power."""
+        self.terms = (self ** other).terms
+        return self
+
     def __lshift__(self, other):
         """Return self << other.
 
@@ -542,6 +574,8 @@ class Monomial(Polynomial):
     @extract_polynomial
     def __mul__(self, other):
         """Return self * other."""
+        if not self or not other:
+            return ZeroPolynomial()
         if isinstance(other, Monomial):
             return Monomial(self.a * other.a, self.degree + other.degree)
         return super().__mul__(other)
@@ -570,6 +604,40 @@ class Monomial(Polynomial):
         if self.degree == other.degree:
             return self.a > other.a
         return self.degree > other.degree
+
+    def __pow__(self, power, modulo=None):
+        """Return self ** power or pow(self, other, modulo)."""
+        result = deepcopy(self)
+        result **= power
+
+        return result % modulo if modulo is not None else result
+
+    def __ipow__(self, other):
+        """Return self **= power.
+
+        Assumes self is mutable.
+        Does not mutate in the case that self == 0 and other != 1.
+        """
+        if not isinstance(other, int):
+            raise ValueError(
+                "Can't call Monomial() **= x with a non-integer type."
+            )
+
+        if other < 0:
+            raise ValueError(
+                "Monomial can only be raised to a non-negative power."
+            )
+
+        if not self:
+            if other != 0:
+                return self
+            terms = [(1, 0)]
+        else:
+            terms = [(self.coefficient ** other, self.degree * other)]
+
+        # No native option exists to modify Monomial degree.
+        self.terms = terms
+        return self
 
     def __lshift__(self, other):
         """Return self << other.
@@ -682,6 +750,28 @@ class ZeroPolynomial(Constant):
     def __init__(self):
         """Equivalent to Polynomial()."""
         Constant.__init__(self, 0)
+
+    @property
+    def const(self):
+        """Return self.const, which is always 0."""
+        return 0
+
+    @const.setter
+    def const(self, val):
+        """Block self.const being set."""
+        raise AttributeError("Can not set ZeroPolynomial.const")
+
+    def __ipow__(self, other):
+        """Return self **= power.
+
+        Does not mutate self.
+        """
+        if other == 0:
+            return Constant(1)
+
+        # This call simplify enforces other >= 0 and is int.
+        # Could be moved out into a decorator.
+        return super().__ipow__(other)
 
     def __int__(self):
         """Return 0."""

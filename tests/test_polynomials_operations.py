@@ -425,6 +425,77 @@ class TestPolynomialsOperations(unittest.TestCase):
         result = p.nth_derivative(10)
         self._assert_polynomials_are_the_same(pd, result)
 
+    def test_pow_monomial(self):
+        """Test power against various Monomial subclasses."""
+        c = Constant(5)
+        ec = Constant(25)
+        m = Monomial(5, 10)
+        em = Monomial(25, 20)
+        z = ZeroPolynomial()
+        ez = ZeroPolynomial()
+
+        self._assert_polynomials_are_the_same(ec, c ** 2)
+        self._assert_polynomials_are_the_same(em, m ** 2)
+        self._assert_polynomials_are_the_same(ez, z ** 2)
+
+    def test_pow_zero_case(self):
+        """Test pow ** 0 returns 1."""
+        one = Constant(1)
+        m_one = Monomial(1, 0)
+        c = Constant(5)
+        m = Monomial(5, 10)
+        z = ZeroPolynomial()
+        p = Polynomial(1, 2, 3)
+
+        self._assert_polynomials_are_the_same(one, c ** 0)
+        self._assert_polynomials_are_the_same(m_one, m ** 0)
+        self._assert_polynomials_are_the_same(one, z ** 0)
+        self._assert_polynomials_are_the_same(one, p ** 0)
+
+    def test_pow_one_case(self):
+        """Tests pow ** 1 returns a copy of the polynomial."""
+        c = Constant(5)
+        m = Monomial(5, 10)
+        z = ZeroPolynomial()
+        p = Polynomial(1, 2, 3)
+
+        self._assert_polynomials_are_the_same(c, c ** 1)
+        self._assert_polynomials_are_the_same(m, m ** 1)
+        self._assert_polynomials_are_the_same(z, z ** 1)
+        self._assert_polynomials_are_the_same(p, p ** 1)
+
+    def test_pow_two_case(self):
+        """Test pow ** 2."""
+        c = Constant(5)
+        m = Monomial(5, 10)
+        z = ZeroPolynomial()
+        p = Polynomial(1, 2, 3)
+
+        self._assert_polynomials_are_the_same(c * c, c ** 2)
+        self._assert_polynomials_are_the_same(m * m, m ** 2)
+        self._assert_polynomials_are_the_same(z * z, z ** 2)
+        self._assert_polynomials_are_the_same(p * p, p ** 2)
+
+    def test_general_pow(self):
+        """Check that pow returns the expected value."""
+        p = Polynomial(1, 2)
+        expected = Polynomial(p)
+
+        for i in range(1, 10):
+            res = p ** i
+            self._assert_polynomials_are_the_same(expected, res)
+            self.assertIsNot(p, res)
+            expected *= p
+
+    def test_setting_zero_const_raises(self):
+        """Test that doing ZeroPolynomial.const = x raises an error."""
+        z = ZeroPolynomial()
+        self.assertRaises(AttributeError, setattr, z, "const", None)
+
+    def test_zero_const_is_zero(self):
+        """Test that ZeroPolynomial.const is always 0."""
+        self.assertEqual(0, ZeroPolynomial().const)
+
     def test_shift_zero(self):
         """Test that any shift by 0 does nothing."""
         coeffs = [1, 1, 1]
