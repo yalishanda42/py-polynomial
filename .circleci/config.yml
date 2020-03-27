@@ -15,14 +15,10 @@ jobs:
             . polynomialenv/bin/activate
             pip3 install codecov
       - run:
-          name: Run Unit Tests
+          name: Run Unit Tests And Upload Code Coverage
           command: |
             . polynomialenv/bin/activate
             python3 -m unittest discover -s tests
-      - run:
-          name: Upload Code Coverage
-          command: |
-            . polynomialenv/bin/activate
             codecov
 
   pydocstyle:  # Check for code documentation style with pydocstyle
