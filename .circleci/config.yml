@@ -21,6 +21,7 @@ jobs:
       - run:
           name: Upload Code Coverage
           command: |
+            . polynomialenv/bin/activate
             codecov
 
   pydocstyle:  # Check for code documentation style with pydocstyle
