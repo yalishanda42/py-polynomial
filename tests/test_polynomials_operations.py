@@ -6,6 +6,8 @@ from polynomial import (
     Monomial,
     Polynomial,
     ZeroPolynomial,
+    LinearBinomial,
+    QuadraticTrinomial,
 )
 from math import inf
 
@@ -590,6 +592,72 @@ class TestPolynomialsOperations(unittest.TestCase):
         expected = Constant(25)
         self._assert_polynomials_are_the_same(expected, c * c)
 
+    def test_positive_discriminant_roots(self):
+        """Test the real and complex roots and factors for D > 0."""
+        qt = QuadraticTrinomial(1, -5, 6)
+        exp_discri = 1
+        exp_real_roots = (3, 2)
+        exp_complex_roots = (3, 2)
+        exp_real_factors = (1, LinearBinomial(1, -3), LinearBinomial(1, -2))
+        exp_complex_factors = exp_real_factors
+
+        res_discri = qt.discriminant
+        res_real_roots = qt.real_roots
+        res_complex_roots = qt.complex_roots
+        res_real_factors = qt.real_factors
+        res_complex_factors = qt.complex_factors
+
+        self.assertEqual(exp_discri, res_discri)
+        self.assertEqual(exp_real_roots, res_real_roots)
+        self.assertEqual(exp_complex_roots, res_complex_roots)
+        self.assertEqual(exp_real_factors, res_real_factors)
+        self.assertEqual(exp_complex_factors, res_complex_factors)
+
+    def test_zero_discriminant_roots(self):
+        """Test the real and complex roots and factors for D == 0."""
+        qt = QuadraticTrinomial(1, 4, 4)
+        exp_discri = 0
+        exp_real_roots = (-2, -2)
+        exp_complex_roots = (-2, -2)
+        exp_real_factors = (1, LinearBinomial(1, 2), LinearBinomial(1, 2))
+        exp_complex_factors = exp_real_factors
+
+        res_discri = qt.discriminant
+        res_real_roots = qt.real_roots
+        res_complex_roots = qt.complex_roots
+        res_real_factors = qt.real_factors
+        res_complex_factors = qt.complex_factors
+
+        self.assertEqual(exp_discri, res_discri)
+        self.assertEqual(exp_real_roots, res_real_roots)
+        self.assertEqual(exp_complex_roots, res_complex_roots)
+        self.assertEqual(exp_real_factors, res_real_factors)
+        self.assertEqual(exp_complex_factors, res_complex_factors)
+
+    def test_negative_discriminant_roots(self):
+        """Test the real and complex roots and factors for D < 0."""
+        qt = QuadraticTrinomial(1, 2, 5)
+        exp_discri = -16
+        exp_real_roots = ()
+        exp_complex_roots = (-1 + 2j, -1 - 2j)
+        exp_real_factors = (qt,)
+        exp_complex_factors = (
+            1,
+            LinearBinomial(1, 1 - 2j),
+            LinearBinomial(1, 1 + 2j)
+        )
+
+        res_discri = qt.discriminant
+        res_real_roots = qt.real_roots
+        res_complex_roots = qt.complex_roots
+        res_real_factors = qt.real_factors
+        res_complex_factors = qt.complex_factors
+
+        self.assertEqual(exp_discri, res_discri)
+        self.assertEqual(exp_real_roots, res_real_roots)
+        self.assertEqual(exp_complex_roots, res_complex_roots)
+        self.assertEqual(exp_real_factors, res_real_factors)
+        self.assertEqual(exp_complex_factors, res_complex_factors)
 
 if __name__ == '__main__':
     unittest.main()
