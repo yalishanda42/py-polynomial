@@ -659,5 +659,6 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEqual(exp_real_factors, res_real_factors)
         self.assertEqual(exp_complex_factors, res_complex_factors)
 
+
 if __name__ == '__main__':
     unittest.main()
