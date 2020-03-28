@@ -13,12 +13,13 @@ jobs:
           command: |
             python3 -m venv polynomialenv
             . polynomialenv/bin/activate
-            pip3 install pytest pytest-cov
+            pip3 install pytest pytest-cov codecov
       - run:
           name: Run Unit Tests And Upload Code Coverage
           command: |
             . polynomialenv/bin/activate
             py.test --cov-report=xml --cov=polynomial tests/
+            codecov
 
   pydocstyle:  # Check for code documentation style with pydocstyle
     docker:
