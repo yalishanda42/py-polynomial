@@ -19,9 +19,9 @@ class Trinomial(Polynomial):
         if not monomial1:
             monomial1 = Monomial(1, 1)
         if not monomial2:
-            monomial2 = Monomial(2, 2)
+            monomial2 = Monomial(1, 2)
         if not monomial3:
-            monomial3 = Monomial(3, 3)
+            monomial3 = Monomial(1, 3)
         args = [monomial1, monomial2, monomial3]
         Polynomial.__init__(self, args, from_monomials=True)
 
@@ -29,7 +29,7 @@ class Trinomial(Polynomial):
 class QuadraticTrinomial(Trinomial):
     """Implements quadratic trinomials and their related methods."""
 
-    def __init__(self, a=1, b=0, c=0):
+    def __init__(self, a=1, b=1, c=1):
         """Initialize the trinomial as ax^2 + bx + c."""
         if a == 0:
             raise ValueError("Object not a quadratic trinomial since a==0!")
