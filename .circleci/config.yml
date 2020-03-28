@@ -18,7 +18,7 @@ jobs:
           name: Run Unit Tests And Upload Code Coverage
           command: |
             . polynomialenv/bin/activate
-            pytest --cov=./
+            py.test --cov-report=xml --cov=myproj tests/
 
   pydocstyle:  # Check for code documentation style with pydocstyle
     docker:
