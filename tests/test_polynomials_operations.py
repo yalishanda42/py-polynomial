@@ -243,7 +243,7 @@ class TestPolynomialsOperations(unittest.TestCase):
         p3 = Polynomial(coeffs)
         p4 = Polynomial(coeffs)
         z0 = ZeroPolynomial()
-        z1 = Polynomial()
+        z1 = Polynomial.zero_instance()
 
         # Multiplication like this can downcast a Polynomial
         # to a ZeroPolynomial.
@@ -257,8 +257,8 @@ class TestPolynomialsOperations(unittest.TestCase):
         p3 *= 0.0
         p4 *= 0j
 
-        self._assert_polynomials_are_the_same(z0, result1)
-        self._assert_polynomials_are_the_same(z0, result2)
+        self._assert_polynomials_are_the_same(z1, result1)
+        self._assert_polynomials_are_the_same(z1, result2)
         self._assert_polynomials_are_the_same(z1, p1)
         self._assert_polynomials_are_the_same(z1, p2)
         self._assert_polynomials_are_the_same(z1, p3)

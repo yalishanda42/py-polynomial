@@ -24,7 +24,6 @@ def extract_polynomial(method):
 
     If casting is not possible or not appropriate, raise a ValueError.
     """
-
     def decorated(self, other):
         if isinstance(other, Polynomial):
             return method(self, other)
@@ -84,6 +83,10 @@ class Polynomial:
             self._vector = iterable[::-1]
             self._trim()
 
+    @classmethod
+    def zero_instance(cls):
+        return Polynomial()
+
     def _trim(self):
         """Trims self._vector to length. Keeps constant terms."""
         if not self._vector or len(self._vector) == 1:
@@ -117,7 +120,7 @@ class Polynomial:
 
         if not self or n > self.degree:
             # Short circuit since the result would be zero.
-            return ZeroPolynomial()
+            return self.zero_instance()
 
         if n == 0:
             return deepcopy(self)
@@ -334,7 +337,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     def __mul__(self, other):
         """Return self * other."""
         if not self or not other:
-            return ZeroPolynomial()
+            return self.zero_instance()
 
         result = Polynomial()
         for s_m in self.monomials:
@@ -482,6 +485,10 @@ class Monomial(Polynomial):
         coeffs = [coefficient] + [0] * degree
         Polynomial.__init__(self, coeffs)
 
+    @classmethod
+    def zero_instance(cls):
+        return Monomial(0, 0)
+
     @property
     def coefficient(self):
         """Return the coefficient of the monomial."""
@@ -544,6 +551,10 @@ class Constant(Monomial):
             return True
         return super().__eq__(other)
 
+    @classmethod
+    def zero_instance(cls):
+        return Constant(0)
+
     @property
     def const(self):
         """Return the constant term."""
@@ -570,45 +581,3 @@ class Constant(Monomial):
         """Return repr(self)."""
         return "Constant({0!r})".format(self.const)
 
-
-class FrozenPolynomial(Freezable, Polynomial):
-    """A polynomial which can not be directly modified."""
-
-    def __init__(self, *args, **kwargs):
-        """Create a polynomial from the args, and then freeze it."""
-        Polynomial.__init__(self, *args, **kwargs)
-        self._trim = self._no_op
-        self._freeze()
-
-    @classmethod
-    def from_polynomial(cls, polynomial):
-        """Create a frozen copy of the polynomial."""
-        return cls(polynomial)
-
-    def _no_op(self):
-        """Do nothing. Used as a dummy method."""
-
-
-class ZeroPolynomial(Freezable, Constant):
-    """The zero polynomial."""
-
-    def __init__(self):
-        """Equivalent to Polynomial()."""
-        Constant.__init__(self, 0)
-        self._freeze()
-
-    def __int__(self):
-        """Return 0."""
-        return 0
-
-    def __float__(self):
-        """Return 0.0."""
-        return 0.0
-
-    def __complex__(self):
-        """Return 0j."""
-        return 0j
-
-    def __repr__(self):
-        """Return repr(self)."""
-        return "ZeroPolynomial()"
