@@ -231,7 +231,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         else:
             self._vector[degree] = new_value
-            self._trim()
+        self._trim()
 
     def __iter__(self):
         """Return the coefficients from the highest degree to the lowest."""
