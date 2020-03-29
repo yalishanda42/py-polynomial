@@ -31,11 +31,11 @@ class ZeroPolynomial(Freezable, Constant):
     def __init__(self):
         """Equivalent to Polynomial()."""
         Constant.__init__(self, 0)
-        self.ajsdakj = "HELLO"
         self._freeze()
 
     @classmethod
     def zero_instance(cls):
+        """Return an instance of the ZeroPolynomial."""
         return ZeroPolynomial()
 
     def __int__(self):

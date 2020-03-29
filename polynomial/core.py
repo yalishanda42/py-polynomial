@@ -85,6 +85,7 @@ class Polynomial:
 
     @classmethod
     def zero_instance(cls):
+        """Return the Polynomial which is 0."""
         return Polynomial()
 
     def _trim(self):
@@ -487,6 +488,7 @@ class Monomial(Polynomial):
 
     @classmethod
     def zero_instance(cls):
+        """Return the Monomial which is 0."""
         return Monomial(0, 0)
 
     @property
@@ -553,6 +555,7 @@ class Constant(Monomial):
 
     @classmethod
     def zero_instance(cls):
+        """Return the constant which is 0."""
         return Constant(0)
 
     @property
@@ -580,4 +583,3 @@ class Constant(Monomial):
     def __repr__(self):
         """Return repr(self)."""
         return "Constant({0!r})".format(self.const)
-
