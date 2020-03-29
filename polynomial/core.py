@@ -213,7 +213,8 @@ class Polynomial:
         """Get the coefficient of the term with the given degree."""
         if isinstance(degree, slice):
             return self._vector[degree]
-
+        if degree == -inf and self.degree == -inf:
+            return 0
         if degree > self.degree or degree < 0:
             raise IndexError("Attempt to get coefficient of term with \
 degree {0} of a {1}-degree polynomial".format(degree, self.degree))
@@ -223,12 +224,14 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         """Set the coefficient of the term with the given degree."""
         if isinstance(degree, slice):
             self._vector[degree] = new_value
+        if degree == -inf and self.degree == -inf:
+            self._vector = [new_value]
         elif degree > self.degree:
             raise IndexError("Attempt to set coefficient of term with \
 degree {0} of a {1}-degree polynomial".format(degree, self.degree))
-
-        self._vector[degree] = new_value
-        self._trim()
+        else:
+            self._vector[degree] = new_value
+            self._trim()
 
     def __iter__(self):
         """Return the coefficients from the highest degree to the lowest."""
@@ -584,7 +587,7 @@ class Monomial(Polynomial):
     def __mul__(self, other):
         """Return self * other."""
         if not self or not other:
-            return ZeroPolynomial()
+            return self.zero_instance()
         if isinstance(other, Monomial):
             return Monomial(self.a * other.a, self.degree + other.degree)
         return super().__mul__(other)
@@ -657,7 +660,7 @@ class Monomial(Polynomial):
             return self >> -other
 
         if not self:
-            return ZeroPolynomial()
+            return self.zero_instance()
 
         return Monomial(self.coefficient, self.degree + other)
 
@@ -672,7 +675,7 @@ class Monomial(Polynomial):
             return self
 
         if not self:
-            return ZeroPolynomial()
+            return self.zero_instance()
 
         return self << other
 
@@ -685,7 +688,7 @@ class Monomial(Polynomial):
             return self << -other
 
         if other > self.degree:
-            return ZeroPolynomial()
+            return self.zero_instance()
 
         return Monomial(self.coefficient, self.degree - other)
 
@@ -734,7 +737,7 @@ class Constant(Monomial):
     def __mul__(self, other):
         """Return self * other."""
         if not self or not other:
-            return ZeroPolynomial()
+            return self.zero_instance()
 
         if isinstance(other, Constant):
             return Constant(self.const * other.const)
@@ -756,3 +759,4 @@ class Constant(Monomial):
     def __repr__(self):
         """Return repr(self)."""
         return "Constant({0!r})".format(self.const)
+

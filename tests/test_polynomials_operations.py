@@ -585,9 +585,10 @@ class TestPolynomialsOperations(unittest.TestCase):
         """Test that shifting a Monomial beyond 0 yields 0."""
         m1 = Monomial(1, 10) >> 15
         m2 = Monomial(1, 10) << -15
+        m0 = Monomial.zero_instance()
 
-        self._assert_polynomials_are_the_same(ZeroPolynomial(), m1)
-        self._assert_polynomials_are_the_same(ZeroPolynomial(), m2)
+        self._assert_polynomials_are_the_same(m0, m1)
+        self._assert_polynomials_are_the_same(m0, m2)
 
     def test_shifting_constant_not_inplace(self):
         """Test that constant/zero objects are not modified in place."""
@@ -673,6 +674,19 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEqual(exp_complex_roots, res_complex_roots)
         self.assertEqual(exp_real_factors, res_real_factors)
         self.assertEqual(exp_complex_factors, res_complex_factors)
+
+    def test_zero_instance_mutable(self):
+        """Test that zero instances are mutable"""
+        zp = Polynomial.zero_instance()
+        zm = Monomial.zero_instance()
+        zc = Constant.zero_instance()
+        zp.a = 1
+        zm.a = 1
+        zc.const = 1
+
+        self._assert_polynomials_are_the_same(Polynomial(1), zp)
+        self._assert_polynomials_are_the_same(Monomial(1, 0), zm)
+        self._assert_polynomials_are_the_same(Constant(1), zc)
 
 
 if __name__ == '__main__':
