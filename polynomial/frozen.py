@@ -1,7 +1,11 @@
+"""This module defines the Freezable interface."""
+
+
 class Freezable:
     """An interface for freezable objects."""
 
     def _freeze(self):
+        """Prevent further modification of self."""
         if not self._is_frozen():
             self._frozen = True
 

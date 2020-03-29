@@ -4,7 +4,7 @@ from copy import deepcopy
 from math import inf
 import string
 
-from polynomial import Freezable
+from polynomial.frozen import Freezable
 
 
 def accepts_many_arguments(function):
