@@ -14,6 +14,7 @@ class FrozenPolynomial(Freezable, Polynomial):
 
     @classmethod
     def zero_instance(cls):
+        """Return the zero FrozenPolynomial."""
         return FrozenPolynomial()
 
     @classmethod
