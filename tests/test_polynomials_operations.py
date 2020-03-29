@@ -7,6 +7,8 @@ from polynomial import (
     Monomial,
     Polynomial,
     ZeroPolynomial,
+    LinearBinomial,
+    QuadraticTrinomial,
 )
 from math import inf
 
@@ -439,6 +441,238 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertRaises(AttributeError, f.__setattr__, "x", 5)
         self.assertRaises(AttributeError, f.__setitem__, 0, 5)
         self.assertRaises(AttributeError, f.__imul__, 5)
+
+    def test_pow_monomial(self):
+        """Test power against various Monomial subclasses."""
+        c = Constant(5)
+        ec = Constant(25)
+        m = Monomial(5, 10)
+        em = Monomial(25, 20)
+        z = ZeroPolynomial()
+        ez = ZeroPolynomial()
+
+        self._assert_polynomials_are_the_same(ec, c ** 2)
+        self._assert_polynomials_are_the_same(em, m ** 2)
+        self._assert_polynomials_are_the_same(ez, z ** 2)
+
+    def test_pow_zero_case(self):
+        """Test pow ** 0 returns 1."""
+        one = Constant(1)
+        m_one = Monomial(1, 0)
+        c = Constant(5)
+        m = Monomial(5, 10)
+        z = ZeroPolynomial()
+        p = Polynomial(1, 2, 3)
+
+        self._assert_polynomials_are_the_same(one, c ** 0)
+        self._assert_polynomials_are_the_same(m_one, m ** 0)
+        self._assert_polynomials_are_the_same(one, z ** 0)
+        self._assert_polynomials_are_the_same(one, p ** 0)
+
+    def test_pow_one_case(self):
+        """Tests pow ** 1 returns a copy of the polynomial."""
+        c = Constant(5)
+        m = Monomial(5, 10)
+        z = ZeroPolynomial()
+        p = Polynomial(1, 2, 3)
+
+        self._assert_polynomials_are_the_same(c, c ** 1)
+        self._assert_polynomials_are_the_same(m, m ** 1)
+        self._assert_polynomials_are_the_same(z, z ** 1)
+        self._assert_polynomials_are_the_same(p, p ** 1)
+
+    def test_pow_two_case(self):
+        """Test pow ** 2."""
+        c = Constant(5)
+        m = Monomial(5, 10)
+        z = ZeroPolynomial()
+        p = Polynomial(1, 2, 3)
+
+        self._assert_polynomials_are_the_same(c * c, c ** 2)
+        self._assert_polynomials_are_the_same(m * m, m ** 2)
+        self._assert_polynomials_are_the_same(z * z, z ** 2)
+        self._assert_polynomials_are_the_same(p * p, p ** 2)
+
+    def test_general_pow(self):
+        """Check that pow returns the expected value."""
+        p = Polynomial(1, 2)
+        expected = Polynomial(p)
+
+        for i in range(1, 10):
+            res = p ** i
+            self._assert_polynomials_are_the_same(expected, res)
+            self.assertIsNot(p, res)
+            expected *= p
+
+    def test_setting_zero_const_raises(self):
+        """Test that doing ZeroPolynomial.const = x raises an error."""
+        z = ZeroPolynomial()
+        self.assertRaises(AttributeError, setattr, z, "const", None)
+
+    def test_zero_const_is_zero(self):
+        """Test that ZeroPolynomial.const is always 0."""
+        self.assertEqual(0, ZeroPolynomial().const)
+
+    def test_shift_zero(self):
+        """Test that any shift by 0 does nothing."""
+        coeffs = [1, 1, 1]
+        p = Polynomial(coeffs)
+        p1 = Polynomial(coeffs)
+        p2 = Polynomial(coeffs)
+        p3 = Polynomial(coeffs)
+        p4 = Polynomial(coeffs)
+
+        p1 <<= 0
+        p2 >>= 0
+        p3 = p3 << 0
+        p4 = p4 >> 0
+
+        self._assert_polynomials_are_the_same(p, p1)
+        self._assert_polynomials_are_the_same(p, p2)
+        self._assert_polynomials_are_the_same(p, p3)
+        self._assert_polynomials_are_the_same(p, p4)
+
+    def test_lshift_general(self):
+        """Test that lshift behaves correctly for various inputs."""
+        coeffs = [1, 3, 5]
+        p = Polynomial(coeffs)
+        p1 = p << 3
+        p2 = p << 1
+        p3 = p << -1
+
+        self._assert_polynomials_are_the_same(Polynomial(1, 3, 5, 0, 0, 0), p1)
+        self._assert_polynomials_are_the_same(Polynomial(1, 3, 5, 0), p2)
+        self._assert_polynomials_are_the_same(Polynomial(1, 3), p3)
+
+    def test_rshift_general(self):
+        """Test that rshift behaves correctly for various inputs."""
+        coeffs = [1, 3, 5]
+        p = Polynomial(coeffs)
+        p1 = p >> 1
+        p2 = p >> 3
+        p3 = p >> -1
+
+        self._assert_polynomials_are_the_same(Polynomial(1, 3), p1)
+        self._assert_polynomials_are_the_same(Polynomial(), p2)
+        self._assert_polynomials_are_the_same(Polynomial(1, 3, 5, 0), p3)
+
+    def test_lshift_monomial(self):
+        """Test that lshift on a monomial behaves correctly."""
+        m1 = Monomial(1, 5) << 10
+        m2 = Monomial(1, 15) << -10
+        m3 = Constant(5) << 10
+
+        self._assert_polynomials_are_the_same(Monomial(1, 15), m1)
+        self._assert_polynomials_are_the_same(Monomial(1, 5), m2)
+        self._assert_polynomials_are_the_same(Monomial(5, 10), m3)
+
+    def test_rshift_monomial(self):
+        """Test that rshift on a monomial behaves correctly."""
+        m1 = Monomial(1, 5) >> -10
+        m2 = Monomial(1, 15) >> 10
+        self._assert_polynomials_are_the_same(Monomial(1, 15), m1)
+        self._assert_polynomials_are_the_same(Monomial(1, 5), m2)
+
+    def test_shift_polynomial_past_end(self):
+        """Test that shifting a polynomial beyond 0 yields 0."""
+        p1 = Polynomial(*range(1, 11)) >> 15
+        p2 = Polynomial(*range(1, 11)) << -15
+
+        self._assert_polynomials_are_the_same(Polynomial(), p1)
+        self._assert_polynomials_are_the_same(Polynomial(), p2)
+
+    def test_shift_monomial_past_end(self):
+        """Test that shifting a Monomial beyond 0 yields 0."""
+        m1 = Monomial(1, 10) >> 15
+        m2 = Monomial(1, 10) << -15
+
+        self._assert_polynomials_are_the_same(ZeroPolynomial(), m1)
+        self._assert_polynomials_are_the_same(ZeroPolynomial(), m2)
+
+    def test_shifting_constant_not_inplace(self):
+        """Test that constant/zero objects are not modified in place."""
+        c = Constant(5)
+        c1 = c
+        c1 <<= 5
+        z = ZeroPolynomial()
+        z1 = z
+        z1 <<= 5
+
+        self.assertIsNot(c, c1)
+        self.assertIsNot(z, z1)
+
+    def test_constant_constant_mul_yields_constant(self):
+        """Test that Constant * Constant yields Constant."""
+        c = Constant(5)
+        expected = Constant(25)
+        self._assert_polynomials_are_the_same(expected, c * c)
+
+    def test_positive_discriminant_roots(self):
+        """Test the real and complex roots and factors for D > 0."""
+        qt = QuadraticTrinomial(1, -5, 6)
+        exp_discri = 1
+        exp_real_roots = (3, 2)
+        exp_complex_roots = (3, 2)
+        exp_real_factors = (1, LinearBinomial(1, -3), LinearBinomial(1, -2))
+        exp_complex_factors = exp_real_factors
+
+        res_discri = qt.discriminant
+        res_real_roots = qt.real_roots
+        res_complex_roots = qt.complex_roots
+        res_real_factors = qt.real_factors
+        res_complex_factors = qt.complex_factors
+
+        self.assertEqual(exp_discri, res_discri)
+        self.assertEqual(exp_real_roots, res_real_roots)
+        self.assertEqual(exp_complex_roots, res_complex_roots)
+        self.assertEqual(exp_real_factors, res_real_factors)
+        self.assertEqual(exp_complex_factors, res_complex_factors)
+
+    def test_zero_discriminant_roots(self):
+        """Test the real and complex roots and factors for D == 0."""
+        qt = QuadraticTrinomial(1, 4, 4)
+        exp_discri = 0
+        exp_real_roots = (-2, -2)
+        exp_complex_roots = (-2, -2)
+        exp_real_factors = (1, LinearBinomial(1, 2), LinearBinomial(1, 2))
+        exp_complex_factors = exp_real_factors
+
+        res_discri = qt.discriminant
+        res_real_roots = qt.real_roots
+        res_complex_roots = qt.complex_roots
+        res_real_factors = qt.real_factors
+        res_complex_factors = qt.complex_factors
+
+        self.assertEqual(exp_discri, res_discri)
+        self.assertEqual(exp_real_roots, res_real_roots)
+        self.assertEqual(exp_complex_roots, res_complex_roots)
+        self.assertEqual(exp_real_factors, res_real_factors)
+        self.assertEqual(exp_complex_factors, res_complex_factors)
+
+    def test_negative_discriminant_roots(self):
+        """Test the real and complex roots and factors for D < 0."""
+        qt = QuadraticTrinomial(1, 2, 5)
+        exp_discri = -16
+        exp_real_roots = ()
+        exp_complex_roots = (-1 + 2j, -1 - 2j)
+        exp_real_factors = (qt,)
+        exp_complex_factors = (
+            1,
+            LinearBinomial(1, 1 - 2j),
+            LinearBinomial(1, 1 + 2j)
+        )
+
+        res_discri = qt.discriminant
+        res_real_roots = qt.real_roots
+        res_complex_roots = qt.complex_roots
+        res_real_factors = qt.real_factors
+        res_complex_factors = qt.complex_factors
+
+        self.assertEqual(exp_discri, res_discri)
+        self.assertEqual(exp_real_roots, res_real_roots)
+        self.assertEqual(exp_complex_roots, res_complex_roots)
+        self.assertEqual(exp_real_factors, res_real_factors)
+        self.assertEqual(exp_complex_factors, res_complex_factors)
 
 
 if __name__ == '__main__':
