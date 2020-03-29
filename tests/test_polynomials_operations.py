@@ -258,7 +258,7 @@ class TestPolynomialsOperations(unittest.TestCase):
         p4 *= 0j
 
         self._assert_polynomials_are_the_same(z1, result1)
-        self._assert_polynomials_are_the_same(z1, result2)
+        self._assert_polynomials_are_the_same(z0, result2)
         self._assert_polynomials_are_the_same(z1, p1)
         self._assert_polynomials_are_the_same(z1, p2)
         self._assert_polynomials_are_the_same(z1, p3)

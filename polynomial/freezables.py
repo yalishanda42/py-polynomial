@@ -1,6 +1,6 @@
 """Includes all classes which can be frozen."""
 from polynomial.frozen import Freezable
-from polynomial.core import Constant, Polynomial
+from polynomial.core import Constant, Polynomial, extract_polynomial
 
 
 class FrozenPolynomial(Freezable, Polynomial):
@@ -38,6 +38,14 @@ class ZeroPolynomial(Freezable, Constant):
     def zero_instance(cls):
         """Return an instance of the ZeroPolynomial."""
         return ZeroPolynomial()
+
+    @extract_polynomial
+    def __mul__(self, other):
+        return self.zero_instance()
+
+    @extract_polynomial
+    def __rmul__(self, other):
+        return other.zero_instance()
 
     def __int__(self):
         """Return 0."""

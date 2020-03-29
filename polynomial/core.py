@@ -4,8 +4,6 @@ from copy import deepcopy
 from math import inf
 import string
 
-from polynomial.frozen import Freezable
-
 
 def accepts_many_arguments(function):
     """Make a function that accepts an iterable handle many *args."""
