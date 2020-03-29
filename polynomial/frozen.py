@@ -64,6 +64,11 @@ class ZeroPolynomial(Freezable, Constant):
         """Return an instance of the ZeroPolynomial."""
         return ZeroPolynomial()
 
+    @property
+    def const(self):
+        """Return self.const, which is always 0."""
+        return 0
+
     @extract_polynomial
     def __mul__(self, other):
         """Return self * other."""
@@ -73,6 +78,18 @@ class ZeroPolynomial(Freezable, Constant):
     def __rmul__(self, other):
         """Return other * self."""
         return other.zero_instance()
+
+    def __ipow__(self, other):
+        """Return self **= power.
+
+        Does not mutate self.
+        """
+        if other == 0:
+            return Constant(1)
+
+        # This call simplify enforces other >= 0 and is int.
+        # Could be moved out into a decorator.
+        return super().__ipow__(other)
 
     def __int__(self):
         """Return 0."""
