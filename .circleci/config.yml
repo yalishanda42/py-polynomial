@@ -9,9 +9,22 @@ jobs:
     steps:
       - checkout
       - run:
-          name: run tests
+          name: Install Dependencies
           command: |
-            python3 -m unittest discover -s tests
+            python3 -m venv polynomialenv
+            . polynomialenv/bin/activate
+            pip3 install pytest pytest-cov codecov
+      - run:
+          name: Run Unit Tests
+          command: |
+            . polynomialenv/bin/activate
+            py.test --cov-report=xml --cov=polynomial tests/
+      - run:
+          name: Upload Code Coverage
+          command: |
+            . polynomialenv/bin/activate
+            codecov
+
   pydocstyle:  # Check for code documentation style with pydocstyle
     docker:
       - image: circleci/python:3.7
@@ -21,13 +34,13 @@ jobs:
     steps:
       - checkout
       - run:
-          name: install dependencies
+          name: Install Dependencies
           command: |
             python3 -m venv polynomialenv
             . polynomialenv/bin/activate
             pip3 install pydocstyle
       - run:
-          name: run tests
+          name: Check Documentation Style
           command: |
             . polynomialenv/bin/activate
             python3 -m pydocstyle polynomial

@@ -1,10 +1,12 @@
 # Python package defining single-variable polynomials and operations with them
 
-[![allexks](https://circleci.com/gh/allexks/py-polynomial.svg?style=svg)](https://circleci.com/gh/allexks/py-polynomial)
-[![CodeFactor](https://www.codefactor.io/repository/github/allexks/py-polynomial/badge)](https://www.codefactor.io/repository/github/allexks/py-polynomial)
 [![PyPI version](https://badge.fury.io/py/py-polynomial.svg)](https://badge.fury.io/py/py-polynomial)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/py-polynomial.svg)](https://pypi.python.org/pypi/py-polynomial/)
 [![PyPI license](https://img.shields.io/pypi/l/py-polynomial.svg)](https://pypi.python.org/pypi/py-polynomial/)
+
+[![allexks](https://circleci.com/gh/allexks/py-polynomial.svg?style=svg)](https://circleci.com/gh/allexks/py-polynomial)
+[![CodeFactor](https://www.codefactor.io/repository/github/allexks/py-polynomial/badge)](https://www.codefactor.io/repository/github/allexks/py-polynomial)
+[![codecov](https://codecov.io/gh/allexks/py-polynomial/branch/master/graph/badge.svg)](https://codecov.io/gh/allexks/py-polynomial)
 
 ## Installation
 `pip3 install py-polynomial`

@@ -15,14 +15,14 @@ class Binomial(Polynomial):
         if not monomial1:
             monomial1 = Monomial(1, 1)
         if not monomial2:
-            monomial2 = Monomial(2, 2)
+            monomial2 = Monomial(1, 2)
         Polynomial.__init__(self, [monomial1, monomial2], from_monomials=True)
 
 
 class LinearBinomial(Binomial):
     """Implements linear binomials and their methods."""
 
-    def __init__(self, a=1, b=0):
+    def __init__(self, a=1, b=1):
         """Initialize the binomial as ax + b."""
         if a == 0:
             raise ValueError("object not a linear binomial since a = 0!")
