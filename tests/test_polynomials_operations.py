@@ -3,6 +3,7 @@
 import unittest
 from polynomial import (
     Constant,
+    FrozenPolynomial,
     Monomial,
     Polynomial,
     ZeroPolynomial,
@@ -431,6 +432,13 @@ class TestPolynomialsOperations(unittest.TestCase):
 
         self.assertRaises(AttributeError, z.__setattr__, "x", 5)
         self.assertRaises(AttributeError, z.__setitem__, 0, 5)
+
+    def test_frozen_polynomial_raises_err(self):
+        f = FrozenPolynomial(1, 2, 3)
+
+        self.assertRaises(AttributeError, f.__setattr__, "x", 5)
+        self.assertRaises(AttributeError, f.__setitem__, 0, 5)
+        self.assertRaises(AttributeError, f.__imul__, 5)
 
 
 if __name__ == '__main__':

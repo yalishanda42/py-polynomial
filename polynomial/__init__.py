@@ -4,6 +4,6 @@
 """
 
 from .frozen import Freezable
-from .core import Polynomial, Monomial, Constant, ZeroPolynomial
+from .core import Constant, FrozenPolynomial, Monomial, Polynomial, ZeroPolynomial
 from .binomial import Binomial, LinearBinomial
 from .trinomial import Trinomial, QuadraticTrinomial

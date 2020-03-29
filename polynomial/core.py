@@ -586,8 +586,7 @@ class FrozenPolynomial(Freezable, Polynomial):
         return cls(polynomial)
 
     def _no_op(self):
-        """Does nothing. Used as a dummy method."""
-        pass
+        """Do nothing. Used as a dummy method."""
 
 
 class ZeroPolynomial(Freezable, Constant):
