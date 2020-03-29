@@ -41,10 +41,12 @@ class ZeroPolynomial(Freezable, Constant):
 
     @extract_polynomial
     def __mul__(self, other):
+        """Return self * other."""
         return self.zero_instance()
 
     @extract_polynomial
     def __rmul__(self, other):
+        """Return other * self."""
         return other.zero_instance()
 
     def __int__(self):
