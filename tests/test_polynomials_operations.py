@@ -432,5 +432,6 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertRaises(AttributeError, z.__setattr__, "x", 5)
         self.assertRaises(AttributeError, z.__setitem__, 0, 5)
 
+
 if __name__ == '__main__':
     unittest.main()

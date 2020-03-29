@@ -4,6 +4,8 @@ from copy import deepcopy
 from math import inf
 import string
 
+from polynomial import Freezable
+
 
 def accepts_many_arguments(function):
     """Make a function that accepts an iterable handle many *args."""
@@ -468,27 +470,6 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         )
 
 
-class FrozenPolynomial:
-    """Implements a Polynomial which can freeze its attributes."""
-
-    def _is_frozen(self):
-        """Return true if self is frozen."""
-        return getattr(self, "_frozen", False)
-
-    def __setitem__(self, key, value):
-        """Implement self[x] = y; disallows setting item if frozen."""
-        if self._is_frozen():
-            raise AttributeError()
-        super().__setitem__(self, key, value)
-
-    def __setattr__(self, key, value):
-        """Implement self.x; disallows setting attr if frozen."""
-        if not self._is_frozen():
-            object.__setattr__(self, key, value)
-        else:
-            raise AttributeError("Can not modify frozen object.")
-
-
 class Monomial(Polynomial):
     """Implements a single-variable monomial. A single-term polynomial."""
 
@@ -590,28 +571,32 @@ class Constant(Monomial):
         return "Constant({0!r})".format(self.const)
 
 
-class ZeroPolynomial(FrozenPolynomial, Constant):
+class FrozenPolynomial(Freezable, Polynomial):
+    """A polynomial which can not be directly modified."""
+
+    def __init__(self, *args, **kwargs):
+        """Create a polynomial from the args, and then freeze it."""
+        Polynomial.__init__(self, *args, **kwargs)
+        self._trim = self._no_op
+        self._freeze()
+
+    @classmethod
+    def from_polynomial(cls, polynomial):
+        """Create a frozen copy of the polynomial."""
+        return cls(polynomial)
+
+    def _no_op(self):
+        """Does nothing. Used as a dummy method."""
+        pass
+
+
+class ZeroPolynomial(Freezable, Constant):
     """The zero polynomial."""
-
-    _instance = None
-
-    def __new__(cls, *args, **kwargs):
-        """Return the singleton ZeroPolynomial instance.
-
-        Instantiates the ZeroPolynomial instance if necessary.
-        """
-        if cls._instance is None:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-
-        return cls._instance
 
     def __init__(self):
         """Equivalent to Polynomial()."""
-        if self._is_frozen():
-            return
-
         Constant.__init__(self, 0)
-        self._frozen = True
+        self._freeze()
 
     def __int__(self):
         """Return 0."""
