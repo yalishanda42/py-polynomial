@@ -91,18 +91,6 @@ class ZeroPolynomial(Freezable, Constant):
         # Could be moved out into a decorator.
         return super().__ipow__(other)
 
-    def __int__(self):
-        """Return 0."""
-        return 0
-
-    def __float__(self):
-        """Return 0.0."""
-        return 0.0
-
-    def __complex__(self):
-        """Return 0j."""
-        return 0j
-
     def __repr__(self):
         """Return repr(self)."""
         return "ZeroPolynomial()"

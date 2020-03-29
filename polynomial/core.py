@@ -759,4 +759,3 @@ class Constant(Monomial):
     def __repr__(self):
         """Return repr(self)."""
         return "Constant({0!r})".format(self.const)
-

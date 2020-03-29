@@ -688,6 +688,12 @@ class TestPolynomialsOperations(unittest.TestCase):
         self._assert_polynomials_are_the_same(Monomial(1, 0), zm)
         self._assert_polynomials_are_the_same(Constant(1), zc)
 
+    def test_zero_polynomial_conversions(self):
+        """Test that converting ZeroPolynomial to numerical types yields 0."""
+        z = ZeroPolynomial()
+        self.assertEqual(0, int(z))
+        self.assertEqual(0.0, float(z))
+        self.assertEqual(0j, complex(z))
 
 if __name__ == '__main__':
     unittest.main()
