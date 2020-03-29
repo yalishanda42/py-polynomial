@@ -8,6 +8,6 @@ from .core import (
     Monomial,
     Polynomial,
 )
-from .freezables import FrozenPolynomial, ZeroPolynomial
+from .frozen import FrozenPolynomial, ZeroPolynomial
 from .binomial import Binomial, LinearBinomial
 from .trinomial import Trinomial, QuadraticTrinomial
