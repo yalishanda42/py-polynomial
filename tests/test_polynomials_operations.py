@@ -251,16 +251,15 @@ class TestPolynomialsOperations(unittest.TestCase):
         # to a ZeroPolynomial.
         result1 = p1 * z0
         result2 = z0 * p2
-        # Inplace multiplication will not downcast a Polynomial.
-        # It may however upcast to a Polynomial if the operands
-        # are not compatible.
+        # Inplace multiplication will return the most permissive
+        # class (eg. which allows the most mutability).
         p1 *= z0
         p2 *= 0
         p3 *= 0.0
         p4 *= 0j
 
         self._assert_polynomials_are_the_same(z1, result1)
-        self._assert_polynomials_are_the_same(z0, result2)
+        self._assert_polynomials_are_the_same(z1, result2)
         self._assert_polynomials_are_the_same(z1, p1)
         self._assert_polynomials_are_the_same(z1, p2)
         self._assert_polynomials_are_the_same(z1, p3)
@@ -694,6 +693,55 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEqual(0, int(z))
         self.assertEqual(0.0, float(z))
         self.assertEqual(0j, complex(z))
+
+    def test_mul_zero_poly_returns_most_permissive(self):
+        """Test that multiplication never reduces permissiveness."""
+        a = Polynomial(1, 2, 3) * ZeroPolynomial()
+        b = Monomial(1, 2) * ZeroPolynomial()
+        c = Constant(5) * ZeroPolynomial()
+        d = ZeroPolynomial() * ZeroPolynomial()
+
+        self.assertIsInstance(a, Polynomial)
+        self.assertIsInstance(b, Monomial)
+        self.assertIsInstance(c, Constant)
+        self.assertIsInstance(d, ZeroPolynomial)
+
+    def test_mul_constant_returns_most_permissive(self):
+        """Test that multiplication never reduces permissiveness."""
+        a = Polynomial(1, 2, 3) * Constant(3)
+        b = Monomial(1, 3) * Constant(1)
+        c = Constant(5) * Constant(4)
+        d = ZeroPolynomial() * Constant(2)
+
+        self.assertIsInstance(a, Polynomial)
+        self.assertIsInstance(b, Monomial)
+        self.assertIsInstance(c, Constant)
+        self.assertIsInstance(d, Constant)
+
+    def test_mul_monomial_returns_most_permissive(self):
+        """Test that multiplication never reduces permissiveness."""
+        a = Polynomial(1, 2, 3) * Monomial(3, 4)
+        b = Monomial(1, 3) * Monomial(5, 1)
+        c = Constant(5) * Monomial(6, 8)
+        d = ZeroPolynomial() * Monomial(9, 2)
+
+        self.assertIsInstance(a, Polynomial)
+        self.assertIsInstance(b, Monomial)
+        self.assertIsInstance(c, Monomial)
+        self.assertIsInstance(d, Monomial)
+
+    def test_mul_polymial_returns_most_permissive(self):
+        """Test that multiplication never reduces permissiveness."""
+        a = Polynomial(1, 2, 3) * Polynomial(3, 4, 1)
+        b = Monomial(1, 3) * Polynomial(5, 1, 2)
+        c = Constant(5) * Polynomial(6, 8, 1)
+        d = ZeroPolynomial() * Polynomial(9, 2, 7)
+
+        self.assertIsInstance(a, Polynomial)
+        self.assertIsInstance(b, Polynomial)
+        self.assertIsInstance(c, Polynomial)
+        self.assertIsInstance(d, Polynomial)
+
 
 if __name__ == '__main__':
     unittest.main()

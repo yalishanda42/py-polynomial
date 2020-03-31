@@ -17,7 +17,7 @@ class Freezable:
     def __setitem__(self, key, value):
         """Implement self[x] = y; disallows setting item if frozen."""
         if self._is_frozen():
-            raise AttributeError()
+            raise AttributeError("Can not modify items of frozen object.")
         super().__setitem__(self, key, value)
 
     def __setattr__(self, key, value):
@@ -34,6 +34,7 @@ class FrozenPolynomial(Freezable, Polynomial):
     def __init__(self, *args, **kwargs):
         """Create a polynomial from the args, and then freeze it."""
         Polynomial.__init__(self, *args, **kwargs)
+        self._vector = tuple(self._vector)
         self._trim = self._no_op
         self._freeze()
 
@@ -57,6 +58,7 @@ class ZeroPolynomial(Freezable, Constant):
     def __init__(self):
         """Equivalent to Polynomial()."""
         Constant.__init__(self, 0)
+        self._vector = tuple(self._vector)
         self._freeze()
 
     @classmethod
@@ -72,7 +74,7 @@ class ZeroPolynomial(Freezable, Constant):
     @extract_polynomial
     def __mul__(self, other):
         """Return self * other."""
-        return self.zero_instance()
+        return other.zero_instance()
 
     @extract_polynomial
     def __rmul__(self, other):
