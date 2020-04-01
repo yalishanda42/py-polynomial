@@ -567,7 +567,6 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
 class DegreeError(Exception):
     """Raised when a Polynomial's degree changes."""
-    pass
 
 
 def check_degree_constant(fallback):
@@ -576,6 +575,15 @@ def check_degree_constant(fallback):
     If self.degree changes, we upcast to a Polynomial and try
     calling the provided fallback method.
     """
+    def retry_op(self, orig_terms, *args, **kwargs):
+        """Resets self and tries rerunning on Polynomial."""
+        try:
+            self.terms = orig_terms
+        except DegreeError:
+            pass
+        self = Polynomial(self.terms, from_monomials=True)
+        return fallback(self, *args, **kwargs)
+
     def wrapper(method):
         def decorator(self, *args, **kwargs):
             orig_terms = self.terms
@@ -585,32 +593,29 @@ def check_degree_constant(fallback):
             # If we directly modify self.terms
             except DegreeError:
                 # May have tried to set a bad degree.
-                try:
-                    self.terms = orig_terms
-                except DegreeError:
-                    pass
-                self = Polynomial(self.terms, from_monomials=True)
-                return fallback(self, *args, **kwargs)
+                return retry_op(self, orig_terms, *args, **kwargs)
+
+            if self.degree == orig_degree:
+                return ret_val
 
             # If we do something that modifies self._vector
-            if self.degree != orig_degree:
-                if ret_val is self:
-                    ret_val = Polynomial(self.terms, from_monomials=True)
-                    self.terms = orig_terms
-                else:
-                    raise ValueError("Entered impossible state.")
-            return ret_val
+            if ret_val is not self:
+                # Changing self is undefined behaviour at this point.
+                raise ValueError("Can not recover from error.")
+            return retry_op(self, orig_terms, *args, **kwargs)
         return decorator
     return wrapper
 
 
 def setattr_decorator(_setattr):
-    """A decorator to allow __setattr__ to behave as expected."""
+    """Decorate __setattr__ to handle single variable modifications."""
     check_deg_setattr = check_degree_constant(Polynomial.__setattr__)(_setattr)
 
     def decorator(self, name, new_value):
         if len(name) == 1:
             return check_deg_setattr(self, name, new_value)
+        # Trying to intercept self._vector = []
+        # leads to a mutual recursion.
         return _setattr(self, name, new_value)
 
     return decorator
@@ -630,11 +635,8 @@ class FixedDegreePolynomial(Polynomial):
         for attr in dir(cls):
             val = getattr(cls, attr)
             if callable(val) and attr in cls.self_mutating:
-                try:
-                    poly_attr = getattr(Polynomial, attr)
-                    setattr(cls, attr, check_degree_constant(poly_attr)(val))
-                except AttributeError:
-                    pass
+                poly_attr = getattr(Polynomial, attr)
+                setattr(cls, attr, check_degree_constant(poly_attr)(val))
 
         cls.__setattr__ = setattr_decorator(cls.__setattr__)
         cls.__init__ = __init__
