@@ -576,7 +576,7 @@ def check_degree_constant(fallback):
     calling the provided fallback method.
     """
     def retry_op(self, orig_terms, *args, **kwargs):
-        """Resets self and tries rerunning on Polynomial."""
+        """Reset self and retry operation on Polynomial."""
         try:
             self.terms = orig_terms
         except DegreeError:
