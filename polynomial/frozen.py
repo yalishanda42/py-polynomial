@@ -18,7 +18,7 @@ class Freezable:
         """Implement self[x] = y; disallows setting item if frozen."""
         if self._is_frozen():
             raise AttributeError("Can not modify items of frozen object.")
-        super().__setitem__(self, key, value)
+        super().__setitem__(key, value)
 
     def __setattr__(self, key, value):
         """Implement self.x; disallows setting attr if frozen."""
@@ -50,6 +50,10 @@ class FrozenPolynomial(Freezable, Polynomial):
 
     def _no_op(self):
         """Do nothing. Used as a dummy method."""
+
+    def __repr__(self):
+        """Return repr(self)."""
+        return "Frozen" + super().__repr__()
 
 
 class ZeroPolynomial(Freezable, Constant):

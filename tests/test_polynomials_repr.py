@@ -8,6 +8,7 @@ from polynomial import (
     Polynomial,
     QuadraticTrinomial,
     ZeroPolynomial,
+    FrozenPolynomial
 )
 
 
@@ -68,6 +69,13 @@ class TestPolynomialsRepr(unittest.TestCase):
 
         r = repr(QuadraticTrinomial(1, -4, 4))
 
+        self.assertEqual(expect, r)
+
+    def test_frozen(self):
+        """Test that repr() output of a FrozenPolynomial is valid."""
+
+        expect = "FrozenPolynomial(1, 2, 3)"
+        r = repr(FrozenPolynomial(1, 2, 3))
         self.assertEqual(expect, r)
 
 
