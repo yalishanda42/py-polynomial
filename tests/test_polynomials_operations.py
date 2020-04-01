@@ -848,12 +848,14 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertRaises(AttributeError, b.__setattr__, "a", 1)
 
     def test_trinomial_addition(self):
-        """Test that QuadraticTrinomial does not change except on degree change."""
+        """Test that QuadraticTrinomial behaves as expected."""
         a = QuadraticTrinomial(1, 2, 3)
         b = LinearBinomial(1, 2)
         e = QuadraticTrinomial(1, 3, 5)
         ep = Polynomial(e)
+        # a + b is safe because a's degree does not change.
         self._assert_polynomials_are_the_same(e, a + b)
+        # b + a requires a cast since b's degree does change.
         self._assert_polynomials_are_the_same(ep, b + a)
 
 

@@ -1,6 +1,11 @@
 """This module defines different types of trinomials and their methods."""
 
-from polynomial.core import Polynomial, Monomial, Constant, FixedDegreePolynomial
+from polynomial.core import (
+    Polynomial,
+    Monomial,
+    Constant,
+    FixedDegreePolynomial
+)
 from math import sqrt
 
 

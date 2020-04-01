@@ -570,7 +570,11 @@ class DegreeError(Exception):
 
 
 def check_degree_constant(fallback):
-    """Return the same class as was passed in if possible, otherwise a Polynomial."""
+    """Check if the degree has changed and respond accordingly.
+
+    If self.degree changes, we upcast to a Polynomial and try
+    calling the provided fallback method.
+    """
     def wrapper(method):
         def decorator(self, *args, **kwargs):
             orig_terms = self.terms
@@ -601,6 +605,7 @@ def check_degree_constant(fallback):
 
 def setattr_decorator(_setattr):
     check_deg_setattr = check_degree_constant(Polynomial.__setattr__)(_setattr)
+
     def decorator(self, name, new_value):
         if len(name) == 1:
             return check_deg_setattr(self, name, new_value)
@@ -609,16 +614,12 @@ def setattr_decorator(_setattr):
     return decorator
 
 
-class FixedDegreePolynomial:
+class FixedDegreePolynomial(Polynomial):
     """This Polynomial must maintain its degree."""
 
-    skip_methods = (
-        "__class__", "__init__", "__new__",
-        "__init_subclass__", "__iter__",
-        "degree", "__getattribute__", "__setattribute__",
-        "__setattr__", "__setitem__", "__getattr__", "__bool__", "_trim",
-        "__dir__", "__str__", "__repr__", "terms", "__getitem__",
-        "zero_instance"
+    self_mutating = (
+        "__iadd__", "__isub__", "__imul__", "__imod__",
+        "__ifloordiv__", "__ipow__", "__ilshift__", "__irshift__",
     )
 
     def __init_subclass__(cls, **kwargs):
@@ -626,7 +627,7 @@ class FixedDegreePolynomial:
         __init__ = cls.__init__
         for attr in dir(cls):
             val = getattr(cls, attr)
-            if callable(val) and attr not in cls.skip_methods:
+            if callable(val) and attr in cls.self_mutating:
                 try:
                     poly_attr = getattr(Polynomial, attr)
                     setattr(cls, attr, check_degree_constant(poly_attr)(val))
@@ -641,9 +642,7 @@ class FixedDegreePolynomial:
     def terms(self):
         """Return self.terms."""
         # This method is needed in order to define terms.setter
-        s_d = self.degree
-        return [(coeff, s_d - deg) for deg, coeff
-                in enumerate(self) if coeff != 0]
+        return super().terms
 
     @terms.setter
     def terms(self, terms):
@@ -659,7 +658,9 @@ class FixedDegreePolynomial:
             self._vector[deg] += coeff
         self._trim()
         if self.degree != curr_deg:
-            raise DegreeError("self.terms received terms which changed its degree.")
+            raise DegreeError(
+                "self.terms received terms which changed its degree."
+            )
 
 
 class Monomial(Polynomial):
