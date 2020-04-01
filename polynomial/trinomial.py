@@ -89,7 +89,7 @@ class QuadraticTrinomial(Trinomial, FixedDegreePolynomial):
     def real_factors(self):
         """Return (self,) if D < 0. Return the factors otherwise."""
         if self.discriminant < 0:
-            return self,
+            return (self,)
         return self.complex_factors
 
     def __repr__(self):

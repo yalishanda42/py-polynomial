@@ -566,6 +566,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
 
 class DegreeError(Exception):
+    """Raised when a Polynomial's degree changes."""
     pass
 
 
@@ -604,6 +605,7 @@ def check_degree_constant(fallback):
 
 
 def setattr_decorator(_setattr):
+    """A decorator to allow __setattr__ to behave as expected."""
     check_deg_setattr = check_degree_constant(Polynomial.__setattr__)(_setattr)
 
     def decorator(self, name, new_value):
@@ -623,7 +625,7 @@ class FixedDegreePolynomial(Polynomial):
     )
 
     def __init_subclass__(cls, **kwargs):
-        """Init a subclass of self. """
+        """Init a subclass of self."""
         __init__ = cls.__init__
         for attr in dir(cls):
             val = getattr(cls, attr)
