@@ -631,7 +631,6 @@ class FixedDegreePolynomial(Polynomial):
 
     def __init_subclass__(cls, **kwargs):
         """Init a subclass of self."""
-        __init__ = cls.__init__
         for attr in dir(cls):
             val = getattr(cls, attr)
             if callable(val) and attr in cls.self_mutating:
@@ -639,7 +638,6 @@ class FixedDegreePolynomial(Polynomial):
                 setattr(cls, attr, check_degree_constant(poly_attr)(val))
 
         cls.__setattr__ = setattr_decorator(cls.__setattr__)
-        cls.__init__ = __init__
         cls.terms = FixedDegreePolynomial.terms
 
     @property

@@ -93,7 +93,7 @@ class ZeroPolynomial(Freezable, Constant):
         if other == 0:
             return Constant(1)
 
-        # This call simplify enforces other >= 0 and is int.
+        # This call simply enforces other >= 0 and is int.
         # Could be moved out into a decorator.
         return super().__ipow__(other)
 
