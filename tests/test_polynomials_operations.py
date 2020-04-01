@@ -795,6 +795,18 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertIsInstance(c * zz, Constant)
         self.assertIsInstance(d * zz, ZeroPolynomial)
 
+    def test_frozen_vector_immutable(self):
+        """Test that frozen vectors can't be modified."""
+        a = ZeroPolynomial()
+        b = FrozenPolynomial(1, 2, 3)
+
+        def set_item(obj, index, value):
+            obj[index] = value
+
+        possible_errs = (TypeError, AttributeError)
+        self.assertRaises(possible_errs, set_item, a._vector, 0, 5)
+        self.assertRaises(possible_errs, set_item, b._vector, 0, 5)
+
 
 if __name__ == '__main__':
     unittest.main()
