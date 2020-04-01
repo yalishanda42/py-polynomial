@@ -25,6 +25,17 @@ class Trinomial(Polynomial):
         args = [monomial1, monomial2, monomial3]
         Polynomial.__init__(self, args, from_monomials=True)
 
+    def __repr__(self):
+        """Return repr(self)."""
+        terms = self.terms
+        assert len(terms) == 3
+        t1, t2, t3 = terms
+        return (
+            "Trinomial(Monomial({0}, {1}), Monomial({2}, {3}), "
+            "Monomial({4}, {5}))"
+            .format(*t1, *t2, *t3)
+        )
+
 
 class QuadraticTrinomial(Trinomial):
     """Implements quadratic trinomials and their related methods."""

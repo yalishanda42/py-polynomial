@@ -18,6 +18,16 @@ class Binomial(Polynomial):
             monomial2 = Monomial(1, 2)
         Polynomial.__init__(self, [monomial1, monomial2], from_monomials=True)
 
+    def __repr__(self):
+        """Return repr(self)."""
+        terms = self.terms
+        assert len(terms) == 2
+        t1, t2 = terms
+        return (
+            "Binomial(Monomial({0}, {1}), Monomial({2}, {3}))"
+            .format(*t1, *t2)
+        )
+
 
 class LinearBinomial(Binomial):
     """Implements linear binomials and their methods."""
