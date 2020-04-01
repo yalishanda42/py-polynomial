@@ -329,7 +329,9 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         if not other:
             return deepcopy(self)
 
-        return Polynomial(self.terms + other.terms, from_monomials=True)
+        ret_val = deepcopy(self)
+        ret_val += other
+        return ret_val
 
     @extract_polynomial
     def __radd__(self, other):
@@ -563,6 +565,103 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         )
 
 
+class DegreeError(Exception):
+    pass
+
+
+def check_degree_constant(fallback):
+    """Return the same class as was passed in if possible, otherwise a Polynomial."""
+    def wrapper(method):
+        def decorator(self, *args, **kwargs):
+            orig_terms = self.terms
+            orig_degree = self.degree
+            try:
+                ret_val = method(self, *args, **kwargs)
+            # If we directly modify self.terms
+            except DegreeError:
+                # May have tried to set a bad degree.
+                try:
+                    self.terms = orig_terms
+                except DegreeError:
+                    pass
+                self = Polynomial(self.terms, from_monomials=True)
+                return fallback(self, *args, **kwargs)
+
+            # If we do something that modifies self._vector
+            if self.degree != orig_degree:
+                if ret_val is self:
+                    ret_val = Polynomial(self.terms, from_monomials=True)
+                    self.terms = orig_terms
+                else:
+                    raise ValueError("Entered impossible state.")
+            return ret_val
+        return decorator
+    return wrapper
+
+
+def setattr_decorator(_setattr):
+    check_deg_setattr = check_degree_constant(Polynomial.__setattr__)(_setattr)
+    def decorator(self, name, new_value):
+        if len(name) == 1:
+            return check_deg_setattr(self, name, new_value)
+        return _setattr(self, name, new_value)
+
+    return decorator
+
+
+class FixedDegreePolynomial:
+    """This Polynomial must maintain its degree."""
+
+    skip_methods = (
+        "__class__", "__init__", "__new__",
+        "__init_subclass__", "__iter__",
+        "degree", "__getattribute__", "__setattribute__",
+        "__setattr__", "__setitem__", "__getattr__", "__bool__", "_trim",
+        "__dir__", "__str__", "__repr__", "terms", "__getitem__",
+        "zero_instance"
+    )
+
+    def __init_subclass__(cls, **kwargs):
+        """Init a subclass of self. """
+        __init__ = cls.__init__
+        for attr in dir(cls):
+            val = getattr(cls, attr)
+            if callable(val) and attr not in cls.skip_methods:
+                try:
+                    poly_attr = getattr(Polynomial, attr)
+                    setattr(cls, attr, check_degree_constant(poly_attr)(val))
+                except AttributeError:
+                    pass
+
+        cls.__setattr__ = setattr_decorator(cls.__setattr__)
+        cls.__init__ = __init__
+        cls.terms = FixedDegreePolynomial.terms
+
+    @property
+    def terms(self):
+        """Return self.terms."""
+        # This method is needed in order to define terms.setter
+        s_d = self.degree
+        return [(coeff, s_d - deg) for deg, coeff
+                in enumerate(self) if coeff != 0]
+
+    @terms.setter
+    def terms(self, terms):
+        """Set self.terms. Raises DegreeError if self.degree changes."""
+        curr_deg = self.degree
+        if not terms:
+            self._vector = [0]
+            return
+
+        max_deg = max(terms, key=lambda x: x[1])[1] + 1
+        self._vector = [0] * max_deg
+        for coeff, deg in terms:
+            self._vector[deg] += coeff
+        self._trim()
+        if self.degree != curr_deg:
+            raise DegreeError("self.terms received terms which changed its degree.")
+
+
 class Monomial(Polynomial):
     """Implements a single-variable monomial. A single-term polynomial."""
 
@@ -716,7 +815,7 @@ class Monomial(Polynomial):
         return "Monomial({0!r}, {1!r})".format(self.a, self.degree)
 
 
-class Constant(Monomial):
+class Constant(Monomial, FixedDegreePolynomial):
     """Implements constants as monomials of degree 0."""
 
     def __init__(self, const=1):

@@ -1,6 +1,6 @@
 """This module defines different types of binomials and their methods."""
 
-from polynomial.core import Polynomial, Monomial
+from polynomial.core import Polynomial, Monomial, FixedDegreePolynomial
 
 
 class Binomial(Polynomial):
@@ -29,7 +29,7 @@ class Binomial(Polynomial):
         )
 
 
-class LinearBinomial(Binomial):
+class LinearBinomial(Binomial, FixedDegreePolynomial):
     """Implements linear binomials and their methods."""
 
     def __init__(self, a=1, b=1):

@@ -1,6 +1,6 @@
 """This module defines different types of trinomials and their methods."""
 
-from polynomial.core import Polynomial, Monomial, Constant
+from polynomial.core import Polynomial, Monomial, Constant, FixedDegreePolynomial
 from math import sqrt
 
 
@@ -37,7 +37,7 @@ class Trinomial(Polynomial):
         )
 
 
-class QuadraticTrinomial(Trinomial):
+class QuadraticTrinomial(Trinomial, FixedDegreePolynomial):
     """Implements quadratic trinomials and their related methods."""
 
     def __init__(self, a=1, b=1, c=1):
@@ -84,7 +84,7 @@ class QuadraticTrinomial(Trinomial):
     def real_factors(self):
         """Return (self,) if D < 0. Return the factors otherwise."""
         if self.discriminant < 0:
-            return (self,)
+            return self,
         return self.complex_factors
 
     def __repr__(self):

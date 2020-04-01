@@ -847,6 +847,15 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertRaises(AttributeError, b.__setitem__, 0, 1)
         self.assertRaises(AttributeError, b.__setattr__, "a", 1)
 
+    def test_trinomial_addition(self):
+        """Test that QuadraticTrinomial does not change except on degree change."""
+        a = QuadraticTrinomial(1, 2, 3)
+        b = LinearBinomial(1, 2)
+        e = QuadraticTrinomial(1, 3, 5)
+        ep = Polynomial(e)
+        self._assert_polynomials_are_the_same(e, a + b)
+        self._assert_polynomials_are_the_same(ep, b + a)
+
 
 if __name__ == '__main__':
     unittest.main()
