@@ -22,7 +22,6 @@ def extract_polynomial(method):
 
     If casting is not possible or not appropriate, raise a ValueError.
     """
-
     def decorated(self, other):
         if isinstance(other, Polynomial):
             return method(self, other)
@@ -39,6 +38,13 @@ def extract_polynomial(method):
         )
 
     return decorated
+
+
+def get_more_permissive_class(a, b):
+    """Return the most permissive class of a, b."""
+    a_cls = a.__class__
+    b_cls = b.__class__
+    return b_cls if issubclass(a_cls, b_cls) else a_cls
 
 
 class Polynomial:
@@ -82,6 +88,11 @@ class Polynomial:
             self._vector = iterable[::-1]
             self._trim()
 
+    @classmethod
+    def zero_instance(cls):
+        """Return the Polynomial which is 0."""
+        return Polynomial()
+
     def _trim(self):
         """Trims self._vector to length. Keeps constant terms."""
         if not self._vector or len(self._vector) == 1:
@@ -115,7 +126,7 @@ class Polynomial:
 
         if not self or n > self.degree:
             # Short circuit since the result would be zero.
-            return ZeroPolynomial()
+            return self.zero_instance()
 
         if n == 0:
             return deepcopy(self)
@@ -209,7 +220,8 @@ class Polynomial:
         """Get the coefficient of the term with the given degree."""
         if isinstance(degree, slice):
             return self._vector[degree]
-
+        if degree == -inf and self.degree == -inf:
+            return 0
         if degree > self.degree or degree < 0:
             raise IndexError("Attempt to get coefficient of term with \
 degree {0} of a {1}-degree polynomial".format(degree, self.degree))
@@ -219,11 +231,13 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         """Set the coefficient of the term with the given degree."""
         if isinstance(degree, slice):
             self._vector[degree] = new_value
+        if degree == -inf and self.degree == -inf:
+            self._vector = [new_value]
         elif degree > self.degree:
             raise IndexError("Attempt to set coefficient of term with \
 degree {0} of a {1}-degree polynomial".format(degree, self.degree))
-
-        self._vector[degree] = new_value
+        else:
+            self._vector[degree] = new_value
         self._trim()
 
     def __iter__(self):
@@ -332,7 +346,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     def __mul__(self, other):
         """Return self * other."""
         if not self or not other:
-            return ZeroPolynomial()
+            return get_more_permissive_class(self, other).zero_instance()
 
         result = Polynomial()
         for s_m in self.monomials:
@@ -561,6 +575,11 @@ class Monomial(Polynomial):
         coeffs = [coefficient] + [0] * degree
         Polynomial.__init__(self, coeffs)
 
+    @classmethod
+    def zero_instance(cls):
+        """Return the Monomial which is 0."""
+        return Monomial(0, 0)
+
     @property
     def coefficient(self):
         """Return the coefficient of the monomial."""
@@ -573,16 +592,20 @@ class Monomial(Polynomial):
 
     @extract_polynomial
     def __mul__(self, other):
-        """Return self * other."""
-        if not self or not other:
-            return ZeroPolynomial()
-        if isinstance(other, Monomial):
+        """Return self * other.
+
+        The class which is more permissive will be returned.
+        """
+        if isinstance(other, Monomial) and self and other:
             return Monomial(self.a * other.a, self.degree + other.degree)
         return super().__mul__(other)
 
     @extract_polynomial
     def __rmul__(self, other):
-        """Return other * self."""
+        """Return other * self.
+
+        The class which is more permissive will be returned.
+        """
         return self * other
 
     def __lt__(self, other):
@@ -648,7 +671,7 @@ class Monomial(Polynomial):
             return self >> -other
 
         if not self:
-            return ZeroPolynomial()
+            return self.zero_instance()
 
         return Monomial(self.coefficient, self.degree + other)
 
@@ -663,7 +686,7 @@ class Monomial(Polynomial):
             return self
 
         if not self:
-            return ZeroPolynomial()
+            return self.zero_instance()
 
         return self << other
 
@@ -676,7 +699,7 @@ class Monomial(Polynomial):
             return self << -other
 
         if other > self.degree:
-            return ZeroPolynomial()
+            return self.zero_instance()
 
         return Monomial(self.coefficient, self.degree - other)
 
@@ -706,6 +729,11 @@ class Constant(Monomial):
             return True
         return super().__eq__(other)
 
+    @classmethod
+    def zero_instance(cls):
+        """Return the constant which is 0."""
+        return Constant(0)
+
     @property
     def const(self):
         """Return the constant term."""
@@ -719,9 +747,6 @@ class Constant(Monomial):
     @extract_polynomial
     def __mul__(self, other):
         """Return self * other."""
-        if not self or not other:
-            return ZeroPolynomial()
-
         if isinstance(other, Constant):
             return Constant(self.const * other.const)
 
@@ -742,49 +767,3 @@ class Constant(Monomial):
     def __repr__(self):
         """Return repr(self)."""
         return "Constant({0!r})".format(self.const)
-
-
-class ZeroPolynomial(Constant):
-    """The zero polynomial."""
-
-    def __init__(self):
-        """Equivalent to Polynomial()."""
-        Constant.__init__(self, 0)
-
-    @property
-    def const(self):
-        """Return self.const, which is always 0."""
-        return 0
-
-    @const.setter
-    def const(self, val):
-        """Block self.const being set."""
-        raise AttributeError("Can not set ZeroPolynomial.const")
-
-    def __ipow__(self, other):
-        """Return self **= power.
-
-        Does not mutate self.
-        """
-        if other == 0:
-            return Constant(1)
-
-        # This call simplify enforces other >= 0 and is int.
-        # Could be moved out into a decorator.
-        return super().__ipow__(other)
-
-    def __int__(self):
-        """Return 0."""
-        return 0
-
-    def __float__(self):
-        """Return 0.0."""
-        return 0.0
-
-    def __complex__(self):
-        """Return 0j."""
-        return 0j
-
-    def __repr__(self):
-        """Return repr(self)."""
-        return "ZeroPolynomial()"

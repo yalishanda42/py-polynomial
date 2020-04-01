@@ -1,15 +1,18 @@
 """Unit-testing module for testing various polynomial operations."""
 
 import unittest
+from math import inf
+
 from polynomial import (
     Constant,
+    FrozenPolynomial,
     Monomial,
     Polynomial,
     ZeroPolynomial,
     LinearBinomial,
     QuadraticTrinomial,
 )
-from math import inf
+from polynomial.frozen import Freezable
 
 
 class TestPolynomialsOperations(unittest.TestCase):
@@ -244,22 +247,19 @@ class TestPolynomialsOperations(unittest.TestCase):
         p3 = Polynomial(coeffs)
         p4 = Polynomial(coeffs)
         z0 = ZeroPolynomial()
-        z1 = Polynomial()
+        z1 = Polynomial.zero_instance()
 
-        # Multiplication like this can downcast a Polynomial
-        # to a ZeroPolynomial.
+        # Multiplication will return the most permissive
+        # class (eg. which allows the most mutability).
         result1 = p1 * z0
         result2 = z0 * p2
-        # Inplace multiplication will not downcast a Polynomial.
-        # It may however upcast to a Polynomial if the operands
-        # are not compatible.
         p1 *= z0
         p2 *= 0
         p3 *= 0.0
         p4 *= 0j
 
-        self._assert_polynomials_are_the_same(z0, result1)
-        self._assert_polynomials_are_the_same(z0, result2)
+        self._assert_polynomials_are_the_same(z1, result1)
+        self._assert_polynomials_are_the_same(z1, result2)
         self._assert_polynomials_are_the_same(z1, p1)
         self._assert_polynomials_are_the_same(z1, p2)
         self._assert_polynomials_are_the_same(z1, p3)
@@ -427,6 +427,20 @@ class TestPolynomialsOperations(unittest.TestCase):
         result = p.nth_derivative(10)
         self._assert_polynomials_are_the_same(pd, result)
 
+    def test_zero_raises_err(self):
+        """Test that the ZeroPolynomial raises errors when setting values."""
+        z = ZeroPolynomial()
+
+        self.assertRaises(AttributeError, z.__setattr__, "x", 5)
+        self.assertRaises(AttributeError, z.__setitem__, 0, 5)
+
+    def test_frozen_polynomial_raises_err(self):
+        f = FrozenPolynomial(1, 2, 3)
+
+        self.assertRaises(AttributeError, f.__setattr__, "x", 5)
+        self.assertRaises(AttributeError, f.__setitem__, 0, 5)
+        self.assertRaises(AttributeError, f.__imul__, 5)
+
     def test_pow_monomial(self):
         """Test power against various Monomial subclasses."""
         c = Constant(5)
@@ -570,9 +584,10 @@ class TestPolynomialsOperations(unittest.TestCase):
         """Test that shifting a Monomial beyond 0 yields 0."""
         m1 = Monomial(1, 10) >> 15
         m2 = Monomial(1, 10) << -15
+        m0 = Monomial.zero_instance()
 
-        self._assert_polynomials_are_the_same(ZeroPolynomial(), m1)
-        self._assert_polynomials_are_the_same(ZeroPolynomial(), m2)
+        self._assert_polynomials_are_the_same(m0, m1)
+        self._assert_polynomials_are_the_same(m0, m2)
 
     def test_shifting_constant_not_inplace(self):
         """Test that constant/zero objects are not modified in place."""
@@ -658,6 +673,179 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEqual(exp_complex_roots, res_complex_roots)
         self.assertEqual(exp_real_factors, res_real_factors)
         self.assertEqual(exp_complex_factors, res_complex_factors)
+
+    def test_zero_instance_mutable(self):
+        """Test that zero instances are mutable"""
+        zp = Polynomial.zero_instance()
+        zm = Monomial.zero_instance()
+        zc = Constant.zero_instance()
+        zp.a = 1
+        zm.a = 1
+        zc.const = 1
+
+        self._assert_polynomials_are_the_same(Polynomial(1), zp)
+        self._assert_polynomials_are_the_same(Monomial(1, 0), zm)
+        self._assert_polynomials_are_the_same(Constant(1), zc)
+
+    def test_zero_polynomial_conversions(self):
+        """Test that converting ZeroPolynomial to numerical types yields 0."""
+        z = ZeroPolynomial()
+        self.assertEqual(0, int(z))
+        self.assertEqual(0.0, float(z))
+        self.assertEqual(0j, complex(z))
+
+    def test_mul_zero_poly_returns_most_permissive(self):
+        """Test that multiplication never reduces permissiveness."""
+        a = Polynomial(1, 2, 3) * ZeroPolynomial()
+        b = Monomial(1, 2) * ZeroPolynomial()
+        c = Constant(5) * ZeroPolynomial()
+        d = ZeroPolynomial() * ZeroPolynomial()
+
+        self.assertIsInstance(a, Polynomial)
+        self.assertIsInstance(b, Monomial)
+        self.assertIsInstance(c, Constant)
+        self.assertIsInstance(d, ZeroPolynomial)
+
+    def test_mul_constant_returns_most_permissive(self):
+        """Test that multiplication never reduces permissiveness."""
+        a = Polynomial(1, 2, 3) * Constant(3)
+        b = Monomial(1, 3) * Constant(1)
+        c = Constant(5) * Constant(4)
+        d = ZeroPolynomial() * Constant(2)
+
+        self.assertIsInstance(a, Polynomial)
+        self.assertIsInstance(b, Monomial)
+        self.assertIsInstance(c, Constant)
+        self.assertIsInstance(d, Constant)
+
+    def test_mul_monomial_returns_most_permissive(self):
+        """Test that multiplication never reduces permissiveness."""
+        a = Polynomial(1, 2, 3) * Monomial(3, 4)
+        b = Monomial(1, 3) * Monomial(5, 1)
+        c = Constant(5) * Monomial(6, 8)
+        d = ZeroPolynomial() * Monomial(9, 2)
+
+        self.assertIsInstance(a, Polynomial)
+        self.assertIsInstance(b, Monomial)
+        self.assertIsInstance(c, Monomial)
+        self.assertIsInstance(d, Monomial)
+
+    def test_mul_polymial_returns_most_permissive(self):
+        """Test that multiplication never reduces permissiveness."""
+        a = Polynomial(1, 2, 3) * Polynomial(3, 4, 1)
+        b = Monomial(1, 3) * Polynomial(5, 1, 2)
+        c = Constant(5) * Polynomial(6, 8, 1)
+        d = ZeroPolynomial() * Polynomial(9, 2, 7)
+
+        self.assertIsInstance(a, Polynomial)
+        self.assertIsInstance(b, Polynomial)
+        self.assertIsInstance(c, Polynomial)
+        self.assertIsInstance(d, Polynomial)
+
+    def test_permissive_zero_polynomial(self):
+        """Test that permissiveness doesn't decrease with Polynomial zero."""
+        a = Polynomial(1, 2, 3)
+        b = Monomial(1, 2)
+        c = Constant(5)
+        d = ZeroPolynomial()
+        zp = Polynomial()
+
+        self.assertIsInstance(a * zp, Polynomial)
+        self.assertIsInstance(b * zp, Polynomial)
+        self.assertIsInstance(c * zp, Polynomial)
+        self.assertIsInstance(d * zp, Polynomial)
+
+    def test_permissive_zero_monomial(self):
+        """Test that permissiveness doesn't decrease with Monomial zero."""
+        a = Polynomial(1, 2, 3)
+        b = Monomial(1, 2)
+        c = Constant(5)
+        d = ZeroPolynomial()
+
+        zm = Monomial(0, 0)
+
+        self.assertIsInstance(a * zm, Polynomial)
+        self.assertIsInstance(b * zm, Monomial)
+        self.assertIsInstance(c * zm, Monomial)
+        self.assertIsInstance(d * zm, Monomial)
+
+    def test_permissive_zero_constant(self):
+        """Test that permissiveness doesn't decrease with Constant zero."""
+        a = Polynomial(1, 2, 3)
+        b = Monomial(1, 2)
+        c = Constant(5)
+        d = ZeroPolynomial()
+
+        zc = Constant(0)
+
+        self.assertIsInstance(a * zc, Polynomial)
+        self.assertIsInstance(b * zc, Monomial)
+        self.assertIsInstance(c * zc, Constant)
+        self.assertIsInstance(d * zc, Constant)
+
+    def test_permissive_zero_zero_polynomial(self):
+        """Test that permissiveness doesn't decrease with ZeroPolynomial."""
+        a = Polynomial(1, 2, 3)
+        b = Monomial(1, 2)
+        c = Constant(5)
+        d = ZeroPolynomial()
+
+        zz = ZeroPolynomial()
+
+        self.assertIsInstance(a * zz, Polynomial)
+        self.assertIsInstance(b * zz, Monomial)
+        self.assertIsInstance(c * zz, Constant)
+        self.assertIsInstance(d * zz, ZeroPolynomial)
+
+    def test_frozen_vector_immutable(self):
+        """Test that frozen vectors can't be modified."""
+        a = ZeroPolynomial()
+        b = FrozenPolynomial(1, 2, 3)
+
+        def set_item(obj, index, value):
+            obj[index] = value
+
+        possible_errs = (TypeError, AttributeError)
+        self.assertRaises(possible_errs, set_item, a._vector, 0, 5)
+        self.assertRaises(possible_errs, set_item, b._vector, 0, 5)
+
+    def test_casting_to_frozen_polynomial(self):
+        """Casting polynomials is fine."""
+        a = Polynomial(1, 2, 3)
+        b = FrozenPolynomial.from_polynomial(a)
+        self.assertEqual(a, b)
+
+    def test_frozen_zero_instance_immutable(self):
+        """Test that FrozenPolynomial returns correct zero instance."""
+        fp = FrozenPolynomial(0)
+        fpz = FrozenPolynomial.zero_instance()
+        self._assert_polynomials_are_the_same(fp, fpz)
+        self.assertRaises(AttributeError, fpz.__setitem__, 0, 1)
+        self.assertRaises(AttributeError, fpz.__setattr__, "a", 1)
+
+    def test_freezable_obeys_frozen_flag(self):
+        """Test that Freezable objects behave as expected."""
+        class A:
+            def __init__(self):
+                self._list = [1, 2, 3]
+
+            def __setattr__(self, key, value):
+                self.__dict__[key] = value
+
+            def __setitem__(self, key, value):
+                self._list[key] = value
+
+        class B(Freezable, A):
+            def __init__(self):
+                super().__init__()
+                self[0:2] = [4, 1]
+                self._freeze()
+
+        b = B()
+
+        self.assertEqual([4, 1, 3], b._list)
+        self.assertRaises(AttributeError, b.__setitem__, 0, 1)
+        self.assertRaises(AttributeError, b.__setattr__, "a", 1)
 
 
 if __name__ == '__main__':

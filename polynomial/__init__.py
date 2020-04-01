@@ -3,6 +3,11 @@
 (c) Yalishanda <yalishanda@abv.bg>
 """
 
-from .core import Polynomial, Monomial, Constant, ZeroPolynomial
+from .core import (
+    Constant,
+    Monomial,
+    Polynomial,
+)
+from .frozen import FrozenPolynomial, ZeroPolynomial
 from .binomial import Binomial, LinearBinomial
 from .trinomial import Trinomial, QuadraticTrinomial
