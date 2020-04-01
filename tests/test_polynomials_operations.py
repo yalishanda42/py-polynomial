@@ -1,6 +1,8 @@
 """Unit-testing module for testing various polynomial operations."""
 
 import unittest
+from math import inf
+
 from polynomial import (
     Constant,
     FrozenPolynomial,
@@ -10,7 +12,7 @@ from polynomial import (
     LinearBinomial,
     QuadraticTrinomial,
 )
-from math import inf
+from polynomial.frozen import Freezable
 
 
 class TestPolynomialsOperations(unittest.TestCase):
@@ -806,6 +808,44 @@ class TestPolynomialsOperations(unittest.TestCase):
         possible_errs = (TypeError, AttributeError)
         self.assertRaises(possible_errs, set_item, a._vector, 0, 5)
         self.assertRaises(possible_errs, set_item, b._vector, 0, 5)
+
+    def test_casting_to_frozen_polynomial(self):
+        """Casting polynomials is fine."""
+        a = Polynomial(1, 2, 3)
+        b = FrozenPolynomial.from_polynomial(a)
+        self.assertEqual(a, b)
+
+    def test_frozen_zero_instance_immutable(self):
+        """Test that FrozenPolynomial returns correct zero instance."""
+        fp = FrozenPolynomial(0)
+        fpz = FrozenPolynomial.zero_instance()
+        self._assert_polynomials_are_the_same(fp, fpz)
+        self.assertRaises(AttributeError, fpz.__setitem__, 0, 1)
+        self.assertRaises(AttributeError, fpz.__setattr__, "a", 1)
+
+    def test_freezable_obeys_frozen_flag(self):
+        """Test that Freezable objects behave as expected."""
+        class A:
+            def __init__(self):
+                self._list = [1, 2, 3]
+
+            def __setattr__(self, key, value):
+                self.__dict__[key] = value
+
+            def __setitem__(self, key, value):
+                self._list[key] = value
+
+        class B(Freezable, A):
+            def __init__(self):
+                super().__init__()
+                self[0:2] = [4, 1]
+                self._freeze()
+
+        b = B()
+
+        self.assertEqual([4, 1, 3], b._list)
+        self.assertRaises(AttributeError, b.__setitem__, 0, 1)
+        self.assertRaises(AttributeError, b.__setattr__, "a", 1)
 
 
 if __name__ == '__main__':
