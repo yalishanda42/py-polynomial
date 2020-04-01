@@ -858,6 +858,17 @@ class TestPolynomialsOperations(unittest.TestCase):
         # b + a requires a cast since b's degree does change.
         self._assert_polynomials_are_the_same(ep, b + a)
 
+    def test_constant_addition(self):
+        """Test that Constant behaves as expected."""
+        a = LinearBinomial(1, 2)
+        b = Constant(3)
+        e = LinearBinomial(1, 5)
+        ep = Polynomial(e)
+        # a + b is safe because a's degree does not change.
+        self._assert_polynomials_are_the_same(e, a + b)
+        # b + a requires a cast since b's degree does change.
+        self._assert_polynomials_are_the_same(ep, b + a)
+
 
 if __name__ == '__main__':
     unittest.main()
