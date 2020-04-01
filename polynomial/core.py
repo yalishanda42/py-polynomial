@@ -40,6 +40,13 @@ def extract_polynomial(method):
     return decorated
 
 
+def get_more_permissive_class(a, b):
+    """Return the most permissive class of a, b."""
+    a_cls = a.__class__
+    b_cls = b.__class__
+    return b_cls if issubclass(a_cls, b_cls) else a_cls
+
+
 class Polynomial:
     """Implements a single-variable mathematical polynomial."""
 
@@ -339,7 +346,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     def __mul__(self, other):
         """Return self * other."""
         if not self or not other:
-            return self.zero_instance()
+            return get_more_permissive_class(self, other).zero_instance()
 
         result = Polynomial()
         for s_m in self.monomials:
@@ -585,16 +592,20 @@ class Monomial(Polynomial):
 
     @extract_polynomial
     def __mul__(self, other):
-        """Return self * other."""
-        if not self or not other:
-            return self.zero_instance()
-        if isinstance(other, Monomial):
+        """Return self * other.
+
+        The class which is more permissive will be returned.
+        """
+        if isinstance(other, Monomial) and self and other:
             return Monomial(self.a * other.a, self.degree + other.degree)
         return super().__mul__(other)
 
     @extract_polynomial
     def __rmul__(self, other):
-        """Return other * self."""
+        """Return other * self.
+
+        The class which is more permissive will be returned.
+        """
         return self * other
 
     def __lt__(self, other):
@@ -736,9 +747,6 @@ class Constant(Monomial):
     @extract_polynomial
     def __mul__(self, other):
         """Return self * other."""
-        if not self or not other:
-            return self.zero_instance()
-
         if isinstance(other, Constant):
             return Constant(self.const * other.const)
 

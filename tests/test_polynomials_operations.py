@@ -247,12 +247,10 @@ class TestPolynomialsOperations(unittest.TestCase):
         z0 = ZeroPolynomial()
         z1 = Polynomial.zero_instance()
 
-        # Multiplication like this can downcast a Polynomial
-        # to a ZeroPolynomial.
+        # Multiplication will return the most permissive
+        # class (eg. which allows the most mutability).
         result1 = p1 * z0
         result2 = z0 * p2
-        # Inplace multiplication will return the most permissive
-        # class (eg. which allows the most mutability).
         p1 *= z0
         p2 *= 0
         p3 *= 0.0
@@ -741,6 +739,61 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertIsInstance(b, Polynomial)
         self.assertIsInstance(c, Polynomial)
         self.assertIsInstance(d, Polynomial)
+
+    def test_permissive_zero_polynomial(self):
+        """Test that permissiveness doesn't decrease with Polynomial zero."""
+        a = Polynomial(1, 2, 3)
+        b = Monomial(1, 2)
+        c = Constant(5)
+        d = ZeroPolynomial()
+        zp = Polynomial()
+
+        self.assertIsInstance(a * zp, Polynomial)
+        self.assertIsInstance(b * zp, Polynomial)
+        self.assertIsInstance(c * zp, Polynomial)
+        self.assertIsInstance(d * zp, Polynomial)
+
+    def test_permissive_zero_monomial(self):
+        """Test that permissiveness doesn't decrease with Monomial zero."""
+        a = Polynomial(1, 2, 3)
+        b = Monomial(1, 2)
+        c = Constant(5)
+        d = ZeroPolynomial()
+
+        zm = Monomial(0, 0)
+
+        self.assertIsInstance(a * zm, Polynomial)
+        self.assertIsInstance(b * zm, Monomial)
+        self.assertIsInstance(c * zm, Monomial)
+        self.assertIsInstance(d * zm, Monomial)
+
+    def test_permissive_zero_constant(self):
+        """Test that permissiveness doesn't decrease with Constant zero."""
+        a = Polynomial(1, 2, 3)
+        b = Monomial(1, 2)
+        c = Constant(5)
+        d = ZeroPolynomial()
+
+        zc = Constant(0)
+
+        self.assertIsInstance(a * zc, Polynomial)
+        self.assertIsInstance(b * zc, Monomial)
+        self.assertIsInstance(c * zc, Constant)
+        self.assertIsInstance(d * zc, Constant)
+
+    def test_permissive_zero_zero_polynomial(self):
+        """Test that permissiveness doesn't decrease with ZeroPolynomial."""
+        a = Polynomial(1, 2, 3)
+        b = Monomial(1, 2)
+        c = Constant(5)
+        d = ZeroPolynomial()
+
+        zz = ZeroPolynomial()
+
+        self.assertIsInstance(a * zz, Polynomial)
+        self.assertIsInstance(b * zz, Monomial)
+        self.assertIsInstance(c * zz, Constant)
+        self.assertIsInstance(d * zz, ZeroPolynomial)
 
 
 if __name__ == '__main__':
