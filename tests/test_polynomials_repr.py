@@ -78,6 +78,22 @@ class TestPolynomialsRepr(unittest.TestCase):
         r = repr(FrozenPolynomial(1, 2, 3))
         self.assertEqual(expect, r)
 
+    def test_all_reprs_start_correctly(self):
+        """Automatically tests that the repr of a class starts correctly."""
+        import inspect
+        import polynomial
+        print(dir(polynomial))
+        for cls_str in dir(polynomial):
+            cls = getattr(polynomial, cls_str)
+            if not inspect.isclass(cls):
+                continue
+            if not issubclass(cls, Polynomial):
+                continue
+            self.assertTrue(
+                repr(cls()).startswith(cls_str),
+                "{0} should start with {1}".format(repr(cls()), cls_str)
+            )
+
 
 if __name__ == '__main__':
     unittest.main()
