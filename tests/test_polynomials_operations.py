@@ -443,8 +443,8 @@ class TestPolynomialsOperations(unittest.TestCase):
         """Test that the ZeroPolynomial raises errors when setting values."""
         z = ZeroPolynomial()
 
-        self.assertRaises(DegreeError, z.__setattr__, "x", 5)
-        self.assertRaises(DegreeError, z.__setitem__, 0, 5)
+        self.assertRaises(AttributeError, z.__setattr__, "x", 5)
+        self.assertRaises(AttributeError, z.__setitem__, 0, 5)
 
     def test_frozen_polynomial_raises_err(self):
         f = FrozenPolynomial(1, 2, 3)

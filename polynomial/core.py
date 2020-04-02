@@ -603,38 +603,42 @@ class FixedDegreePolynomial(Polynomial):
                 poly_attr = getattr(Polynomial, attr)
                 setattr(cls, attr, check_degree_is_valid(poly_attr)(val))
 
-        cls.__setitem__ = FixedDegreePolynomial.__setitem__
-        cls.__setattr__ = FixedDegreePolynomial.__setattr__
-        cls.terms = FixedDegreePolynomial.terms
+        __xsetitem__ = cls.__setitem__
+        __xsetattr__ = cls.__setattr__
 
-    def __setitem__(self, key, value):
-        """Implement self[key] = value."""
-        super().__setitem__(key, value)
-        if self.degree not in self.valid_degrees:
-            raise DegreeError("Set self._vector to an invalid state.")
-
-    def __setattr__(self, key, value):
-        """Implement self.key = value."""
-        if len(key) != 1 and key != "_vector":
-            super().__setattr__(key, value)
-        else:
-            # Disable trim to avoid mutual recursion.
-            xtrim = self._trim
-            self._trim = lambda: None
-
-            # Could be a single letter.
-            if key != "_vector":
-                # Need to preemptively trim _vector due to the degree calls.
-                super().__setattr__("_vector", _trim(self._vector))
-                super().__setattr__(key, value)
-                # _vector could have had leading term reset.
-                super().__setattr__("_vector", _trim(self._vector))
-            else:
-                super().__setattr__(key, _trim(value))
-
+        # Methods are defined inline to allow using the class's original
+        # __setitem__ / __setattr__ calls (eg. for Freezable, and later,
+        # FixedTermPolynomial (which would have a fixed number of terms)).
+        def __setitem__(self, key, value):
+            __xsetitem__(self, key, value)
             if self.degree not in self.valid_degrees:
                 raise DegreeError("Set self._vector to an invalid state.")
-            self._trim = xtrim
+
+        def __setattr__(self, key, value):
+            """Implement self.key = value."""
+            if len(key) != 1 and key != "_vector":
+                __xsetattr__(self, key, value)
+            else:
+                # Disable trim to avoid mutual recursion.
+                xtrim = self._trim
+                self._trim = lambda: None
+
+                # Could be a single letter.
+                if key != "_vector":
+                    # Need to trim _vector due to the degree calls.
+                    __xsetattr__(self, "_vector", _trim(self._vector))
+                    __xsetattr__(self, key, value)
+                    __xsetattr__(self, "_vector", _trim(self._vector))
+                else:
+                    __xsetattr__(self, key, _trim(value))
+
+                if self.degree not in self.valid_degrees:
+                    raise DegreeError("Set self._vector to an invalid state.")
+                self._trim = xtrim
+
+        cls.__setitem__ = __setitem__
+        cls.__setattr__ = __setattr__
+        cls.terms = FixedDegreePolynomial.terms
 
 
 class Monomial(Polynomial):
