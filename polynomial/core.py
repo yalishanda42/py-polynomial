@@ -501,10 +501,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
         Increases the degree of each term by other.
         """
-        if other < 0:
-            return self >> -other
-
-        ret = Polynomial(self)
+        ret = deepcopy(self)
         ret <<= other
         return ret
 
@@ -525,10 +522,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
         Decreases the degree of each term by other.
         """
-        if other < 0:
-            return self << -other
-
-        ret = Polynomial(self)
+        ret = deepcopy(self)
         ret >>= other
         return ret
 
@@ -580,7 +574,7 @@ def check_degree_is_valid(fallback, valid_degrees):
     def retry_op(self, orig_terms, *args, **kwargs):
         """Reset self and retry operation on Polynomial."""
         self.terms = orig_terms
-        self = Polynomial(self.terms, from_monomials=True)
+        self = Polynomial.from_terms(self.terms)
         return fallback(self, *args, **kwargs)
 
     def wrapper(method):
@@ -800,22 +794,11 @@ class Monomial(Polynomial):
             return self
 
         if not self:
-            return self.zero_instance()
+            return self
 
-        return self << other
+        self.terms = [(self.coefficient, self.degree + other)]
 
-    def __rshift__(self, other):
-        """Return self >> other.
-
-        Returns a Monomial that is self / x^other.
-        """
-        if other < 0:
-            return self << -other
-
-        if other > self.degree:
-            return self.zero_instance()
-
-        return Monomial(self.coefficient, self.degree - other)
+        return self
 
     def __irshift__(self, other):
         """Return self >>= other."""
@@ -823,7 +806,14 @@ class Monomial(Polynomial):
             self <<= -other
             return self
 
-        return self >> other
+        if not self:
+            return self
+
+        if other > self.degree:
+            self.terms = [(0, 0)]
+        else:
+            self.terms = [(self.coefficient, self.degree - other)]
+        return self
 
     def __repr__(self):
         """Return repr(self)."""
@@ -842,11 +832,6 @@ class Constant(Monomial, FixedDegreePolynomial, valid_degrees=(0, -inf)):
         if other == self.const:
             return True
         return super().__eq__(other)
-
-    @classmethod
-    def zero_instance(cls):
-        """Return the constant which is 0."""
-        return Constant(0)
 
     @property
     def const(self):
