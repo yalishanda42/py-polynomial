@@ -577,10 +577,7 @@ def check_degree_is_valid(fallback, valid_degrees):
     """
     def retry_op(self, orig_terms, *args, **kwargs):
         """Reset self and retry operation on Polynomial."""
-        try:
-            self.terms = orig_terms
-        except DegreeError:
-            pass
+        self.terms = orig_terms
         self = Polynomial(self.terms, from_monomials=True)
         return fallback(self, *args, **kwargs)
 
@@ -597,7 +594,8 @@ def check_degree_is_valid(fallback, valid_degrees):
             if self.degree in valid_degrees:
                 return ret_val
 
-            # If we do something that modifies self._vector
+            # We have modified self but we have returned something else
+            # This should never happen, and should always raise an error.
             if ret_val is not self:
                 # Changing self is undefined behaviour at this point.
                 raise ValueError("Can not recover from error.")
