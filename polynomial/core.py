@@ -570,21 +570,13 @@ def check_degree_is_valid(fallback, valid_degrees):
         def decorator(self, *args, **kwargs):
             orig_terms = self.terms
             try:
-                ret_val = method(self, *args, **kwargs)
+                return method(self, *args, **kwargs)
             # If we directly modify self.terms
             except DegreeError:
-                # May have tried to set a bad degree.
+                # This is done in the expectation that we're calling from
+                # FixedDegreePolynomial, which will always raise a
+                # DegreeError through __setattr__, __setitem__.
                 return retry_op(self, orig_terms, *args, **kwargs)
-
-            if self.degree in valid_degrees:
-                return ret_val
-
-            # We have modified self but we have returned something else
-            # This should never happen, and should always raise an error.
-            if ret_val is not self:
-                # Changing self is undefined behaviour at this point.
-                raise ValueError("Can not recover from error.")
-            return retry_op(self, orig_terms, *args, **kwargs)
         return decorator
     return wrapper
 

@@ -14,7 +14,7 @@ from polynomial import (
     QuadraticTrinomial,
     DegreeError
 )
-from polynomial.core import extract_polynomial
+from polynomial.core import extract_polynomial, FixedDegreePolynomial
 from polynomial.frozen import Freezable
 
 
@@ -1218,7 +1218,7 @@ class TestPolynomialsOperations(unittest.TestCase):
             x = LinearBinomial(1, 2)
             self.assertRaises(DegreeError, x.__setattr__, attr, val)
 
-    def test_setitem_raises_error(self):
+    def test_setitem_is_ok(self):
         """Test that setitem is fine for valid inputs."""
         x = Constant(5)
         x.a = 1
