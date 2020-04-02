@@ -1,6 +1,7 @@
 """Unit-testing module for testing various polynomial operations."""
 
 import unittest
+from copy import deepcopy
 from math import inf
 
 from polynomial import (
@@ -399,6 +400,15 @@ class TestPolynomialsOperations(unittest.TestCase):
         # Test that sets and polynomials are correctly handled.
         self.assertIn(set(terms), p)
         self.assertIn(Polynomial(terms, from_monomials=True), p)
+
+    def test_membership_against_invalid_types(self):
+        """Test that all valid types are handled in membership check."""
+        x = Polynomial("a", 2, 3)
+        self.assertRaises(ValueError, x.__contains__, 5)
+        self.assertRaises(ValueError, x.__contains__, "5")
+        self.assertRaises(ValueError, x.__contains__, "a")
+        self.assertRaises(ValueError, x.__contains__, 1.2)
+        self.assertRaises(ValueError, x.__contains__, 1+0j)
 
     def test_membership_false_on_partial_match(self):
         """Tests that membership is only true if all elements match."""
@@ -1009,7 +1019,7 @@ class TestPolynomialsOperations(unittest.TestCase):
             self.assertEqual(Constant(1), val)
 
     def test_inequality(self):
-        """Test that pow by negative is not possible."""
+        """Test that distinct values do not equal other."""
         to_test = [
             Polynomial(1, 2, 3),
             Monomial(1, 2),
@@ -1028,6 +1038,19 @@ class TestPolynomialsOperations(unittest.TestCase):
                 else:
                     self.assertFalse(lhs == rhs)
                     self.assertNotEqual(lhs, rhs)
+
+    def test_ipow_matches_pow(self):
+        to_test = [
+            Polynomial(1, 2, 3),
+            Monomial(1, 2),
+            Constant(5),
+            ZeroPolynomial(),
+        ]
+
+        for val in to_test:
+            copy_val = deepcopy(val)
+            copy_val **= 5
+            self._assert_polynomials_are_the_same(val ** 5, copy_val)
 
 
 if __name__ == '__main__':

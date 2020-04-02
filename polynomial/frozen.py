@@ -96,7 +96,8 @@ class ZeroPolynomial(Freezable, Constant, FixedDegreePolynomial, valid_degrees=-
 
         # This call simply enforces other >= 0 and is int.
         # Could be moved out into a decorator.
-        return super().__ipow__(other)
+        super().__ipow__(other)
+        return ZeroPolynomial()
 
     def __repr__(self):
         """Return repr(self)."""
