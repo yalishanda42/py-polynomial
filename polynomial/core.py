@@ -395,22 +395,6 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         self.terms = result.terms
         return self
 
-    def __copy__(self):
-        """Create a shallow copy of self. _vector is not copied."""
-        cls = self.__class__
-        result = cls.__new__(cls)
-        result.__dict__.update(self.__dict__)
-        return result
-
-    def __deepcopy__(self, memo):
-        """Create a deep copy of self."""
-        cls = self.__class__
-        result = cls.__new__(cls)
-        memo[id(self)] = result
-        for k, v in self.__dict__.items():
-            setattr(result, k, deepcopy(v, memo))
-        return result
-
     @extract_polynomial
     def __ifloordiv__(self, other):
         """Return self //= other."""
