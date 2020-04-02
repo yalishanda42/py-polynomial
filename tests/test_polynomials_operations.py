@@ -580,7 +580,7 @@ class TestPolynomialsOperations(unittest.TestCase):
         self._assert_polynomials_are_the_same(Monomial(1, 15), m1)
         self._assert_polynomials_are_the_same(Monomial(1, 5), m2)
         self._assert_polynomials_are_the_same(Monomial(5, 10), m3)
-        self._assert_polynomials_are_the_same(Monomial(1, 5), m2)
+        self._assert_polynomials_are_the_same(Monomial(1, 5), m4)
 
     def test_rshift_monomial(self):
         """Test that rshift on a monomial behaves correctly."""
@@ -1028,7 +1028,7 @@ class TestPolynomialsOperations(unittest.TestCase):
             self.assertRaises(ValueError, val.__ipow__, -2)
 
     def test_pow_by_non_integer(self):
-        """Test that pow by negative is not possible."""
+        """Test that pow by non-integer type is not possible."""
         to_test = [
             Polynomial(1, 2, 3),
             Monomial(1, 2),
@@ -1054,11 +1054,12 @@ class TestPolynomialsOperations(unittest.TestCase):
         self._assert_polynomials_are_the_same(expected, b)
 
     def test_constant_equality(self):
-        """Test that pow by negative is not possible."""
+        """Test that Constant(1) is equal to other instances of 1."""
         to_test = [
             Polynomial(1),
             Monomial(1, 0),
             Constant(1),
+            1
         ]
 
         for val in to_test:
