@@ -443,8 +443,8 @@ class TestPolynomialsOperations(unittest.TestCase):
         """Test that the ZeroPolynomial raises errors when setting values."""
         z = ZeroPolynomial()
 
-        self.assertRaises(AttributeError, z.__setattr__, "x", 5)
-        self.assertRaises(AttributeError, z.__setitem__, 0, 5)
+        self.assertRaises(DegreeError, z.__setattr__, "x", 5)
+        self.assertRaises(DegreeError, z.__setitem__, 0, 5)
 
     def test_frozen_polynomial_raises_err(self):
         f = FrozenPolynomial(1, 2, 3)
@@ -1206,6 +1206,36 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEqual(0, Constant(0).calculate(5))
         self.assertEqual(0, Monomial(0, 1).calculate(1.1))
 
+    def test_setattr_raises_error(self):
+        """Test that setting invalid terms raises an error."""
+        invalid_setattrs = [
+            ("_vector", [0, 0, 1]),
+            ("terms", [(1, 2), (0, 1)]),
+            ("terms", [(0, 2), (0, 1)]),
+            ("terms", [(0, 1), (1, 0)]),
+        ]
+        for attr, val in invalid_setattrs:
+            x = LinearBinomial(1, 2)
+            self.assertRaises(DegreeError, x.__setattr__, attr, val)
+
+    def test_setitem_raises_error(self):
+        """Test that setitem is fine for valid inputs."""
+        x = Constant(5)
+        x.a = 1
+        self._assert_polynomials_are_the_same(Constant(1), x)
+        x[0] = 0
+        self._assert_polynomials_are_the_same(Constant(0), x)
+
+    def test_setitem_raises_error(self):
+        """Test that setitem raises error on invalid inputs."""
+        lb = LinearBinomial(5, 1)
+        qt = QuadraticTrinomial(1, 2, 3)
+        self.assertRaises(DegreeError, lb.__setattr__, "a", 0)
+        self.assertRaises(DegreeError, qt.__setattr__, "a", 0)
+        lb = LinearBinomial(5, 1)
+        qt = QuadraticTrinomial(1, 2, 3)
+        self.assertRaises(DegreeError, lb.__setitem__, 1, 0)
+        self.assertRaises(DegreeError, qt.__setitem__, 2, 0)
 
 if __name__ == '__main__':
     unittest.main()

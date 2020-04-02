@@ -46,6 +46,18 @@ def get_more_permissive_class(a, b):
     return b_cls if issubclass(a_cls, b_cls) else a_cls
 
 
+def _trim(_vector):
+    """Return _vector with all trailing zeros removed."""
+    if not _vector or len(_vector) == 1:
+        return _vector
+
+    ind = len(_vector)
+    while _vector[ind - 1] == 0 and ind > 0:
+        ind -= 1
+
+    return _vector[:ind]
+
+
 class Polynomial:
     """Implements a single-variable mathematical polynomial."""
 
@@ -91,14 +103,7 @@ class Polynomial:
 
     def _trim(self):
         """Trims self._vector to length. Keeps constant terms."""
-        if not self._vector or len(self._vector) == 1:
-            return
-
-        ind = len(self._vector)
-        while self._vector[ind-1] == 0 and ind > 0:
-            ind -= 1
-
-        self._vector = self._vector[:ind]
+        self._vector = _trim(self._vector)
 
     @property
     def degree(self):
@@ -165,13 +170,15 @@ class Polynomial:
     def terms(self, terms):
         """Set the terms of self as a list of tuples in coeff, deg form."""
         if not terms:
-            self._vector = [0]
-            return
+            _vector = [0]
+        else:
+            max_deg = max(terms, key=lambda x: x[1])[1] + 1
+            _vector = [0] * max_deg
 
-        max_deg = max(terms, key=lambda x: x[1])[1] + 1
-        self._vector = [0] * max_deg
-        for coeff, deg in terms:
-            self._vector[deg] += coeff
+            for coeff, deg in terms:
+                _vector[deg] += coeff
+
+        self._vector = _vector
         self._trim()
 
     @property
@@ -582,25 +589,6 @@ def check_degree_is_valid(fallback, valid_degrees):
     return wrapper
 
 
-def setattr_decorator(degree):
-    """Decorate __setattr__ to handle single variable modifications."""
-    def wrapper(_setattr):
-        check_deg_setattr = check_degree_is_valid(
-            Polynomial.__setattr__, degree
-        )(_setattr)
-
-        def decorator(self, name, new_value):
-            if len(name) == 1:
-                return check_deg_setattr(self, name, new_value)
-            # Trying to intercept self._vector = []
-            # leads to a mutual recursion.
-            return _setattr(self, name, new_value)
-
-        return decorator
-
-    return wrapper
-
-
 class FixedDegreePolynomial(Polynomial):
     """This Polynomial must maintain its degree."""
 
@@ -623,36 +611,38 @@ class FixedDegreePolynomial(Polynomial):
                 poly_attr = getattr(Polynomial, attr)
                 setattr(cls, attr, check_degree_is_valid(poly_attr, deg)(val))
 
-        cls.__setattr__ = setattr_decorator(deg)(cls.__setattr__)
+        cls.__setitem__ = FixedDegreePolynomial.__setitem__
+        cls.__setattr__ = FixedDegreePolynomial.__setattr__
         cls.terms = FixedDegreePolynomial.terms
 
-    @property
-    def terms(self):
-        """Return self.terms."""
-        # This method is needed in order to define terms.setter
-        return super().terms
-
-    @terms.setter
-    def terms(self, terms):
-        """Set self.terms. Raises DegreeError if self.degree changes."""
-        if not terms:
-            if -inf not in self.valid_degrees:
-                raise DegreeError(
-                    "self.terms received terms which changed its degree."
-                )
-            self._vector = [0]
-            return
-
-        max_deg = max(terms, key=lambda x: x[1])[1] + 1
-        self._vector = [0] * max_deg
-        for coeff, deg in terms:
-            self._vector[deg] += coeff
-        self._trim()
-
+    def __setitem__(self, key, value):
+        """Implement self[key] = value."""
+        super().__setitem__(key, value)
         if self.degree not in self.valid_degrees:
-            raise DegreeError(
-                "self.terms received terms which changed its degree."
-            )
+            raise DegreeError("Set self._vector to an invalid state.")
+
+    def __setattr__(self, key, value):
+        """Implement self.key = value."""
+        if len(key) != 1 and key != "_vector":
+            super().__setattr__(key, value)
+        else:
+            # Disable trim to avoid mutual recursion.
+            xtrim = self._trim
+            self._trim = lambda: None
+
+            # Could be a single letter.
+            if key != "_vector":
+                # Need to preemptively trim _vector due to the degree calls.
+                super().__setattr__("_vector", _trim(self._vector))
+                super().__setattr__(key, value)
+                # _vector could have had leading term reset.
+                super().__setattr__("_vector", _trim(self._vector))
+            else:
+                super().__setattr__(key, _trim(value))
+
+            if self.degree not in self.valid_degrees:
+                raise DegreeError("Set self._vector to an invalid state.")
+            self._trim = xtrim
 
 
 class Monomial(Polynomial):
