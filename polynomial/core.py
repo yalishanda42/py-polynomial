@@ -89,6 +89,14 @@ class Polynomial:
             self._trim()
 
     @classmethod
+    def from_terms(cls, terms):
+        """Tries to create an instance of cls from terms if possible.
+
+        If not possible, creates an instance of cls's parent.
+        """
+        return Polynomial(terms, from_monomials=True)
+
+    @classmethod
     def zero_instance(cls):
         """Return the Polynomial which is 0."""
         return Polynomial()
@@ -684,6 +692,16 @@ class Monomial(Polynomial):
         Polynomial.__init__(self, coeffs)
 
     @classmethod
+    def from_terms(cls, terms):
+        """Tries to create an instance of cls from terms if possible.
+
+        If not possible, creates an instance of cls's parent.
+        """
+        if len(terms) == 1:
+            return Monomial(*terms[0])
+        return super().from_terms(terms)
+
+    @classmethod
     def zero_instance(cls):
         """Return the Monomial which is 0."""
         return Monomial(0, 0)
@@ -826,6 +844,25 @@ class Constant(Monomial, FixedDegreePolynomial, valid_degrees=(0, -inf)):
     def __init__(self, const=1):
         """Initialize the constant with value const."""
         Monomial.__init__(self, const, 0)
+
+    @classmethod
+    def from_terms(cls, terms):
+        """Tries to create an instance of cls from terms if possible.
+
+        If not possible, creates an instance of cls's parent.
+        """
+        if len(terms) == 1:
+            term = terms[0]
+            if term[0] == 0 or term[1] == -inf:
+                return cls.zero_instance()
+            if term[1] == 0:
+                return Constant(term[0])
+        return super().from_terms(terms)
+
+    @classmethod
+    def zero_instance(cls):
+        """Return the constant which is 0."""
+        return Constant(0)
 
     def __eq__(self, other):
         """Return self == other."""
