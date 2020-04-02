@@ -947,7 +947,10 @@ class TestPolynomialsOperations(unittest.TestCase):
             a = Constant(5)
             a.terms = []
         except DegreeError:
-            self.assertFalse(True, "Should be able to set Constant(0).terms to []")
+            self.assertFalse(
+                True,
+                "Should be able to set Constant(0).terms to []"
+            )
 
         a = Constant(1)
         a.terms = []

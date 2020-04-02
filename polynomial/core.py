@@ -1,5 +1,4 @@
 """This module defines mutable polynomials, monomials and constants."""
-import inspect
 from copy import deepcopy
 from math import inf
 import string
@@ -603,7 +602,9 @@ def check_degree_is_valid(fallback, valid_degrees):
 def setattr_decorator(degree):
     """Decorate __setattr__ to handle single variable modifications."""
     def wrapper(_setattr):
-        check_deg_setattr = check_degree_is_valid(Polynomial.__setattr__, degree)(_setattr)
+        check_deg_setattr = check_degree_is_valid(
+            Polynomial.__setattr__, degree
+        )(_setattr)
 
         def decorator(self, name, new_value):
             if len(name) == 1:
