@@ -11,6 +11,7 @@ from polynomial import (
     ZeroPolynomial,
     LinearBinomial,
     QuadraticTrinomial,
+    DegreeError
 )
 from polynomial.frozen import Freezable
 
@@ -868,6 +869,38 @@ class TestPolynomialsOperations(unittest.TestCase):
         self._assert_polynomials_are_the_same(e, a + b)
         # b + a requires a cast since b's degree does change.
         self._assert_polynomials_are_the_same(ep, b + a)
+
+    def test_setting_empty_terms_mutable_degree(self):
+        """Test setting empty terms."""
+        mutable = [
+            Polynomial(1, 2, 3),
+            Monomial(1, 2),
+        ]
+
+        for val in mutable:
+            val.terms = []
+            self._assert_polynomials_are_the_same(val.zero_instance(), val)
+
+    def test_setting_empty_terms_immutable_degree(self):
+        """Test setting empty terms."""
+        immutable = [
+            QuadraticTrinomial(1, 2, 3),
+            LinearBinomial(1, 2),
+        ]
+
+        for val in immutable:
+            self.assertRaises(DegreeError, val.__setattr__, "terms", [])
+
+        try:
+            a = Constant(0)
+            a.terms = []
+            a = Constant(5)
+            a.terms = []
+        except DegreeError:
+            self.assertFalse(True, "Should be able to set Constant(0).terms to []")
+
+        a = Constant(1)
+        a.terms = []
 
 
 if __name__ == '__main__':

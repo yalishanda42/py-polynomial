@@ -29,7 +29,7 @@ class Binomial(Polynomial):
         )
 
 
-class LinearBinomial(Binomial, FixedDegreePolynomial):
+class LinearBinomial(Binomial, FixedDegreePolynomial, valid_degrees=1):
     """Implements linear binomials and their methods."""
 
     def __init__(self, a=1, b=1):

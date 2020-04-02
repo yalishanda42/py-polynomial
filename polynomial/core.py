@@ -569,8 +569,8 @@ class DegreeError(Exception):
     """Raised when a Polynomial's degree changes."""
 
 
-def check_degree_constant(fallback):
-    """Check if the degree has changed and respond accordingly.
+def check_degree_is_valid(fallback, valid_degrees):
+    """Check if the degree is valid and respond accordingly.
 
     If self.degree changes, we upcast to a Polynomial and try
     calling the provided fallback method.
@@ -587,7 +587,6 @@ def check_degree_constant(fallback):
     def wrapper(method):
         def decorator(self, *args, **kwargs):
             orig_terms = self.terms
-            orig_degree = self.degree
             try:
                 ret_val = method(self, *args, **kwargs)
             # If we directly modify self.terms
@@ -595,7 +594,7 @@ def check_degree_constant(fallback):
                 # May have tried to set a bad degree.
                 return retry_op(self, orig_terms, *args, **kwargs)
 
-            if self.degree == orig_degree:
+            if self.degree in valid_degrees:
                 return ret_val
 
             # If we do something that modifies self._vector
@@ -607,18 +606,21 @@ def check_degree_constant(fallback):
     return wrapper
 
 
-def setattr_decorator(_setattr):
+def setattr_decorator(degree):
     """Decorate __setattr__ to handle single variable modifications."""
-    check_deg_setattr = check_degree_constant(Polynomial.__setattr__)(_setattr)
+    def wrapper(_setattr):
+        check_deg_setattr = check_degree_is_valid(Polynomial.__setattr__, degree)(_setattr)
 
-    def decorator(self, name, new_value):
-        if len(name) == 1:
-            return check_deg_setattr(self, name, new_value)
-        # Trying to intercept self._vector = []
-        # leads to a mutual recursion.
-        return _setattr(self, name, new_value)
+        def decorator(self, name, new_value):
+            if len(name) == 1:
+                return check_deg_setattr(self, name, new_value)
+            # Trying to intercept self._vector = []
+            # leads to a mutual recursion.
+            return _setattr(self, name, new_value)
 
-    return decorator
+        return decorator
+
+    return wrapper
 
 
 class FixedDegreePolynomial(Polynomial):
@@ -631,13 +633,19 @@ class FixedDegreePolynomial(Polynomial):
 
     def __init_subclass__(cls, **kwargs):
         """Init a subclass of self."""
+        deg = kwargs["valid_degrees"]
+        if not isinstance(deg, tuple):
+            deg = (deg, )
+
+        cls.valid_degrees = deg
+
         for attr in dir(cls):
             val = getattr(cls, attr)
             if callable(val) and attr in cls.self_mutating:
                 poly_attr = getattr(Polynomial, attr)
-                setattr(cls, attr, check_degree_constant(poly_attr)(val))
+                setattr(cls, attr, check_degree_is_valid(poly_attr, deg)(val))
 
-        cls.__setattr__ = setattr_decorator(cls.__setattr__)
+        cls.__setattr__ = setattr_decorator(deg)(cls.__setattr__)
         cls.terms = FixedDegreePolynomial.terms
 
     @property
@@ -649,8 +657,11 @@ class FixedDegreePolynomial(Polynomial):
     @terms.setter
     def terms(self, terms):
         """Set self.terms. Raises DegreeError if self.degree changes."""
-        curr_deg = self.degree
         if not terms:
+            if -inf not in self.valid_degrees:
+                raise DegreeError(
+                    "self.terms received terms which changed its degree."
+                )
             self._vector = [0]
             return
 
@@ -659,7 +670,8 @@ class FixedDegreePolynomial(Polynomial):
         for coeff, deg in terms:
             self._vector[deg] += coeff
         self._trim()
-        if self.degree != curr_deg:
+
+        if self.degree not in self.valid_degrees:
             raise DegreeError(
                 "self.terms received terms which changed its degree."
             )
@@ -818,7 +830,7 @@ class Monomial(Polynomial):
         return "Monomial({0!r}, {1!r})".format(self.a, self.degree)
 
 
-class Constant(Monomial, FixedDegreePolynomial):
+class Constant(Monomial, FixedDegreePolynomial, valid_degrees=(0, -inf)):
     """Implements constants as monomials of degree 0."""
 
     def __init__(self, const=1):

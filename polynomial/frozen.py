@@ -1,5 +1,6 @@
 """This module defines the Freezable interface and subclasses."""
-from polynomial.core import Constant, Polynomial, extract_polynomial
+from math import inf
+from polynomial.core import Constant, Polynomial, extract_polynomial, FixedDegreePolynomial
 
 
 class Freezable:
@@ -56,7 +57,7 @@ class FrozenPolynomial(Freezable, Polynomial):
         return "Frozen" + super().__repr__()
 
 
-class ZeroPolynomial(Freezable, Constant):
+class ZeroPolynomial(Freezable, Constant, FixedDegreePolynomial, valid_degrees=-inf):
     """The zero polynomial."""
 
     def __init__(self):

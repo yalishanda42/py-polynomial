@@ -42,7 +42,7 @@ class Trinomial(Polynomial):
         )
 
 
-class QuadraticTrinomial(Trinomial, FixedDegreePolynomial):
+class QuadraticTrinomial(Trinomial, FixedDegreePolynomial, valid_degrees=2):
     """Implements quadratic trinomials and their related methods."""
 
     def __init__(self, a=1, b=1, c=1):
