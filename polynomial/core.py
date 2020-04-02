@@ -603,16 +603,11 @@ class FixedDegreePolynomial(Polynomial):
                 poly_attr = getattr(Polynomial, attr)
                 setattr(cls, attr, check_degree_is_valid(poly_attr)(val))
 
-        __xsetitem__ = cls.__setitem__
         __xsetattr__ = cls.__setattr__
 
         # Methods are defined inline to allow using the class's original
         # __setitem__ / __setattr__ calls (eg. for Freezable, and later,
         # FixedTermPolynomial (which would have a fixed number of terms)).
-        def __setitem__(self, key, value):
-            __xsetitem__(self, key, value)
-            if self.degree not in self.valid_degrees:
-                raise DegreeError("Set self._vector to an invalid state.")
 
         def __setattr__(self, key, value):
             """Implement self.key = value."""
@@ -636,7 +631,6 @@ class FixedDegreePolynomial(Polynomial):
                     raise DegreeError("Set self._vector to an invalid state.")
                 self._trim = xtrim
 
-        cls.__setitem__ = __setitem__
         cls.__setattr__ = __setattr__
         cls.terms = FixedDegreePolynomial.terms
 
