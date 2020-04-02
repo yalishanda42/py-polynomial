@@ -50,7 +50,7 @@ class Polynomial:
     """Implements a single-variable mathematical polynomial."""
 
     @accepts_many_arguments
-    def __init__(self, iterable=None, from_monomials=False):
+    def __init__(self, iterable, from_monomials=False):
         """Initialize the polynomial.
 
         iterable ::= the coefficients from the highest degree term
@@ -68,9 +68,6 @@ class Polynomial:
         Polynomial([(1,4), (2,3), (3,2), (4,1), (5,0)], from_monomials=True)
         Polynomial(((i + 1, 4 - i) for i in range(5)), from_monomials=True)
         """
-        if iterable is None:
-            iterable = []
-
         iterable = list(iterable)
 
         if from_monomials:
@@ -178,16 +175,12 @@ class Polynomial:
         self._trim()
 
     @property
-    def monomials(self, reverse=True):
+    def monomials(self):
         """Return a list with all terms in the form of monomials.
 
-        List is sorted from the highest degree term to the lowest
-        by default.
+        List is sorted from the highest degree term to the lowest.
         """
-        if reverse:
-            return [Monomial(k, deg) for k, deg in self.terms]
-
-        return [Monomial(k, deg) for k, deg in reversed(self.terms)]
+        return [Monomial(k, deg) for k, deg in self.terms]
 
     def calculate(self, x):
         """Calculate the value of the polynomial at a given point."""
@@ -230,8 +223,14 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         """Set the coefficient of the term with the given degree."""
         if isinstance(degree, slice):
             self._vector[degree] = new_value
-        if degree == -inf and self.degree == -inf:
-            self._vector = [new_value]
+        elif degree == -inf:
+            if self.degree == -inf:
+                self._vector = [new_value]
+            else:
+                raise IndexError(
+                    "Can not set term with degree -inf on a"
+                    " non-zero polynomial."
+                )
         elif degree > self.degree:
             raise IndexError("Attempt to set coefficient of term with \
 degree {0} of a {1}-degree polynomial".format(degree, self.degree))

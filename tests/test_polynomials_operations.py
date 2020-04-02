@@ -14,6 +14,7 @@ from polynomial import (
     QuadraticTrinomial,
     DegreeError
 )
+from polynomial.core import extract_polynomial
 from polynomial.frozen import Freezable
 
 
@@ -471,11 +472,13 @@ class TestPolynomialsOperations(unittest.TestCase):
         m_one = Monomial(1, 0)
         c = Constant(5)
         m = Monomial(5, 10)
+        mz = Monomial(0, 1)
         z = ZeroPolynomial()
         p = Polynomial(1, 2, 3)
 
         self._assert_polynomials_are_the_same(one, c ** 0)
         self._assert_polynomials_are_the_same(m_one, m ** 0)
+        self._assert_polynomials_are_the_same(m_one, mz ** 0)
         self._assert_polynomials_are_the_same(one, z ** 0)
         self._assert_polynomials_are_the_same(one, p ** 0)
 
@@ -1083,6 +1086,7 @@ class TestPolynomialsOperations(unittest.TestCase):
                     self.assertNotEqual(lhs, rhs)
 
     def test_ipow_matches_pow(self):
+        """Test that x **= y behaves as expected."""
         to_test = [
             Polynomial(1, 2, 3),
             Monomial(1, 2),
@@ -1096,6 +1100,7 @@ class TestPolynomialsOperations(unittest.TestCase):
             self._assert_polynomials_are_the_same(val ** 5, copy_val)
 
     def test_ipow_zero_gives_one(self):
+        """Test that x **= 0 returns an appropriate 1 polynomial."""
         to_test = [
             Polynomial(1, 2, 3),
             Monomial(1, 2),
@@ -1118,6 +1123,88 @@ class TestPolynomialsOperations(unittest.TestCase):
             expected = one_maps[type(val)]
             val **= 0
             self._assert_polynomials_are_the_same(expected, val)
+
+    def test_getitem(self):
+        """Test getitem on slices, out of bounds, and in bound indices."""
+        a = Polynomial(6, 5, 4, 3, 2, 1)
+        self.assertEqual([1, 2, 3, 4, 5, 6], a[:])
+        self.assertEqual([1, 2], a[:2])
+        self.assertEqual([3, 4, 5, 6], a[2:])
+        self.assertEqual(4, a[3])
+        self.assertRaises(IndexError, a.__getitem__, -inf)
+        self.assertRaises(IndexError, a.__getitem__, 6)
+
+    def test_setitem(self):
+        """Test getitem on slices, out of bounds, and in bound indices."""
+        a = Polynomial(6, 5, 4, 3, 2, 1)
+        a[:] = [1, 2, 3, 4, 5, 6]
+        self.assertEqual([1, 2, 3, 4, 5, 6], a[:])
+        a[1] = 3
+        self.assertEqual(3, a[1])
+        a[1:] = [1, 2, 3, 4, 5]
+        self.assertEqual([1, 1, 2, 3, 4, 5], a[:])
+        self.assertRaises(IndexError, a.__setitem__, -inf, 1)
+        self.assertRaises(IndexError, a.__setitem__, 6, 1)
+
+    def test_extract_polynomial_raises_errors(self):
+        """Test that extract_polynomial errors on bad input."""
+        bad_inputs = ["a", [1, 2, 3], (1, 2), None]
+
+        @extract_polynomial
+        def fn(a, b):
+            pass
+
+        for bad_input in bad_inputs:
+            self.assertRaises(ValueError, fn, None, bad_input)
+
+    def test_derivative_requires_non_negative_int(self):
+        """Test that nth_derivative errors on bad input."""
+        bad_inputs = [1.0, 1 + 0j, -1, "1", (1, 2), None]
+
+        a = Polynomial(1, 2, 3)
+
+        for bad_input in bad_inputs:
+            self.assertRaises(ValueError, a.nth_derivative, bad_input)
+
+    def test_get_monomials(self):
+        """Test that Polynomial setter / getter errors on bad input."""
+        p = Polynomial(1, 2, 3, 4)
+        self.assertRaises(AttributeError, p.__getattr__, "1")
+        self.assertRaises(AttributeError, p.__setattr__, "1", 1)
+
+    def test_monomial_inequality(self):
+        """Test that monomial inequality is correct both ways."""
+        m1 = Monomial(1, 2)
+        m2 = Monomial(3, 2)
+        m3 = Monomial(1, 4)
+        self.assertGreater(m3, m2)
+        self.assertGreater(m3, m1)
+        self.assertGreater(m2, m1)
+        self.assertFalse(m2 > m3)
+        self.assertFalse(m1 > m2)
+        self.assertFalse(m1 > m3)
+        self.assertLess(m1, m3)
+        self.assertLess(m2, m3)
+        self.assertLess(m1, m2)
+        self.assertFalse(m3 < m1)
+        self.assertFalse(m3 < m2)
+        self.assertFalse(m2 < m1)
+
+    def test_calculate(self):
+        """Tests calculate on a simple polynomial."""
+        a = Polynomial(1, 2, 3)
+
+        def eqn(x):
+            return x ** 2 + 2 * x + 3
+
+        for i in range(-100, 100):
+            i = i/100
+            self.assertEqual(eqn(i), a.calculate(i))
+
+    def test_calculate_zero_polynomial(self):
+        self.assertEqual(0, ZeroPolynomial().calculate(1))
+        self.assertEqual(0, Constant(0).calculate(5))
+        self.assertEqual(0, Monomial(0, 1).calculate(1.1))
 
 
 if __name__ == '__main__':
