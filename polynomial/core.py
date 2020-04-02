@@ -289,6 +289,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
         return " ".join(terms)
 
+    @extract_polynomial
     def __eq__(self, other):
         """Return self == other.
 
@@ -299,6 +300,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
         return self.degree == other.degree and self.terms == other.terms
 
+    @extract_polynomial
     def __ne__(self, other):
         """Return self != other.
 
@@ -307,7 +309,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         if other == 0:
             return bool(self)
 
-        return self.degree != other.degree and self.terms != other.terms
+        return self.degree != other.degree or self.terms != other.terms
 
     def __bool__(self):
         """Return True if self is not a zero polynomial, otherwise False."""
@@ -371,7 +373,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     def __pos__(self):
         """Return +self."""
         self._trim()
-        return self
+        return deepcopy(self)
 
     def __neg__(self):
         """Return -self."""

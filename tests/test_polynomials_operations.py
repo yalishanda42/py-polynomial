@@ -848,7 +848,7 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertRaises(AttributeError, b.__setitem__, 0, 1)
         self.assertRaises(AttributeError, b.__setattr__, "a", 1)
 
-    def test_trinomial_addition(self):
+    def test_trinomial_binomial_addition(self):
         """Test that QuadraticTrinomial behaves as expected."""
         a = QuadraticTrinomial(1, 2, 3)
         b = LinearBinomial(1, 2)
@@ -859,7 +859,7 @@ class TestPolynomialsOperations(unittest.TestCase):
         # b + a requires a cast since b's degree does change.
         self._assert_polynomials_are_the_same(ep, b + a)
 
-    def test_constant_addition(self):
+    def test_binomial_constant_addition(self):
         """Test that Constant behaves as expected."""
         a = LinearBinomial(1, 2)
         b = Constant(3)
@@ -921,6 +921,113 @@ class TestPolynomialsOperations(unittest.TestCase):
 
         a = LinearBinomial(5 + 10j, 2 + 1j)
         self.assertEqual(a.root, -(2 + 1j)/(5 + 10j))
+
+    def test_pos(self):
+        """Test that a Polynomial is equal to its positive version."""
+        a = Polynomial(1, 2, 3)
+        b = Monomial(1, 2)
+        c = Constant(5)
+        d = ZeroPolynomial()
+        e = QuadraticTrinomial(1, 3, 7)
+        f = LinearBinomial(9, 2)
+
+        self._assert_polynomials_are_the_same(a, +a)
+        self._assert_polynomials_are_the_same(b, +b)
+        self._assert_polynomials_are_the_same(c, +c)
+        self._assert_polynomials_are_the_same(d, +d)
+        self._assert_polynomials_are_the_same(e, +e)
+        self._assert_polynomials_are_the_same(f, +f)
+
+    def test_div_by_zero(self):
+        """Test that division by 0 is not possible."""
+        to_test = [
+            Polynomial(1, 2, 3),
+            Monomial(1, 2),
+            Constant(5),
+            ZeroPolynomial(),
+            QuadraticTrinomial(1, 3, 7),
+            LinearBinomial(9, 2),
+        ]
+
+        for val in to_test:
+            self.assertRaises(ZeroDivisionError, val.__floordiv__, 0)
+            self.assertRaises(ZeroDivisionError, val.__ifloordiv__, 0)
+            self.assertRaises(ZeroDivisionError, val.__mod__, 0)
+            self.assertRaises(ZeroDivisionError, val.__imod__, 0)
+            self.assertRaises(ZeroDivisionError, val.__divmod__, 0)
+
+    def test_pow_by_negative(self):
+        """Test that pow by negative is not possible."""
+        to_test = [
+            Polynomial(1, 2, 3),
+            Monomial(1, 2),
+            Constant(5),
+            ZeroPolynomial(),
+            QuadraticTrinomial(1, 3, 7),
+            LinearBinomial(9, 2),
+        ]
+
+        for val in to_test:
+            self.assertRaises(ValueError, val.__pow__, -1)
+            self.assertRaises(ValueError, val.__ipow__, -2)
+
+    def test_pow_by_non_integer(self):
+        """Test that pow by negative is not possible."""
+        to_test = [
+            Polynomial(1, 2, 3),
+            Monomial(1, 2),
+            Constant(5),
+            ZeroPolynomial(),
+            QuadraticTrinomial(1, 3, 7),
+            LinearBinomial(9, 2),
+        ]
+
+        for val in to_test:
+            self.assertRaises(ValueError, val.__pow__, 1.2)
+            self.assertRaises(ValueError, val.__ipow__, 1.5)
+
+    def test_monomial_coefficient(self):
+        """Test that setting a Monomial's coefficient behaves as expected."""
+        a = Monomial(1, 2)
+        a.coefficient = 2
+        expected = Monomial(2, 2)
+        self._assert_polynomials_are_the_same(expected, a)
+        b = Monomial(1, 2)
+        b.coefficient = 0
+        expected = Monomial(0, 0)
+        self._assert_polynomials_are_the_same(expected, b)
+
+    def test_constant_equality(self):
+        """Test that pow by negative is not possible."""
+        to_test = [
+            Polynomial(1),
+            Monomial(1, 0),
+            Constant(1),
+        ]
+
+        for val in to_test:
+            self.assertEqual(Constant(1), val)
+
+    def test_inequality(self):
+        """Test that pow by negative is not possible."""
+        to_test = [
+            Polynomial(1, 2, 3),
+            Monomial(1, 2),
+            Constant(5),
+            ZeroPolynomial(),
+            QuadraticTrinomial(1, 3, 7),
+            LinearBinomial(9, 2),
+            7
+        ]
+
+        for i, lhs in enumerate(to_test):
+            for j, rhs in enumerate(to_test):
+                if i == j:
+                    self.assertTrue(lhs == lhs)
+                    self.assertFalse(lhs != lhs)
+                else:
+                    self.assertFalse(lhs == rhs)
+                    self.assertNotEqual(lhs, rhs)
 
 
 if __name__ == '__main__':

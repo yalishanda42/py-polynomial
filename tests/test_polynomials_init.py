@@ -160,6 +160,11 @@ class TestPolynomialsInit(unittest.TestCase):
         """Test that QuadraticTrinomial(0, ?) raises a ValueError."""
         self.assertRaises(ValueError, QuadraticTrinomial, 0, 1)
 
+    def test_monomial_degree_positive_int(self):
+        """Test that monomial only accepts a positive int."""
+        self.assertRaises(ValueError, Monomial, 1, -1)
+        self.assertRaises(ValueError, Monomial, 1, 1.2)
+
 
 if __name__ == '__main__':
     unittest.main()
