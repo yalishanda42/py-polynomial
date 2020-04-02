@@ -152,6 +152,14 @@ class TestPolynomialsInit(unittest.TestCase):
 
         self.assertEqual(expected, qt)
 
+    def test_linear_binomial_fails_leading_zero(self):
+        """Test that LinearBinomial(0, ?) raises a ValueError."""
+        self.assertRaises(ValueError, LinearBinomial, 0, 1)
+
+    def test_quadratic_trinomial_fails_leading_zero(self):
+        """Test that QuadraticTrinomial(0, ?) raises a ValueError."""
+        self.assertRaises(ValueError, QuadraticTrinomial, 0, 1)
+
 
 if __name__ == '__main__':
     unittest.main()

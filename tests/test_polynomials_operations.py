@@ -902,6 +902,26 @@ class TestPolynomialsOperations(unittest.TestCase):
         a = Constant(1)
         a.terms = []
 
+    def test_linear_binomial_roots(self):
+        """Test that LinearBinomial.root is correct."""
+        a = LinearBinomial(10, 0)
+        self.assertEqual(a.root, 0)
+
+        a = LinearBinomial(-10, 0)
+        self.assertEqual(a.root, 0)
+
+        a = LinearBinomial(11, 5)
+        self.assertEqual(a.root, -5/11)
+
+        a = LinearBinomial(12.1, 3)
+        self.assertEqual(a.root, -3/12.1)
+
+        a = LinearBinomial(13.2, 3.6)
+        self.assertEqual(a.root, -3.6/13.2)
+
+        a = LinearBinomial(5 + 10j, 2 + 1j)
+        self.assertEqual(a.root, -(2 + 1j)/(5 + 10j))
+
 
 if __name__ == '__main__':
     unittest.main()
