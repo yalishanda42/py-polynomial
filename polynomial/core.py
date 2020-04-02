@@ -554,7 +554,7 @@ class DegreeError(Exception):
     """Raised when a Polynomial's degree changes."""
 
 
-def check_degree_is_valid(fallback, valid_degrees):
+def check_degree_is_valid(fallback):
     """Check if the degree is valid and respond accordingly.
 
     If self.degree changes, we upcast to a Polynomial and try
@@ -601,7 +601,7 @@ class FixedDegreePolynomial(Polynomial):
             val = getattr(cls, attr)
             if callable(val) and attr in cls.self_mutating:
                 poly_attr = getattr(Polynomial, attr)
-                setattr(cls, attr, check_degree_is_valid(poly_attr, deg)(val))
+                setattr(cls, attr, check_degree_is_valid(poly_attr)(val))
 
         cls.__setitem__ = FixedDegreePolynomial.__setitem__
         cls.__setattr__ = FixedDegreePolynomial.__setattr__
