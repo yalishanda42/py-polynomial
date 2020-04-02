@@ -606,8 +606,8 @@ class FixedDegreePolynomial(Polynomial):
         __xsetattr__ = cls.__setattr__
 
         # Methods are defined inline to allow using the class's original
-        # __setitem__ / __setattr__ calls (eg. for Freezable, and later,
-        # FixedTermPolynomial (which would have a fixed number of terms)).
+        # __setattr__ calls (eg. for Freezable, and later, FixedTermPolynomial
+        # (which would have a fixed number of terms)).
 
         def __setattr__(self, key, value):
             """Implement self.key = value."""

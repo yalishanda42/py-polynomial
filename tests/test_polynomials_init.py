@@ -167,7 +167,12 @@ class TestPolynomialsInit(unittest.TestCase):
 
     def test_polynomial_with_non_monomial_terms(self):
         """Test that Polynomial from monomials with > 2 tuples fails."""
-        self.assertRaises(TypeError, Polynomial, [(1, 2, 3)], from_monomials=True)
+        self.assertRaises(
+            TypeError,
+            Polynomial,
+            [(1, 2, 3)],
+            from_monomials=True
+        )
 
 if __name__ == '__main__':
     unittest.main()
