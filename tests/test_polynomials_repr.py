@@ -1,6 +1,9 @@
 """Unit-testing module defining polynomials __repr__ test cases."""
 
+import inspect
 import unittest
+
+import polynomial
 from polynomial import (
     Constant,
     LinearBinomial,
@@ -8,7 +11,9 @@ from polynomial import (
     Polynomial,
     QuadraticTrinomial,
     ZeroPolynomial,
-    FrozenPolynomial
+    FrozenPolynomial,
+    Trinomial,
+    Binomial
 )
 
 
@@ -55,11 +60,27 @@ class TestPolynomialsRepr(unittest.TestCase):
 
         self.assertEqual(expect, r)
 
+    def test_binomial(self):
+        """Test that repr() output of a Binomial is valid."""
+        expect = "Binomial(Monomial(4, 3), Monomial(2, 1))"
+
+        r = repr(Binomial((4, 3), (2, 1)))
+
+        self.assertEqual(expect, r)
+
     def test_linear_binomial(self):
         """Test that repr() output of a LinearBinomial is valid."""
         expect = "LinearBinomial(5, 2)"
 
         r = repr(LinearBinomial(5, 2))
+
+        self.assertEqual(expect, r)
+
+    def test_trinomial(self):
+        """Test that repr() output of a Trinomial is valid."""
+        expect = "Trinomial(Monomial(5, 5), Monomial(2, 3), Monomial(1, 1))"
+
+        r = repr(Trinomial((5, 5), (2, 3), (1, 1)))
 
         self.assertEqual(expect, r)
 
@@ -77,6 +98,19 @@ class TestPolynomialsRepr(unittest.TestCase):
         expect = "FrozenPolynomial(1, 2, 3)"
         r = repr(FrozenPolynomial(1, 2, 3))
         self.assertEqual(expect, r)
+
+    def test_all_reprs_start_correctly(self):
+        """Test that the repr of all classes start correctly."""
+        for cls_str in dir(polynomial):
+            cls = getattr(polynomial, cls_str)
+            if not inspect.isclass(cls):
+                continue
+            if not issubclass(cls, Polynomial):
+                continue
+            self.assertTrue(
+                repr(cls()).startswith(cls_str),
+                "{0} should start with {1}".format(repr(cls()), cls_str)
+            )
 
 
 if __name__ == '__main__':

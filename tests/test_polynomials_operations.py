@@ -1,6 +1,7 @@
 """Unit-testing module for testing various polynomial operations."""
 
 import unittest
+from copy import deepcopy
 from math import inf
 
 from polynomial import (
@@ -11,7 +12,9 @@ from polynomial import (
     ZeroPolynomial,
     LinearBinomial,
     QuadraticTrinomial,
+    DegreeError
 )
+from polynomial.core import extract_polynomial, FixedDegreePolynomial
 from polynomial.frozen import Freezable
 
 
@@ -399,6 +402,15 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertIn(set(terms), p)
         self.assertIn(Polynomial(terms, from_monomials=True), p)
 
+    def test_membership_against_invalid_types(self):
+        """Test that all valid types are handled in membership check."""
+        x = Polynomial("a", 2, 3)
+        self.assertRaises(ValueError, x.__contains__, 5)
+        self.assertRaises(ValueError, x.__contains__, "5")
+        self.assertRaises(ValueError, x.__contains__, "a")
+        self.assertRaises(ValueError, x.__contains__, 1.2)
+        self.assertRaises(ValueError, x.__contains__, 1+0j)
+
     def test_membership_false_on_partial_match(self):
         """Tests that membership is only true if all elements match."""
         p1 = Polynomial(1, 2, 3)
@@ -460,11 +472,13 @@ class TestPolynomialsOperations(unittest.TestCase):
         m_one = Monomial(1, 0)
         c = Constant(5)
         m = Monomial(5, 10)
+        mz = Monomial(0, 1)
         z = ZeroPolynomial()
         p = Polynomial(1, 2, 3)
 
         self._assert_polynomials_are_the_same(one, c ** 0)
         self._assert_polynomials_are_the_same(m_one, m ** 0)
+        self._assert_polynomials_are_the_same(m_one, mz ** 0)
         self._assert_polynomials_are_the_same(one, z ** 0)
         self._assert_polynomials_are_the_same(one, p ** 0)
 
@@ -560,17 +574,61 @@ class TestPolynomialsOperations(unittest.TestCase):
         m1 = Monomial(1, 5) << 10
         m2 = Monomial(1, 15) << -10
         m3 = Constant(5) << 10
+        m4 = Monomial(1, 15)
+        m4 <<= -10
 
         self._assert_polynomials_are_the_same(Monomial(1, 15), m1)
         self._assert_polynomials_are_the_same(Monomial(1, 5), m2)
         self._assert_polynomials_are_the_same(Monomial(5, 10), m3)
+        self._assert_polynomials_are_the_same(Monomial(1, 5), m4)
 
     def test_rshift_monomial(self):
         """Test that rshift on a monomial behaves correctly."""
         m1 = Monomial(1, 5) >> -10
         m2 = Monomial(1, 15) >> 10
+        m3 = Monomial(1, 5)
+        m3 >>= -10
+
         self._assert_polynomials_are_the_same(Monomial(1, 15), m1)
         self._assert_polynomials_are_the_same(Monomial(1, 5), m2)
+        self._assert_polynomials_are_the_same(Monomial(1, 15), m3)
+
+    def test_lshift_zero_monomial(self):
+        """Test that lshift on a zero monomial behaves correctly."""
+        m = Monomial(0, 1) << 5
+        c = Constant(0) << 10
+        z = ZeroPolynomial() << 2
+        em = Monomial(0, 0)
+        ec = Constant(0)
+        ez = ZeroPolynomial()
+
+        self._assert_polynomials_are_the_same(em, m)
+        self._assert_polynomials_are_the_same(ec, c)
+        self._assert_polynomials_are_the_same(ez, z)
+
+    def test_shift_zero_polynomial(self):
+        """Test that shifting zero polynomial does nothing."""
+        z = ZeroPolynomial()
+        z1 = z << 1
+        z2 = z >> 1
+        z3 = z << -1
+        z4 = z >> -1
+        z5 = ZeroPolynomial()
+        z6 = ZeroPolynomial()
+        z7 = ZeroPolynomial()
+        z8 = ZeroPolynomial()
+        z5 <<= 1
+        z6 >>= 1
+        z7 <<= -1
+        z8 >>= -1
+        self._assert_polynomials_are_the_same(z, z1)
+        self._assert_polynomials_are_the_same(z, z2)
+        self._assert_polynomials_are_the_same(z, z3)
+        self._assert_polynomials_are_the_same(z, z4)
+        self._assert_polynomials_are_the_same(z, z5)
+        self._assert_polynomials_are_the_same(z, z6)
+        self._assert_polynomials_are_the_same(z, z7)
+        self._assert_polynomials_are_the_same(z, z8)
 
     def test_shift_polynomial_past_end(self):
         """Test that shifting a polynomial beyond 0 yields 0."""
@@ -590,16 +648,12 @@ class TestPolynomialsOperations(unittest.TestCase):
         self._assert_polynomials_are_the_same(m0, m2)
 
     def test_shifting_constant_not_inplace(self):
-        """Test that constant/zero objects are not modified in place."""
+        """Test that constant objects are not modified in place."""
         c = Constant(5)
         c1 = c
         c1 <<= 5
-        z = ZeroPolynomial()
-        z1 = z
-        z1 <<= 5
 
         self.assertIsNot(c, c1)
-        self.assertIsNot(z, z1)
 
     def test_constant_constant_mul_yields_constant(self):
         """Test that Constant * Constant yields Constant."""
@@ -847,6 +901,342 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertRaises(AttributeError, b.__setitem__, 0, 1)
         self.assertRaises(AttributeError, b.__setattr__, "a", 1)
 
+    def test_trinomial_binomial_addition(self):
+        """Test that QuadraticTrinomial behaves as expected."""
+        a = QuadraticTrinomial(1, 2, 3)
+        b = LinearBinomial(1, 2)
+        e = QuadraticTrinomial(1, 3, 5)
+        ep = Polynomial(e)
+        # a + b is safe because a's degree does not change.
+        self._assert_polynomials_are_the_same(e, a + b)
+        # b + a requires a cast since b's degree does change.
+        self._assert_polynomials_are_the_same(ep, b + a)
+
+    def test_binomial_constant_addition(self):
+        """Test that Constant behaves as expected."""
+        a = LinearBinomial(1, 2)
+        b = Constant(3)
+        e = LinearBinomial(1, 5)
+        ep = Polynomial(e)
+        # a + b is safe because a's degree does not change.
+        self._assert_polynomials_are_the_same(e, a + b)
+        # b + a requires a cast since b's degree does change.
+        self._assert_polynomials_are_the_same(ep, b + a)
+
+    def test_setting_empty_terms_mutable_degree(self):
+        """Test setting empty terms."""
+        mutable = [
+            Polynomial(1, 2, 3),
+            Monomial(1, 2),
+        ]
+
+        for val in mutable:
+            val.terms = []
+            self._assert_polynomials_are_the_same(val.zero_instance(), val)
+
+    def test_setting_empty_terms_immutable_degree(self):
+        """Test setting empty terms."""
+        immutable = [
+            QuadraticTrinomial(1, 2, 3),
+            LinearBinomial(1, 2),
+        ]
+
+        for val in immutable:
+            self.assertRaises(DegreeError, val.__setattr__, "terms", [])
+
+        try:
+            a = Constant(0)
+            a.terms = []
+            a = Constant(5)
+            a.terms = []
+        except DegreeError:
+            self.assertFalse(
+                True,
+                "Should be able to set Constant(0).terms to []"
+            )
+
+        a = Constant(1)
+        a.terms = []
+
+    def test_linear_binomial_roots(self):
+        """Test that LinearBinomial.root is correct."""
+        a = LinearBinomial(10, 0)
+        self.assertEqual(a.root, 0)
+
+        a = LinearBinomial(-10, 0)
+        self.assertEqual(a.root, 0)
+
+        a = LinearBinomial(11, 5)
+        self.assertEqual(a.root, -5/11)
+
+        a = LinearBinomial(12.1, 3)
+        self.assertEqual(a.root, -3/12.1)
+
+        a = LinearBinomial(13.2, 3.6)
+        self.assertEqual(a.root, -3.6/13.2)
+
+        a = LinearBinomial(5 + 10j, 2 + 1j)
+        self.assertEqual(a.root, -(2 + 1j)/(5 + 10j))
+
+    def test_pos(self):
+        """Test that a Polynomial is equal to its positive version."""
+        a = Polynomial(1, 2, 3)
+        b = Monomial(1, 2)
+        c = Constant(5)
+        d = ZeroPolynomial()
+        e = QuadraticTrinomial(1, 3, 7)
+        f = LinearBinomial(9, 2)
+
+        self._assert_polynomials_are_the_same(a, +a)
+        self._assert_polynomials_are_the_same(b, +b)
+        self._assert_polynomials_are_the_same(c, +c)
+        self._assert_polynomials_are_the_same(d, +d)
+        self._assert_polynomials_are_the_same(e, +e)
+        self._assert_polynomials_are_the_same(f, +f)
+
+    def test_div_by_zero(self):
+        """Test that division by 0 is not possible."""
+        to_test = [
+            Polynomial(1, 2, 3),
+            Monomial(1, 2),
+            Constant(5),
+            ZeroPolynomial(),
+            QuadraticTrinomial(1, 3, 7),
+            LinearBinomial(9, 2),
+        ]
+
+        for val in to_test:
+            self.assertRaises(ZeroDivisionError, val.__floordiv__, 0)
+            self.assertRaises(ZeroDivisionError, val.__ifloordiv__, 0)
+            self.assertRaises(ZeroDivisionError, val.__mod__, 0)
+            self.assertRaises(ZeroDivisionError, val.__imod__, 0)
+            self.assertRaises(ZeroDivisionError, val.__divmod__, 0)
+
+    def test_pow_by_negative(self):
+        """Test that pow by negative is not possible."""
+        to_test = [
+            Polynomial(1, 2, 3),
+            Monomial(1, 2),
+            Constant(5),
+            ZeroPolynomial(),
+            QuadraticTrinomial(1, 3, 7),
+            LinearBinomial(9, 2),
+        ]
+
+        for val in to_test:
+            self.assertRaises(ValueError, val.__pow__, -1)
+            self.assertRaises(ValueError, val.__ipow__, -2)
+
+    def test_pow_by_non_integer(self):
+        """Test that pow by non-integer type is not possible."""
+        to_test = [
+            Polynomial(1, 2, 3),
+            Monomial(1, 2),
+            Constant(5),
+            ZeroPolynomial(),
+            QuadraticTrinomial(1, 3, 7),
+            LinearBinomial(9, 2),
+        ]
+
+        for val in to_test:
+            self.assertRaises(ValueError, val.__pow__, 1.2)
+            self.assertRaises(ValueError, val.__ipow__, 1.5)
+
+    def test_monomial_coefficient(self):
+        """Test that setting a Monomial's coefficient behaves as expected."""
+        a = Monomial(1, 2)
+        a.coefficient = 2
+        expected = Monomial(2, 2)
+        self._assert_polynomials_are_the_same(expected, a)
+        b = Monomial(1, 2)
+        b.coefficient = 0
+        expected = Monomial(0, 0)
+        self._assert_polynomials_are_the_same(expected, b)
+
+    def test_constant_equality(self):
+        """Test that Constant(1) is equal to other instances of 1."""
+        to_test = [
+            Polynomial(1),
+            Monomial(1, 0),
+            Constant(1),
+            1
+        ]
+
+        for val in to_test:
+            self.assertEqual(Constant(1), val)
+
+    def test_inequality(self):
+        """Test that distinct values do not equal other."""
+        to_test = [
+            Polynomial(1, 2, 3),
+            Monomial(1, 2),
+            Constant(5),
+            ZeroPolynomial(),
+            QuadraticTrinomial(1, 3, 7),
+            LinearBinomial(9, 2),
+            7
+        ]
+
+        for i, lhs in enumerate(to_test):
+            for j, rhs in enumerate(to_test):
+                if i == j:
+                    self.assertTrue(lhs == lhs)
+                    self.assertFalse(lhs != lhs)
+                else:
+                    self.assertFalse(lhs == rhs)
+                    self.assertNotEqual(lhs, rhs)
+
+    def test_ipow_matches_pow(self):
+        """Test that x **= y behaves as expected."""
+        to_test = [
+            Polynomial(1, 2, 3),
+            Monomial(1, 2),
+            Constant(5),
+            ZeroPolynomial(),
+        ]
+
+        for val in to_test:
+            copy_val = deepcopy(val)
+            copy_val **= 5
+            self._assert_polynomials_are_the_same(val ** 5, copy_val)
+
+    def test_ipow_zero_gives_one(self):
+        """Test that x **= 0 returns an appropriate 1 polynomial."""
+        to_test = [
+            Polynomial(1, 2, 3),
+            Monomial(1, 2),
+            Constant(5),
+            ZeroPolynomial(),
+            QuadraticTrinomial(1, 3, 7),
+            LinearBinomial(9, 2),
+        ]
+
+        one_maps = {
+            Polynomial: Polynomial(1),
+            Monomial: Monomial(1, 0),
+            Constant: Constant(1),
+            ZeroPolynomial: Constant(1),
+            QuadraticTrinomial: Polynomial(1),
+            LinearBinomial: Polynomial(1),
+        }
+
+        for val in to_test:
+            expected = one_maps[type(val)]
+            val **= 0
+            self._assert_polynomials_are_the_same(expected, val)
+
+    def test_getitem(self):
+        """Test getitem on slices, out of bounds, and in bound indices."""
+        a = Polynomial(6, 5, 4, 3, 2, 1)
+        self.assertEqual([1, 2, 3, 4, 5, 6], a[:])
+        self.assertEqual([1, 2], a[:2])
+        self.assertEqual([3, 4, 5, 6], a[2:])
+        self.assertEqual(4, a[3])
+        self.assertRaises(IndexError, a.__getitem__, -inf)
+        self.assertRaises(IndexError, a.__getitem__, 6)
+
+    def test_setitem(self):
+        """Test getitem on slices, out of bounds, and in bound indices."""
+        a = Polynomial(6, 5, 4, 3, 2, 1)
+        a[:] = [1, 2, 3, 4, 5, 6]
+        self.assertEqual([1, 2, 3, 4, 5, 6], a[:])
+        a[1] = 3
+        self.assertEqual(3, a[1])
+        a[1:] = [1, 2, 3, 4, 5]
+        self.assertEqual([1, 1, 2, 3, 4, 5], a[:])
+        self.assertRaises(IndexError, a.__setitem__, -inf, 1)
+        self.assertRaises(IndexError, a.__setitem__, 6, 1)
+
+    def test_extract_polynomial_raises_errors(self):
+        """Test that extract_polynomial errors on bad input."""
+        bad_inputs = ["a", [1, 2, 3], (1, 2), None]
+
+        @extract_polynomial
+        def fn(a, b):
+            pass
+
+        for bad_input in bad_inputs:
+            self.assertRaises(ValueError, fn, None, bad_input)
+
+    def test_derivative_requires_non_negative_int(self):
+        """Test that nth_derivative errors on bad input."""
+        bad_inputs = [1.0, 1 + 0j, -1, "1", (1, 2), None]
+
+        a = Polynomial(1, 2, 3)
+
+        for bad_input in bad_inputs:
+            self.assertRaises(ValueError, a.nth_derivative, bad_input)
+
+    def test_get_monomials(self):
+        """Test that Polynomial setter / getter errors on bad input."""
+        p = Polynomial(1, 2, 3, 4)
+        self.assertRaises(AttributeError, p.__getattr__, "1")
+        self.assertRaises(AttributeError, p.__setattr__, "1", 1)
+
+    def test_monomial_inequality(self):
+        """Test that monomial inequality is correct both ways."""
+        m1 = Monomial(1, 2)
+        m2 = Monomial(3, 2)
+        m3 = Monomial(1, 4)
+        self.assertGreater(m3, m2)
+        self.assertGreater(m3, m1)
+        self.assertGreater(m2, m1)
+        self.assertFalse(m2 > m3)
+        self.assertFalse(m1 > m2)
+        self.assertFalse(m1 > m3)
+        self.assertLess(m1, m3)
+        self.assertLess(m2, m3)
+        self.assertLess(m1, m2)
+        self.assertFalse(m3 < m1)
+        self.assertFalse(m3 < m2)
+        self.assertFalse(m2 < m1)
+
+    def test_calculate(self):
+        """Tests calculate on a simple polynomial."""
+        a = Polynomial(1, 2, 3)
+
+        def eqn(x):
+            return x ** 2 + 2 * x + 3
+
+        for i in range(-100, 100):
+            i = i/100
+            self.assertEqual(eqn(i), a.calculate(i))
+
+    def test_calculate_zero_polynomial(self):
+        self.assertEqual(0, ZeroPolynomial().calculate(1))
+        self.assertEqual(0, Constant(0).calculate(5))
+        self.assertEqual(0, Monomial(0, 1).calculate(1.1))
+
+    def test_setattr_raises_error(self):
+        """Test that setting invalid terms raises an error."""
+        invalid_setattrs = [
+            ("_vector", [0, 0, 1]),
+            ("terms", [(1, 2), (0, 1)]),
+            ("terms", [(0, 2), (0, 1)]),
+            ("terms", [(0, 1), (1, 0)]),
+        ]
+        for attr, val in invalid_setattrs:
+            x = LinearBinomial(1, 2)
+            self.assertRaises(DegreeError, x.__setattr__, attr, val)
+
+    def test_setitem_is_ok(self):
+        """Test that setitem is fine for valid inputs."""
+        x = Constant(5)
+        x.a = 1
+        self._assert_polynomials_are_the_same(Constant(1), x)
+        x[0] = 0
+        self._assert_polynomials_are_the_same(Constant(0), x)
+
+    def test_setitem_raises_error(self):
+        """Test that setitem raises error on invalid inputs."""
+        lb = LinearBinomial(5, 1)
+        qt = QuadraticTrinomial(1, 2, 3)
+        self.assertRaises(DegreeError, lb.__setattr__, "a", 0)
+        self.assertRaises(DegreeError, qt.__setattr__, "a", 0)
+        lb = LinearBinomial(5, 1)
+        qt = QuadraticTrinomial(1, 2, 3)
+        self.assertRaises(DegreeError, lb.__setitem__, 1, 0)
+        self.assertRaises(DegreeError, qt.__setitem__, 2, 0)
 
 if __name__ == '__main__':
     unittest.main()

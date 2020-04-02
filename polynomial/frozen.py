@@ -1,5 +1,10 @@
 """This module defines the Freezable interface and subclasses."""
-from polynomial.core import Constant, Polynomial, extract_polynomial
+from math import inf
+from polynomial.core import (
+    Constant,
+    Polynomial,
+    extract_polynomial,
+)
 
 
 class Freezable:
@@ -27,6 +32,9 @@ class Freezable:
         else:
             raise AttributeError("Can not modify frozen object.")
 
+    def _no_op(self):
+        """Do nothing. Used as a dummy method."""
+
 
 class FrozenPolynomial(Freezable, Polynomial):
     """A polynomial which can not be directly modified."""
@@ -48,21 +56,19 @@ class FrozenPolynomial(Freezable, Polynomial):
         """Create a frozen copy of the polynomial."""
         return cls(polynomial)
 
-    def _no_op(self):
-        """Do nothing. Used as a dummy method."""
-
     def __repr__(self):
         """Return repr(self)."""
         return "Frozen" + super().__repr__()
 
 
-class ZeroPolynomial(Freezable, Constant):
+class ZeroPolynomial(Freezable, Constant, valid_degrees=-inf):
     """The zero polynomial."""
 
     def __init__(self):
         """Equivalent to Polynomial()."""
         Constant.__init__(self, 0)
         self._vector = tuple(self._vector)
+        self._trim = self._no_op
         self._freeze()
 
     @classmethod
@@ -93,9 +99,10 @@ class ZeroPolynomial(Freezable, Constant):
         if other == 0:
             return Constant(1)
 
-        # This call simplify enforces other >= 0 and is int.
+        # This call simply enforces other >= 0 and is int.
         # Could be moved out into a decorator.
-        return super().__ipow__(other)
+        super().__ipow__(other)
+        return ZeroPolynomial()
 
     def __repr__(self):
         """Return repr(self)."""

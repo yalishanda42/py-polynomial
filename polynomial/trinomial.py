@@ -1,6 +1,11 @@
 """This module defines different types of trinomials and their methods."""
 
-from polynomial.core import Polynomial, Monomial, Constant
+from polynomial.core import (
+    Polynomial,
+    Monomial,
+    Constant,
+    FixedDegreePolynomial
+)
 from math import sqrt
 
 
@@ -25,8 +30,19 @@ class Trinomial(Polynomial):
         args = [monomial1, monomial2, monomial3]
         Polynomial.__init__(self, args, from_monomials=True)
 
+    def __repr__(self):
+        """Return repr(self)."""
+        terms = self.terms
+        assert len(terms) == 3
+        t1, t2, t3 = terms
+        return (
+            "Trinomial(Monomial({0}, {1}), Monomial({2}, {3}), "
+            "Monomial({4}, {5}))"
+            .format(*t1, *t2, *t3)
+        )
 
-class QuadraticTrinomial(Trinomial):
+
+class QuadraticTrinomial(Trinomial, FixedDegreePolynomial, valid_degrees=2):
     """Implements quadratic trinomials and their related methods."""
 
     def __init__(self, a=1, b=1, c=1):

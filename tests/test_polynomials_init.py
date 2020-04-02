@@ -152,6 +152,27 @@ class TestPolynomialsInit(unittest.TestCase):
 
         self.assertEqual(expected, qt)
 
+    def test_linear_binomial_fails_leading_zero(self):
+        """Test that LinearBinomial(0, ?) raises a ValueError."""
+        self.assertRaises(ValueError, LinearBinomial, 0, 1)
+
+    def test_quadratic_trinomial_fails_leading_zero(self):
+        """Test that QuadraticTrinomial(0, ?) raises a ValueError."""
+        self.assertRaises(ValueError, QuadraticTrinomial, 0, 1)
+
+    def test_monomial_degree_positive_int(self):
+        """Test that monomial only accepts a positive int."""
+        self.assertRaises(ValueError, Monomial, 1, -1)
+        self.assertRaises(ValueError, Monomial, 1, 1.2)
+
+    def test_polynomial_with_non_monomial_terms(self):
+        """Test that Polynomial from monomials with > 2 tuples fails."""
+        self.assertRaises(
+            TypeError,
+            Polynomial,
+            [(1, 2, 3)],
+            from_monomials=True
+        )
 
 if __name__ == '__main__':
     unittest.main()
