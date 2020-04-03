@@ -4,12 +4,13 @@ from polynomial.core import (
     Polynomial,
     Monomial,
     Constant,
-    FixedDegreePolynomial
+    FixedDegreePolynomial,
+    FixedTermPolynomial
 )
 from math import sqrt
 
 
-class Trinomial(Polynomial):
+class Trinomial(FixedTermPolynomial, valid_term_counts=(0, 1, 2, 3)):
     """Implements single-variable mathematical trinomials."""
 
     def __init__(self,
@@ -42,7 +43,7 @@ class Trinomial(Polynomial):
         )
 
 
-class QuadraticTrinomial(Trinomial, FixedDegreePolynomial, valid_degrees=2):
+class QuadraticTrinomial(FixedDegreePolynomial, Trinomial, valid_degrees=2):
     """Implements quadratic trinomials and their related methods."""
 
     def __init__(self, a=1, b=1, c=1):

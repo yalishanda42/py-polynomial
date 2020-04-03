@@ -60,6 +60,10 @@ def _trim(_vector):
 
 class Polynomial:
     """Implements a single-variable mathematical polynomial."""
+    self_mutating = (
+        "__iadd__", "__isub__", "__imul__", "__imod__",
+        "__ifloordiv__", "__ipow__", "__ilshift__", "__irshift__",
+    )
 
     @accepts_many_arguments
     def __init__(self, iterable, from_monomials=False):
@@ -550,44 +554,43 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         )
 
 
-class DegreeError(Exception):
+class PolynomialError(Exception):
+    """Raised when a Polynomial encounters an error."""
+
+
+class DegreeError(PolynomialError):
     """Raised when a Polynomial's degree changes."""
 
 
-def check_degree_is_valid(fallback):
-    """Check if the degree is valid and respond accordingly.
+class TermError(PolynomialError):
+    """Raised when a Polynomial's term count changes."""
+
+
+def retry_in_case_of_error(fallback, error):
+    """If error is raised, run fallback with the same input.
 
     If self.degree changes, we upcast to a Polynomial and try
     calling the provided fallback method.
     """
-    def retry_op(self, orig_terms, *args, **kwargs):
-        """Reset self and retry operation on Polynomial."""
-        self.terms = orig_terms
-        self = Polynomial(self.terms, from_monomials=True)
-        return fallback(self, *args, **kwargs)
-
     def wrapper(method):
         def decorator(self, *args, **kwargs):
             orig_terms = self.terms
             try:
                 return method(self, *args, **kwargs)
             # If we directly modify self.terms
-            except DegreeError:
+            except error:
                 # This is done in the expectation that we're calling from
                 # FixedDegreePolynomial, which will always raise a
                 # DegreeError through __setattr__, __setitem__.
-                return retry_op(self, orig_terms, *args, **kwargs)
+                self.terms = orig_terms
+                self = Polynomial(self.terms, from_monomials=True)
+                return fallback(self, *args, **kwargs)
         return decorator
     return wrapper
 
 
 class FixedDegreePolynomial(Polynomial):
     """This Polynomial must maintain its degree."""
-
-    self_mutating = (
-        "__iadd__", "__isub__", "__imul__", "__imod__",
-        "__ifloordiv__", "__ipow__", "__ilshift__", "__irshift__",
-    )
 
     def __init_subclass__(cls, **kwargs):
         """Init a subclass of self."""
@@ -601,7 +604,12 @@ class FixedDegreePolynomial(Polynomial):
             val = getattr(cls, attr)
             if callable(val) and attr in cls.self_mutating:
                 poly_attr = getattr(Polynomial, attr)
-                setattr(cls, attr, check_degree_is_valid(poly_attr)(val))
+                setattr(
+                    cls, attr,
+                    retry_in_case_of_error(
+                        poly_attr, DegreeError
+                    )(val)
+                )
 
         __xsetattr__ = cls.__setattr__
 
@@ -632,10 +640,59 @@ class FixedDegreePolynomial(Polynomial):
                 self._trim = xtrim
 
         cls.__setattr__ = __setattr__
-        cls.terms = FixedDegreePolynomial.terms
 
 
-class Monomial(Polynomial):
+class FixedTermPolynomial(Polynomial):
+    """This Polynomial must maintain the number of terms."""
+
+    def __init_subclass__(cls, **kwargs):
+        """Init a subclass of self.
+
+        Expects valid_term_counts to be provided, and """
+        tc = kwargs["valid_term_counts"]
+        cls.valid_term_counts = tc
+
+        for attr in dir(cls):
+            val = getattr(cls, attr)
+            if callable(val) and attr in cls.self_mutating:
+                poly_attr = getattr(Polynomial, attr)
+                setattr(
+                    cls,
+                    attr,
+                    retry_in_case_of_error(
+                        poly_attr, TermError
+                    )(val)
+                )
+
+        __xsetattr__ = cls.__setattr__
+
+        def __setattr__(self, key, value):
+            """Implement self.key = value."""
+            if len(key) != 1 and key != "_vector":
+                __xsetattr__(self, key, value)
+            else:
+                # Disable trim to avoid mutual recursion.
+                xtrim = self._trim
+                self._trim = lambda: None
+
+                # Could be a single letter.
+                if key != "_vector":
+                    # Need to trim _vector due to the degree calls.
+                    __xsetattr__(self, "_vector", _trim(self._vector))
+                    __xsetattr__(self, key, value)
+                    __xsetattr__(self, "_vector", _trim(self._vector))
+                else:
+                    __xsetattr__(self, key, _trim(value))
+                if len(self.terms) not in self.valid_term_counts:
+                    raise TermError(
+                        "self._vector has {0} terms, should have {1} terms."
+                        .format(len(self.terms), self.valid_term_counts))
+                self._trim = xtrim
+
+        cls.__setattr__ = __setattr__
+
+
+class Monomial(FixedTermPolynomial, valid_term_counts=(0, 1)):
     """Implements a single-variable monomial. A single-term polynomial."""
 
     def __init__(self, coefficient=1, degree=1):
@@ -784,7 +841,7 @@ class Monomial(Polynomial):
         return "Monomial({0!r}, {1!r})".format(self.a, self.degree)
 
 
-class Constant(Monomial, FixedDegreePolynomial, valid_degrees=(0, -inf)):
+class Constant(FixedDegreePolynomial, Monomial, valid_degrees=(0, -inf)):
     """Implements constants as monomials of degree 0."""
 
     def __init__(self, const=1):

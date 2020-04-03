@@ -1,9 +1,14 @@
 """This module defines different types of binomials and their methods."""
 
-from polynomial.core import Polynomial, Monomial, FixedDegreePolynomial
+from polynomial.core import (
+    Polynomial,
+    Monomial,
+    FixedDegreePolynomial,
+    FixedTermPolynomial
+)
 
 
-class Binomial(Polynomial):
+class Binomial(FixedTermPolynomial, valid_term_counts=(0, 1, 2)):
     """Implements single-variable mathematical binomials."""
 
     def __init__(self, monomial1=None, monomial2=None):
@@ -29,7 +34,7 @@ class Binomial(Polynomial):
         )
 
 
-class LinearBinomial(Binomial, FixedDegreePolynomial, valid_degrees=1):
+class LinearBinomial(FixedDegreePolynomial, Binomial, valid_degrees=1):
     """Implements linear binomials and their methods."""
 
     def __init__(self, a=1, b=1):
