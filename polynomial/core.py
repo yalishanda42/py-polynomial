@@ -4,6 +4,18 @@ from math import inf
 import string
 
 
+class PolynomialError(Exception):
+    """Raised when a Polynomial encounters an error."""
+
+
+class DegreeError(PolynomialError):
+    """Raised when a Polynomial's degree changes."""
+
+
+class TermError(PolynomialError):
+    """Raised when a Polynomial's term count changes."""
+
+
 def accepts_many_arguments(function):
     """Make a function that accepts an iterable handle many *args."""
 
@@ -555,18 +567,6 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         )
 
 
-class PolynomialError(Exception):
-    """Raised when a Polynomial encounters an error."""
-
-
-class DegreeError(PolynomialError):
-    """Raised when a Polynomial's degree changes."""
-
-
-class TermError(PolynomialError):
-    """Raised when a Polynomial's term count changes."""
-
-
 def retry_in_case_of_error(fallback, error):
     """If error is raised, run fallback with the same input.
 
@@ -581,8 +581,8 @@ def retry_in_case_of_error(fallback, error):
             # If we directly modify self.terms
             except error:
                 # This is done in the expectation that we're calling from
-                # FixedDegreePolynomial, which will always raise a
-                # DegreeError through __setattr__, __setitem__.
+                # a Fixed_Polynomial, which will always raise an
+                # error through __setattr__, __setitem__.
                 self.terms = orig_terms
                 self = Polynomial(self.terms, from_monomials=True)
                 return fallback(self, *args, **kwargs)
