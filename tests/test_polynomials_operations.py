@@ -12,9 +12,10 @@ from polynomial import (
     ZeroPolynomial,
     LinearBinomial,
     QuadraticTrinomial,
-    DegreeError
+    DegreeError,
+    TermError,
 )
-from polynomial.core import extract_polynomial, FixedDegreePolynomial, TermError
+from polynomial.core import extract_polynomial
 from polynomial.frozen import Freezable
 
 

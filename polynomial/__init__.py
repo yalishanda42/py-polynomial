@@ -5,7 +5,9 @@
 
 from .core import (
     Constant,
+    PolynomialError,
     DegreeError,
+    TermError,
     Monomial,
     Polynomial,
 )
