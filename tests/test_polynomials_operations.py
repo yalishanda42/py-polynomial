@@ -12,9 +12,10 @@ from polynomial import (
     ZeroPolynomial,
     LinearBinomial,
     QuadraticTrinomial,
-    DegreeError
+    DegreeError,
+    TermError,
 )
-from polynomial.core import extract_polynomial, FixedDegreePolynomial
+from polynomial.core import extract_polynomial
 from polynomial.frozen import Freezable
 
 
@@ -1237,6 +1238,18 @@ class TestPolynomialsOperations(unittest.TestCase):
         qt = QuadraticTrinomial(1, 2, 3)
         self.assertRaises(DegreeError, lb.__setitem__, 1, 0)
         self.assertRaises(DegreeError, qt.__setitem__, 2, 0)
+
+    def test_monomial_can_only_have_one_or_no_terms(self):
+        """Test that setting terms works correctly."""
+        m = Monomial(1, 10)
+        self.assertRaises(TermError, m.__setattr__, "terms", [(1, 2), (3, 4)])
+        m = Monomial(1, 10)
+        m.terms = [(1, 2)]
+        self._assert_polynomials_are_the_same(Monomial(1, 2), m)
+        m = Monomial(1, 10)
+        m.terms = [(0, 2)]
+        self._assert_polynomials_are_the_same(Monomial(0, 2), m)
+
 
 if __name__ == '__main__':
     unittest.main()

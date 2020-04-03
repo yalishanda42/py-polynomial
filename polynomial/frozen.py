@@ -64,6 +64,10 @@ class FrozenPolynomial(Freezable, Polynomial):
 class ZeroPolynomial(Freezable, Constant, valid_degrees=-inf):
     """The zero polynomial."""
 
+    # Never used, since we would raise errors due to Freezable
+    # anyways.
+    valid_term_counts = (0, )
+
     def __init__(self):
         """Equivalent to Polynomial()."""
         Constant.__init__(self, 0)
