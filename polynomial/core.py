@@ -60,6 +60,7 @@ def _trim(_vector):
 
 class Polynomial:
     """Implements a single-variable mathematical polynomial."""
+
     self_mutating = (
         "__iadd__", "__isub__", "__imul__", "__imod__",
         "__ifloordiv__", "__ipow__", "__ilshift__", "__irshift__",
@@ -648,9 +649,9 @@ class FixedTermPolynomial(Polynomial):
     def __init_subclass__(cls, **kwargs):
         """Init a subclass of self.
 
-        Expects valid_term_counts to be provided, and """
-        tc = kwargs["valid_term_counts"]
-        cls.valid_term_counts = tc
+        Expects valid_term_counts to be provided as a tuple.
+        """
+        cls.valid_term_counts = kwargs["valid_term_counts"]
 
         for attr in dir(cls):
             val = getattr(cls, attr)
