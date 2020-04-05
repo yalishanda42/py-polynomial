@@ -84,8 +84,7 @@ def _degree(vec, tuples=True):
         return -inf
     if tuples:
         return max(vec, key=lambda term: term[1] if term[0] else -inf)[1]
-    else:
-        return len(vec) - 1
+    return len(vec) - 1
 
 
 def _mul(lhs, rhs):
@@ -527,7 +526,10 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
             wd0 = _degree(working)
             vec.append((val, wd - other_deg if wd0 != -inf else 0))
 
-        return Polynomial(vec, from_monomials=True), Polynomial(working, from_monomials=True)
+        return (
+            Polynomial(vec, from_monomials=True),
+            Polynomial(working, from_monomials=True)
+        )
 
     def __pow__(self, power, modulo=None):
         """Return self ** power or pow(self, other, modulo)."""
@@ -637,12 +639,11 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         if self.terms_are_valid(terms):
             self.terms = terms
             return self
-        else:
-            return Polynomial(terms, from_monomials=True)
+        return Polynomial(terms, from_monomials=True)
 
 
 def setvalue_decorator(error, _terms_are_valid, _fn):
-    """A decorator for __setatrr__."""
+    """Decorate __setattr__, checking if self._vector is still valid."""
     def method(self, *args, **kwargs):
         _fn(self, *args, **kwargs)
         if not _terms_are_valid(self, _to_terms(_trim(self._vector))):
@@ -667,10 +668,17 @@ class FixedDegreePolynomial(Polynomial):
             return _degree(terms) in self.valid_degrees
 
         def terms_are_valid(self, terms):
-            return _terms_are_valid(self, terms) and orig_terms_are_valid(self, terms)
+            return (
+                _terms_are_valid(self, terms)
+                and orig_terms_are_valid(self, terms)
+            )
 
         cls.terms_are_valid = terms_are_valid
-        cls.__setattr__ = setvalue_decorator(DegreeError, _terms_are_valid, cls.__setattr__)
+        cls.__setattr__ = setvalue_decorator(
+            DegreeError,
+            _terms_are_valid,
+            cls.__setattr__
+        )
 
 
 class FixedTermPolynomial(Polynomial):
@@ -690,11 +698,17 @@ class FixedTermPolynomial(Polynomial):
             return len(terms) in self.valid_term_counts
 
         def terms_are_valid(self, terms):
-            # Check that all conditions for terms to be valid are met.
-            return _terms_are_valid(self, terms) and orig_terms_are_valid(self, terms)
+            return (
+                _terms_are_valid(self, terms)
+                and orig_terms_are_valid(self, terms)
+            )
 
         cls.terms_are_valid = terms_are_valid
-        cls.__setattr__ = setvalue_decorator(TermError, _terms_are_valid, cls.__setattr__)
+        cls.__setattr__ = setvalue_decorator(
+            TermError,
+            _terms_are_valid,
+            cls.__setattr__
+        )
 
 
 class Monomial(FixedTermPolynomial, valid_term_counts=(0, 1)):
