@@ -98,7 +98,7 @@ def _mul(lhs, rhs):
         for rcoeff, rdeg in rhs:
             res[ldeg + rdeg] += lcoeff * rcoeff
 
-    return _to_terms(_trim(res))
+    return _to_terms(res)
 
 
 def _add(lhs, rhs):
@@ -113,7 +113,7 @@ def _add(lhs, rhs):
     for coeff, deg in chain(lhs, rhs):
         res[deg] += coeff
 
-    return _to_terms(_trim(res))
+    return _to_terms(res)
 
 
 def _neg(vec):
@@ -135,7 +135,7 @@ def _sub(lhs, rhs):
     for coeff, deg in rhs:
         res[deg] -= coeff
 
-    return _to_terms(_trim(res))
+    return _to_terms(res)
 
 
 class Polynomial:
@@ -646,7 +646,7 @@ def setvalue_decorator(error, _terms_are_valid, _fn):
     """Decorate __setattr__, checking if self._vector is still valid."""
     def method(self, *args, **kwargs):
         _fn(self, *args, **kwargs)
-        if not _terms_are_valid(self, _to_terms(_trim(self._vector))):
+        if not _terms_are_valid(self, _to_terms(self._vector)):
             raise error
     return method
 
