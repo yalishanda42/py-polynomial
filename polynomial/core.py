@@ -416,9 +416,9 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         if not other:
             return deepcopy(self)
 
-        ret_val = deepcopy(self)
-        ret_val += other
-        return ret_val
+        return self.__class__().try_set_self(
+            _add(self.terms, other.terms)
+        )
 
     @extract_polynomial
     def __radd__(self, other):
