@@ -142,11 +142,6 @@ def _sub(lhs, rhs):
 class Polynomial:
     """Implements a single-variable mathematical polynomial."""
 
-    self_mutating = (
-        "__iadd__", "__isub__", "__imul__", "__imod__",
-        "__ifloordiv__", "__ipow__", "__ilshift__", "__irshift__",
-    )
-
     @accepts_many_arguments
     def __init__(self, iterable, from_monomials=False):
         """Initialize the polynomial.
