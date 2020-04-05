@@ -1250,6 +1250,21 @@ class TestPolynomialsOperations(unittest.TestCase):
         m.terms = [(0, 2)]
         self._assert_polynomials_are_the_same(Monomial(0, 2), m)
 
+    def test_degree(self):
+        """Test that _degree gets correct degree on 0 vector."""
+        from polynomial.core import _degree
+        self.assertEqual(_degree([(0, 2), (0, 1), (1, 0)]), 0)
+
+    def test_add(self):
+        """Test add handles empty terms correctly."""
+        from polynomial.core import _add
+        self.assertEqual(_add([], [(1, 2), (3, 1)]), [(1, 2), (3, 1)])
+
+    def test_sub(self):
+        """Test sub handles empty terms correctly."""
+        from polynomial.core import _sub
+        self.assertEqual(_sub([], [(1, 2), (3, 1)]), [(-1, 2), (-3, 1)])
+        self.assertEqual(_sub([(1, 2), (3, 1)], []), [(1, 2), (3, 1)])
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,5 +1,6 @@
 """This module defines mutable polynomials, monomials and constants."""
 from copy import deepcopy
+from itertools import chain
 from math import inf
 import string
 
@@ -68,6 +69,74 @@ def _trim(_vector):
         ind -= 1
 
     return _vector[:ind]
+
+
+def _to_terms(vec):
+    """Take a list of numbers and return the tuple form."""
+    s_d = _degree(vec, tuples=False)
+    return [(coeff, s_d - deg) for deg, coeff
+            in enumerate(reversed(vec)) if coeff != 0]
+
+
+def _degree(vec, tuples=True):
+    """Return the degree of vec."""
+    if not vec:
+        return -inf
+    if tuples:
+        return max(vec, key=lambda term: term[1] if term[0] else -inf)[1]
+    else:
+        return len(vec) - 1
+
+
+def _mul(lhs, rhs):
+    """Return lhs * rhs."""
+    if not lhs or not rhs:
+        return
+    deg = _degree(lhs) + _degree(rhs) + 1
+
+    res = [0] * deg
+    for lcoeff, ldeg in lhs:
+        for rcoeff, rdeg in rhs:
+            res[ldeg + rdeg] += lcoeff * rcoeff
+
+    return _to_terms(_trim(res))
+
+
+def _add(lhs, rhs):
+    """Return lhs + rhs."""
+    if not lhs:
+        return rhs
+    if not rhs:
+        return lhs
+    deg = max(_degree(lhs), _degree(rhs)) + 1
+
+    res = [0] * deg
+    for coeff, deg in chain(lhs, rhs):
+        res[deg] += coeff
+
+    return _to_terms(_trim(res))
+
+
+def _neg(vec):
+    """Return -vec."""
+    return [(-coeff, deg) for coeff, deg in vec]
+
+
+def _sub(lhs, rhs):
+    """Return lhs - rhs."""
+    if not lhs:
+        return _neg(rhs)
+    if not rhs:
+        return lhs
+    deg = max(_degree(lhs), _degree(rhs)) + 1
+
+    res = [0] * deg
+    for coeff, deg in lhs:
+        res[deg] += coeff
+    for coeff, deg in rhs:
+        res[deg] -= coeff
+
+    return _to_terms(_trim(res))
 
 
 class Polynomial:
@@ -365,8 +434,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     @extract_polynomial
     def __iadd__(self, other):
         """Implement self += other."""
-        self.terms += other.terms
-        return self
+        return self.try_set_self(_add(self.terms, other.terms))
 
     @extract_polynomial
     def __mul__(self, other):
@@ -374,11 +442,9 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         if not self or not other:
             return get_more_permissive_class(self, other).zero_instance()
 
-        result = Polynomial()
-        for s_m in self.monomials:
-            for o_m in other.monomials:
-                result += s_m * o_m
-        return result
+        ret_val = deepcopy(self)
+        ret_val *= other
+        return ret_val
 
     @extract_polynomial
     def __rmul__(self, other):
@@ -388,9 +454,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     @extract_polynomial
     def __imul__(self, other):
         """Implement self *= other."""
-        result = self * other
-        self.terms = result.terms
-        return self
+        return self.try_set_self(_mul(self.terms, other.terms))
 
     def __pos__(self):
         """Return +self."""
@@ -399,8 +463,10 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
     def __neg__(self):
         """Return -self."""
-        self._trim()
-        return Polynomial([-k for k in self])
+        _vector = [-x for x in _trim(self._vector)]
+        ret_val = deepcopy(self)
+        ret_val._vector = _vector
+        return ret_val
 
     @extract_polynomial
     def __sub__(self, other):
@@ -415,15 +481,12 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     @extract_polynomial
     def __isub__(self, other):
         """Implement self -= other."""
-        result = self - other
-        self.terms = result.terms
-        return self
+        return self.try_set_self(_sub(self.terms, other.terms))
 
     @extract_polynomial
     def __ifloordiv__(self, other):
         """Return self //= other."""
-        self.terms = divmod(self, other)[0].terms
-        return self
+        return self.try_set_self(divmod(self, other)[0].terms)
 
     @extract_polynomial
     def __floordiv__(self, other):
@@ -433,8 +496,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
     @extract_polynomial
     def __imod__(self, other):
         """Return self %= other."""
-        self.terms = divmod(self, other)[1].terms
-        return self
+        return self.try_set_self(divmod(self, other)[1].terms)
 
     @extract_polynomial
     def __mod__(self, other):
@@ -457,18 +519,20 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
                 vec[i] = v / other.a
             return Polynomial(vec[::-1]), Polynomial(remainder[::-1])
 
-        working = deepcopy(self)
+        working = self.terms
+        wd0 = _degree(working)
+        other_terms = other.terms
+        other_deg = other.degree
         vec = []
 
-        while working.degree >= other.degree:
-            val = working.a / other.a
-            vec.append(val)
-            wd = working.degree
-            working -= other * Monomial(val, working.degree - other.degree)
-            if working.degree != -inf:
-                vec.extend([0] * (wd - working.degree - 1))
+        while wd0 >= other_deg:
+            val = working[0][0] / other.a
+            wd = wd0
+            working = _sub(working, _mul(other_terms, [(val, wd - other_deg)]))
+            wd0 = _degree(working)
+            vec.append((val, wd - other_deg if wd0 != -inf else 0))
 
-        return Polynomial(vec), working
+        return Polynomial(vec, from_monomials=True), Polynomial(working, from_monomials=True)
 
     def __pow__(self, power, modulo=None):
         """Return self ** power or pow(self, other, modulo)."""
@@ -499,8 +563,8 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
     def __ipow__(self, other):
         """Return self **= power."""
-        self.terms = (self ** other).terms
-        return self
+        terms = (self ** other).terms
+        return self.try_set_self(terms)
 
     def __lshift__(self, other):
         """Return self << other.
@@ -566,28 +630,29 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
             .format(type(item).__name__)
         )
 
+    def terms_are_valid(self, terms):
+        """Return true if the terms are valid."""
+        return True
 
-def retry_in_case_of_error(fallback, error):
-    """If error is raised, run fallback with the same input.
+    def try_set_self(self, terms):
+        """Try applying terms to self if possible.
 
-    If self.degree changes, we upcast to a Polynomial and try
-    calling the provided fallback method.
-    """
-    def wrapper(method):
-        def decorator(self, *args, **kwargs):
-            orig_terms = self.terms
-            try:
-                return method(self, *args, **kwargs)
-            # If we directly modify self.terms
-            except error:
-                # This is done in the expectation that we're calling from
-                # a Fixed_Polynomial, which will always raise an
-                # error through __setattr__, __setitem__.
-                self.terms = orig_terms
-                self = Polynomial(self.terms, from_monomials=True)
-                return fallback(self, *args, **kwargs)
-        return decorator
-    return wrapper
+        If not possible, returns a Polynomial with the terms.
+        """
+        if self.terms_are_valid(terms):
+            self.terms = terms
+            return self
+        else:
+            return Polynomial(terms, from_monomials=True)
+
+
+def setvalue_decorator(error, _terms_are_valid, _fn):
+    """A decorator for __setatrr__."""
+    def method(self, *args, **kwargs):
+        _fn(self, *args, **kwargs)
+        if not _terms_are_valid(self, _to_terms(_trim(self._vector))):
+            raise error
+    return method
 
 
 class FixedDegreePolynomial(Polynomial):
@@ -601,46 +666,16 @@ class FixedDegreePolynomial(Polynomial):
 
         cls.valid_degrees = deg
 
-        for attr in dir(cls):
-            val = getattr(cls, attr)
-            if callable(val) and attr in cls.self_mutating:
-                poly_attr = getattr(Polynomial, attr)
-                setattr(
-                    cls, attr,
-                    retry_in_case_of_error(
-                        poly_attr, DegreeError
-                    )(val)
-                )
+        orig_terms_are_valid = cls.terms_are_valid
 
-        __xsetattr__ = cls.__setattr__
+        def _terms_are_valid(self, terms):
+            return _degree(terms) in self.valid_degrees
 
-        # Methods are defined inline to allow using the class's original
-        # __setattr__ calls (eg. for Freezable, and later, FixedTermPolynomial
-        # (which would have a fixed number of terms)).
+        def terms_are_valid(self, terms):
+            return _terms_are_valid(self, terms) and orig_terms_are_valid(self, terms)
 
-        def __setattr__(self, key, value):
-            """Implement self.key = value."""
-            if len(key) != 1 and key != "_vector":
-                __xsetattr__(self, key, value)
-            else:
-                # Disable trim to avoid mutual recursion.
-                xtrim = self._trim
-                self._trim = lambda: None
-
-                # Could be a single letter.
-                if key != "_vector":
-                    # Need to trim _vector due to the degree calls.
-                    __xsetattr__(self, "_vector", _trim(self._vector))
-                    __xsetattr__(self, key, value)
-                    __xsetattr__(self, "_vector", _trim(self._vector))
-                else:
-                    __xsetattr__(self, key, _trim(value))
-
-                if self.degree not in self.valid_degrees:
-                    raise DegreeError("Set self._vector to an invalid state.")
-                self._trim = xtrim
-
-        cls.__setattr__ = __setattr__
+        cls.terms_are_valid = terms_are_valid
+        cls.__setattr__ = setvalue_decorator(DegreeError, _terms_are_valid, cls.__setattr__)
 
 
 class FixedTermPolynomial(Polynomial):
@@ -653,44 +688,18 @@ class FixedTermPolynomial(Polynomial):
         """
         cls.valid_term_counts = kwargs["valid_term_counts"]
 
-        for attr in dir(cls):
-            val = getattr(cls, attr)
-            if callable(val) and attr in cls.self_mutating:
-                poly_attr = getattr(Polynomial, attr)
-                setattr(
-                    cls,
-                    attr,
-                    retry_in_case_of_error(
-                        poly_attr, TermError
-                    )(val)
-                )
+        orig_terms_are_valid = cls.terms_are_valid
 
-        __xsetattr__ = cls.__setattr__
+        # Check that number of terms is correct.
+        def _terms_are_valid(self, terms):
+            return len(terms) in self.valid_term_counts
 
-        def __setattr__(self, key, value):
-            """Implement self.key = value."""
-            if len(key) != 1 and key != "_vector":
-                __xsetattr__(self, key, value)
-            else:
-                # Disable trim to avoid mutual recursion.
-                xtrim = self._trim
-                self._trim = lambda: None
+        def terms_are_valid(self, terms):
+            # Check that all conditions for terms to be valid are met.
+            return _terms_are_valid(self, terms) and orig_terms_are_valid(self, terms)
 
-                # Could be a single letter.
-                if key != "_vector":
-                    # Need to trim _vector due to the degree calls.
-                    __xsetattr__(self, "_vector", _trim(self._vector))
-                    __xsetattr__(self, key, value)
-                    __xsetattr__(self, "_vector", _trim(self._vector))
-                else:
-                    __xsetattr__(self, key, _trim(value))
-                if len(self.terms) not in self.valid_term_counts:
-                    raise TermError(
-                        "self._vector has {0} terms, should have {1} terms."
-                        .format(len(self.terms), self.valid_term_counts))
-                self._trim = xtrim
-
-        cls.__setattr__ = __setattr__
+        cls.terms_are_valid = terms_are_valid
+        cls.__setattr__ = setvalue_decorator(TermError, _terms_are_valid, cls.__setattr__)
 
 
 class Monomial(FixedTermPolynomial, valid_term_counts=(0, 1)):
@@ -789,8 +798,7 @@ class Monomial(FixedTermPolynomial, valid_term_counts=(0, 1)):
             terms = [(self.coefficient ** other, self.degree * other)]
 
         # No native option exists to modify Monomial degree.
-        self.terms = terms
-        return self
+        return self.try_set_self(terms)
 
     def __lshift__(self, other):
         """Return self << other.
@@ -818,9 +826,7 @@ class Monomial(FixedTermPolynomial, valid_term_counts=(0, 1)):
         if not self:
             return self
 
-        self.terms = [(self.coefficient, self.degree + other)]
-
-        return self
+        return self.try_set_self([(self.coefficient, self.degree + other)])
 
     def __irshift__(self, other):
         """Return self >>= other."""
@@ -832,10 +838,8 @@ class Monomial(FixedTermPolynomial, valid_term_counts=(0, 1)):
             return self
 
         if other > self.degree:
-            self.terms = [(0, 0)]
-        else:
-            self.terms = [(self.coefficient, self.degree - other)]
-        return self
+            return self.try_set_self([(0, 0)])
+        return self.try_set_self([(self.coefficient, self.degree - other)])
 
     def __repr__(self):
         """Return repr(self)."""
