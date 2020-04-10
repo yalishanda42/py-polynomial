@@ -121,5 +121,5 @@ class ZeroPolynomial(Freezable, Constant, valid_degrees=-inf):
         return "ZeroPolynomial()"
 
     def __hash__(self):
-        """Return hash(self). Equal to 0."""
-        return 0
+        """Return hash(self). Equal to the hash of an empty tuple."""
+        return hash(tuple())

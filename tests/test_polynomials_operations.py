@@ -886,6 +886,16 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEqual(h1, h2)
         self.assertEqual({h1}, {h1, h2})
 
+    def test_zero_polynomial_hash_equal_to_empty_frozen_polynomal_hash(self):
+        """Test that hash(ZeroPolynomial()) == hash(FrozenPolynomial())."""
+        z = ZeroPolynomial()
+        f = FrozenPolynomial()
+
+        hz = hash(z)
+        hf = hash(f)
+
+        self.assertEqual(hz, hf)
+
     def test_casting_to_frozen_polynomial(self):
         """Casting polynomials is fine."""
         a = Polynomial(1, 2, 3)
