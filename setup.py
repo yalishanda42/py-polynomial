@@ -6,19 +6,40 @@ from setuptools import setup, find_packages
 HERE = pathlib.Path(__file__).parent
 README = (HERE / "README.md").read_text()
 
+REPO_URL = 'https://github.com/allexks/py-polynomial'
+VERSION = '0.5.1'
+
 setup(
   name='py-polynomial',
   packages=find_packages(exclude=("tests",)),
-  version='0.5.0',
+  version=VERSION,
   license='MIT',
   description='Package defining mathematical single-variable polynomials.',
   long_description=README,
   long_description_content_type="text/markdown",
   author='Alexander Ignatov',
   author_email='yalishanda@abv.bg',
-  url='https://github.com/allexks/py-polynomial',
-  download_url='https://github.com/allexks/py-polynomial/archive/0.5.0.tar.gz',
-  keywords=['polynomial', 'maths', 'derivative', 'roots', 'algebra', 'linear'],
+  url=REPO_URL,
+  download_url=f'{REPO_URL}/archive/{VERSION}.tar.gz',
+  keywords=[
+    'algebra',
+    'polynomial',
+    'polynomials',
+    'mathematics',
+    'maths',
+    'derivative',
+    'derivatives',
+    'factor',
+    'factors',
+    'root',
+    'roots',
+    'terms',
+    'coefficients',
+    'quadratic',
+    'linear',
+    'sympy',
+    'numpy',
+  ],
   install_requires=[],
   classifiers=[
     'Development Status :: 3 - Alpha',
