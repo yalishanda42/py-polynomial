@@ -60,6 +60,14 @@ class FrozenPolynomial(Freezable, Polynomial):
         """Return repr(self)."""
         return "Frozen" + super().__repr__()
 
+    def __hash__(self):
+        """Return hash(self).
+
+        Equal to the hash of a tuple with the coefficients sorted by their
+        degree descendingly.
+        """
+        return hash(self._vector)
+
 
 class ZeroPolynomial(Freezable, Constant, valid_degrees=-inf):
     """The zero polynomial."""
@@ -111,3 +119,7 @@ class ZeroPolynomial(Freezable, Constant, valid_degrees=-inf):
     def __repr__(self):
         """Return repr(self)."""
         return "ZeroPolynomial()"
+
+    def __hash__(self):
+        """Return hash(self). Equal to 0."""
+        return 0

@@ -864,6 +864,28 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertRaises(possible_errs, set_item, a._vector, 0, 5)
         self.assertRaises(possible_errs, set_item, b._vector, 0, 5)
 
+    def test_frozen_polynomial_hash_equal(self):
+        """Test that equal frozen polynomials have equal hash value."""
+        f1 = FrozenPolynomial(1, 2, 3)
+        f2 = FrozenPolynomial(f1)
+
+        h1 = hash(f1)
+        h2 = hash(f2)
+
+        self.assertEqual(h1, h2)
+        self.assertEqual({h1}, {h1, h2})
+
+    def test_zero_polynomial_hash_equal(self):
+        """Test that two zero polynomials have equal hash value."""
+        z1 = ZeroPolynomial()
+        z2 = ZeroPolynomial()
+
+        h1 = hash(z1)
+        h2 = hash(z2)
+
+        self.assertEqual(h1, h2)
+        self.assertEqual({h1}, {h1, h2})
+
     def test_casting_to_frozen_polynomial(self):
         """Casting polynomials is fine."""
         a = Polynomial(1, 2, 3)
