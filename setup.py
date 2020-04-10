@@ -7,7 +7,7 @@ HERE = pathlib.Path(__file__).parent
 README = (HERE / "README.md").read_text()
 
 REPO_URL = 'https://github.com/allexks/py-polynomial'
-VERSION = '0.5.1'
+VERSION = '0.5.2'
 
 setup(
   name='py-polynomial',
