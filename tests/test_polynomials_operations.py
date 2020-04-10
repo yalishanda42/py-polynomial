@@ -448,6 +448,7 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertRaises(AttributeError, z.__setitem__, 0, 5)
 
     def test_frozen_polynomial_raises_err(self):
+        """Test that a FrozenPolynomial raises errors when setting values."""
         f = FrozenPolynomial(1, 2, 3)
 
         self.assertRaises(AttributeError, f.__setattr__, "x", 5)
@@ -730,7 +731,7 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEqual(exp_complex_factors, res_complex_factors)
 
     def test_zero_instance_mutable(self):
-        """Test that zero instances are mutable"""
+        """Test that zero instances are mutable."""
         zp = Polynomial.zero_instance()
         zm = Monomial.zero_instance()
         zc = Constant.zero_instance()
@@ -1236,6 +1237,7 @@ class TestPolynomialsOperations(unittest.TestCase):
             self.assertEqual(eqn(i), a.calculate(i))
 
     def test_calculate_zero_polynomial(self):
+        """Test that calculations of zero polynomial values always give 0."""
         self.assertEqual(0, ZeroPolynomial().calculate(1))
         self.assertEqual(0, Constant(0).calculate(5))
         self.assertEqual(0, Monomial(0, 1).calculate(1.1))
@@ -1297,6 +1299,7 @@ class TestPolynomialsOperations(unittest.TestCase):
         from polynomial.core import _sub
         self.assertEqual(_sub([], [(1, 2), (3, 1)]), [(-1, 2), (-3, 1)])
         self.assertEqual(_sub([(1, 2), (3, 1)], []), [(1, 2), (3, 1)])
+
 
 if __name__ == '__main__':
     unittest.main()

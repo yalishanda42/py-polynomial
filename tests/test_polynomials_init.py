@@ -174,5 +174,6 @@ class TestPolynomialsInit(unittest.TestCase):
             from_monomials=True
         )
 
+
 if __name__ == '__main__':
     unittest.main()

@@ -94,7 +94,6 @@ class TestPolynomialsRepr(unittest.TestCase):
 
     def test_frozen(self):
         """Test that repr() output of a FrozenPolynomial is valid."""
-
         expect = "FrozenPolynomial(1, 2, 3)"
         r = repr(FrozenPolynomial(1, 2, 3))
         self.assertEqual(expect, r)
