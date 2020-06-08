@@ -12,6 +12,7 @@ from polynomial import (
     ZeroPolynomial,
     LinearBinomial,
     QuadraticTrinomial,
+    CubicQuadrinomial,
     DegreeError,
     TermError,
 )
@@ -730,6 +731,22 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEqual(exp_real_factors, res_real_factors)
         self.assertEqual(exp_complex_factors, res_complex_factors)
 
+    def test_cubic_formula_correct(self):
+        """Test that the cubic formula correctly computes roots and factors."""
+        cq = CubicQuadrinomial(1, -6, 11, -6)
+        exp_complex_roots = (1, 2, 3)
+        exp_complex_factors = (1,
+                               LinearBinomial(1, -1),
+                               LinearBinomial(1, -2),
+                               LinearBinomial(1, -3)
+        )
+
+        res_complex_roots = cq.complex_roots
+        res_complex_factors = cq.complex_factors
+
+        self.assertEqual(exp_complex_roots, res_complex_roots)
+        self.assertEqual(exp_complex_factors, res_complex_factors)
+
     def test_zero_instance_mutable(self):
         """Test that zero instances are mutable."""
         zp = Polynomial.zero_instance()
@@ -971,6 +988,7 @@ class TestPolynomialsOperations(unittest.TestCase):
     def test_setting_empty_terms_immutable_degree(self):
         """Test setting empty terms."""
         immutable = [
+            CubicQuadrinomial(1, 2, 3, 4),
             QuadraticTrinomial(1, 2, 3),
             LinearBinomial(1, 2),
         ]
@@ -1020,6 +1038,7 @@ class TestPolynomialsOperations(unittest.TestCase):
         d = ZeroPolynomial()
         e = QuadraticTrinomial(1, 3, 7)
         f = LinearBinomial(9, 2)
+        g = CubicQuadrinomial(5, 4, 1, 7)
 
         self._assert_polynomials_are_the_same(a, +a)
         self._assert_polynomials_are_the_same(b, +b)
@@ -1027,6 +1046,7 @@ class TestPolynomialsOperations(unittest.TestCase):
         self._assert_polynomials_are_the_same(d, +d)
         self._assert_polynomials_are_the_same(e, +e)
         self._assert_polynomials_are_the_same(f, +f)
+        self._assert_polynomials_are_the_same(g, +g)
 
     def test_div_by_zero(self):
         """Test that division by 0 is not possible."""
@@ -1037,6 +1057,7 @@ class TestPolynomialsOperations(unittest.TestCase):
             ZeroPolynomial(),
             QuadraticTrinomial(1, 3, 7),
             LinearBinomial(9, 2),
+            CubicQuadrinomial(5, 4, 1, 7),
         ]
 
         for val in to_test:
@@ -1055,6 +1076,7 @@ class TestPolynomialsOperations(unittest.TestCase):
             ZeroPolynomial(),
             QuadraticTrinomial(1, 3, 7),
             LinearBinomial(9, 2),
+            CubicQuadrinomial(5, 4, 1, 7),
         ]
 
         for val in to_test:
@@ -1070,6 +1092,7 @@ class TestPolynomialsOperations(unittest.TestCase):
             ZeroPolynomial(),
             QuadraticTrinomial(1, 3, 7),
             LinearBinomial(9, 2),
+            CubicQuadrinomial(5, 4, 1, 7),
         ]
 
         for val in to_test:
@@ -1108,6 +1131,7 @@ class TestPolynomialsOperations(unittest.TestCase):
             ZeroPolynomial(),
             QuadraticTrinomial(1, 3, 7),
             LinearBinomial(9, 2),
+            CubicQuadrinomial(5, 4, 1, 7),
             7
         ]
 
@@ -1143,6 +1167,7 @@ class TestPolynomialsOperations(unittest.TestCase):
             ZeroPolynomial(),
             QuadraticTrinomial(1, 3, 7),
             LinearBinomial(9, 2),
+            CubicQuadrinomial(5, 4, 1, 7),
         ]
 
         one_maps = {
@@ -1152,6 +1177,7 @@ class TestPolynomialsOperations(unittest.TestCase):
             ZeroPolynomial: Constant(1),
             QuadraticTrinomial: Polynomial(1),
             LinearBinomial: Polynomial(1),
+            CubicQuadrinomial: Polynomial(1),
         }
 
         for val in to_test:
@@ -1266,12 +1292,16 @@ class TestPolynomialsOperations(unittest.TestCase):
         """Test that setitem raises error on invalid inputs."""
         lb = LinearBinomial(5, 1)
         qt = QuadraticTrinomial(1, 2, 3)
+        cq = CubicQuadrinomial(4, 3, 2, 1)
         self.assertRaises(DegreeError, lb.__setattr__, "a", 0)
         self.assertRaises(DegreeError, qt.__setattr__, "a", 0)
+        self.assertRaises(DegreeError, cq.__setattr__, "a", 0)
         lb = LinearBinomial(5, 1)
         qt = QuadraticTrinomial(1, 2, 3)
+        cq = CubicQuadrinomial(4, 3, 2, 1)
         self.assertRaises(DegreeError, lb.__setitem__, 1, 0)
         self.assertRaises(DegreeError, qt.__setitem__, 2, 0)
+        self.assertRaises(DegreeError, cq.__setitem__, 3, 0)
 
     def test_monomial_can_only_have_one_or_no_terms(self):
         """Test that setting terms works correctly."""
