@@ -65,14 +65,14 @@ class CubicQuadrinomial(FixedDegreePolynomial, Quadrinomial, valid_degrees=3):
 
         delta0 = b*b - 3*a*c
         delta1 = 2*b*b*b - 9*a*b*c + 27*a*a*d
-        param1 = ((delta1 + csqrt(delta1**2 - 4*delta0**3)) / 2) ** (1/3)
-        param2 = ((delta1 - csqrt(delta1**2 - 4*delta0**3)) / 2) ** (1/3)
+        cardano1 = ((delta1 + csqrt(delta1**2 - 4*(delta0**3))) / 2) ** (1/3)
+        cardano2 = ((delta1 - csqrt(delta1**2 - 4*(delta0**3))) / 2) ** (1/3)
 
-        param = param2 if not param1 else param1
+        cardano = cardano2 if not cardano1 else cardano1
 
         xi = (-1 + csqrt(-3)) / 2
 
-        roots = [-(b + xi**k*param + (delta0 / xi**k*param)) / (3 * a)
+        roots = [(b + (xi**k)*cardano + (delta0 / (xi**k)*cardano)) / (-3 * a)
                  for k in range(3)]
 
         return tuple(roots)
