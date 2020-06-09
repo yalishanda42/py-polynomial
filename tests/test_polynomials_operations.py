@@ -731,15 +731,29 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEqual(exp_real_factors, res_real_factors)
         self.assertEqual(exp_complex_factors, res_complex_factors)
 
-    def test_cubic_formula_correct(self):
-        """Test that the cubic formula correctly computes roots and factors."""
-        cq = CubicQuadrinomial(1, -6, 11, -6)
-        exp_complex_roots = (1, 2, 3)
+    def test_cubic_formula_triple_root_correct(self):
+        """Test that the cubic formula correctly computes a triple root."""
+        cq = CubicQuadrinomial(1, -3j, -3, 1j)
+        exp_complex_roots = (1j, 1j, 1j)
+        exp_complex_factors = (1,
+                               LinearBinomial(1, -1j),
+                               LinearBinomial(1, -1j),
+                               LinearBinomial(1, -1j))
+
+        res_complex_roots = cq.complex_roots
+        res_complex_factors = cq.complex_factors
+
+        self.assertEqual(exp_complex_roots, res_complex_roots)
+        self.assertEqual(exp_complex_factors, res_complex_factors)
+
+    def test_cubic_formula_double_root_correct(self):
+        """Test that the cubic formula correctly computes a double root."""
+        cq = CubicQuadrinomial(1, -4, 5, -2)
+        exp_complex_roots = (1, 1, 2)
         exp_complex_factors = (1,
                                LinearBinomial(1, -1),
-                               LinearBinomial(1, -2),
-                               LinearBinomial(1, -3)
-        )
+                               LinearBinomial(1, -1),
+                               LinearBinomial(1, -2))
 
         res_complex_roots = cq.complex_roots
         res_complex_factors = cq.complex_factors
