@@ -160,21 +160,18 @@ class Polynomial:
         Polynomial([(1,4), (2,3), (3,2), (4,1), (5,0)], from_monomials=True)
         Polynomial(((i + 1, 4 - i) for i in range(5)), from_monomials=True)
         """
-        iterable = list(iterable)
-
         if from_monomials:
-            for i, monomial in enumerate(iterable):
+            def monomial_to_tuple(monomial):
                 if isinstance(monomial, Monomial):
-                    iterable[i] = (monomial.a, monomial.degree)
-                elif len(monomial) == 2:
-                    continue
-                else:
-                    raise TypeError("{} cannot be a monomial.".
-                                    format(monomial))
-            self.terms = iterable
+                    return monomial.a, monomial.degree
+                if len(monomial) == 2:
+                    return monomial
+
+                raise TypeError("{} cannot be a monomial.".
+                                format(monomial))
+            self.terms = [monomial_to_tuple(monomial) for monomial in iterable]
         else:
-            self._vector = iterable[::-1]
-            self._trim()
+            self._vector = _trim(list(iterable)[::-1])
 
     @classmethod
     def zero_instance(cls):
@@ -252,14 +249,14 @@ class Polynomial:
         if not terms:
             _vector = [0]
         else:
-            max_deg = max(terms, key=lambda x: x[1])[1] + 1
-            _vector = [0] * max_deg
+            list_len = max(terms, key=lambda x: x[1])[1] + 1
+            _vector = [0] * list_len
 
             for coeff, deg in terms:
                 _vector[deg] += coeff
 
+            _vector = _trim(_vector)
         self._vector = _vector
-        self._trim()
 
     @property
     def monomials(self):
@@ -457,9 +454,8 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
     def __neg__(self):
         """Return -self."""
-        _vector = [-x for x in _trim(self._vector)]
         ret_val = deepcopy(self)
-        ret_val._vector = _vector
+        ret_val._vector = [-x for x in _trim(self._vector)]
         return ret_val
 
     @extract_polynomial
@@ -601,8 +597,32 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         if other < 0:
             self <<= -other
         else:
+            self._vector = _trim(self._vector[other:])
+
+        return self
+
+    def irshift0(self, other):
+        """Return self >>= other.
+
+        Decreases the degree of each term by other.
+        """
+        if other < 0:
+            self <<= -other
+        else:
             self._vector = self._vector[other:]
             self._trim()
+
+        return self
+
+    def irshift1(self, other):
+        """Return self >>= other.
+
+        Decreases the degree of each term by other.
+        """
+        if other < 0:
+            self <<= -other
+        else:
+            self._vector = _trim(self._vector[other:])
 
         return self
 
@@ -644,9 +664,10 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
 def setvalue_decorator(error, _terms_are_valid, _fn):
     """Decorate __setattr__, checking if self._vector is still valid."""
-    def method(self, *args, **kwargs):
-        _fn(self, *args, **kwargs)
-        if not _terms_are_valid(self, _to_terms(self._vector)):
+    def method(self, name, new_value):
+        _fn(self, name, new_value)
+        if (name == '_vector' and
+                not _terms_are_valid(self, _to_terms(self._vector))):
             raise error
     return method
 
