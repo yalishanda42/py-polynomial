@@ -85,7 +85,7 @@ class ZeroPolynomial(Freezable, Constant, valid_degrees=-inf):
     @property
     def _vector(self):
         """Return self._vector."""
-        return 0,
+        return (0, )
 
     @property
     def degree(self):
