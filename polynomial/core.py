@@ -601,31 +601,6 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
         return self
 
-    def irshift0(self, other):
-        """Return self >>= other.
-
-        Decreases the degree of each term by other.
-        """
-        if other < 0:
-            self <<= -other
-        else:
-            self._vector = self._vector[other:]
-            self._trim()
-
-        return self
-
-    def irshift1(self, other):
-        """Return self >>= other.
-
-        Decreases the degree of each term by other.
-        """
-        if other < 0:
-            self <<= -other
-        else:
-            self._vector = _trim(self._vector[other:])
-
-        return self
-
     def __contains__(self, item):
         """Return item in self.
 
@@ -768,11 +743,13 @@ class Monomial(FixedTermPolynomial, valid_term_counts=(0, 1)):
         elif len(terms) == 1:
             self._coeff, self._degree = terms[0]
         else:
-            terms = sorted([term for term in terms if term[0] != 0], key=lambda x: x[1])
+            terms = sorted([term for term in terms if term[0] != 0],
+                           key=lambda x: x[1])
             if terms[0][1] == terms[-1][1]:
                 self._coeff = sum(term[0] for term in terms)
                 self._degree = terms[0][1]
             else:
+                err_msg = "terms has more than one non-zero term."
                 curr_coeff, curr_deg = terms[0]
                 termx = []
                 for coeff, deg in terms[1:]:
@@ -780,16 +757,16 @@ class Monomial(FixedTermPolynomial, valid_term_counts=(0, 1)):
                         curr_coeff += coeff
                     elif curr_coeff != 0:
                         if termx:
-                            raise TermError("terms has more than one non-zero term.")
+                            raise TermError(err_msg)
                         termx.append((curr_coeff, curr_deg))
-                        curr_coeff = coeff
-                        curr_deg = deg
+                        curr_coeff, curr_deg = coeff, deg
                 if termx:
                     if curr_coeff:
-                        raise TermError("terms has more than one non-zero term.")
+                        raise TermError(err_msg)
                     self._coeff, self._degree = termx[0]
-                self.coeff = curr_coeff
-                self.degree = curr_deg
+                else:
+                    self.coeff = curr_coeff
+                    self.degree = curr_deg
 
     @property
     def _vector(self):
@@ -851,7 +828,7 @@ class Monomial(FixedTermPolynomial, valid_term_counts=(0, 1)):
         """
         if isinstance(other, Monomial) and self and other:
             return Monomial(self.coefficient * other.coefficient,
-                self.degree + other.degree)
+                            self.degree + other.degree)
         return super().__mul__(other)
 
     @extract_polynomial
