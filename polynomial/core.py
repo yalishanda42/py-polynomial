@@ -991,7 +991,7 @@ class Constant(FixedDegreePolynomial, Monomial, valid_degrees=(0, -inf)):
 
     @degree.setter
     def degree(self, degree):
-        """Set self.degree"""
+        """Set self.degree."""
         raise DegreeError("Can't change the degree of Constant")
 
     @property
