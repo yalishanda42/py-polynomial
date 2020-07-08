@@ -310,7 +310,7 @@ class TestPolynomialsOperations(unittest.TestCase):
 
         p3, remainder = divmod(p1, p2)
 
-        self.assertEqual(p3, Polynomial(1/5, 2/5, 3/5))
+        self.assertEqual(p3, Polynomial(1 / 5, 2 / 5, 3 / 5))
         self.assertEqual(remainder, Polynomial())
 
     def test_divmod_against_monomial(self):
@@ -410,7 +410,7 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertRaises(ValueError, x.__contains__, "5")
         self.assertRaises(ValueError, x.__contains__, "a")
         self.assertRaises(ValueError, x.__contains__, 1.2)
-        self.assertRaises(ValueError, x.__contains__, 1+0j)
+        self.assertRaises(ValueError, x.__contains__, 1 + 0j)
 
     def test_membership_false_on_partial_match(self):
         """Tests that membership is only true if all elements match."""
@@ -913,6 +913,7 @@ class TestPolynomialsOperations(unittest.TestCase):
 
     def test_freezable_obeys_frozen_flag(self):
         """Test that Freezable objects behave as expected."""
+
         class A:
             def __init__(self):
                 self._list = [1, 2, 3]
@@ -1001,16 +1002,16 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEqual(a.root, 0)
 
         a = LinearBinomial(11, 5)
-        self.assertEqual(a.root, -5/11)
+        self.assertEqual(a.root, -5 / 11)
 
         a = LinearBinomial(12.1, 3)
-        self.assertEqual(a.root, -3/12.1)
+        self.assertEqual(a.root, -3 / 12.1)
 
         a = LinearBinomial(13.2, 3.6)
-        self.assertEqual(a.root, -3.6/13.2)
+        self.assertEqual(a.root, -3.6 / 13.2)
 
         a = LinearBinomial(5 + 10j, 2 + 1j)
-        self.assertEqual(a.root, -(2 + 1j)/(5 + 10j))
+        self.assertEqual(a.root, -(2 + 1j) / (5 + 10j))
 
     def test_pos(self):
         """Test that a Polynomial is equal to its positive version."""
@@ -1159,7 +1160,7 @@ class TestPolynomialsOperations(unittest.TestCase):
             val **= 0
             self._assert_polynomials_are_the_same(expected, val)
 
-    def test_getitem(self):
+    def test_polynomial_getitem(self):
         """Test getitem on slices, out of bounds, and in bound indices."""
         a = Polynomial(6, 5, 4, 3, 2, 1)
         self.assertEqual([1, 2, 3, 4, 5, 6], a[:])
@@ -1169,8 +1170,22 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertRaises(IndexError, a.__getitem__, -inf)
         self.assertRaises(IndexError, a.__getitem__, 6)
 
-    def test_setitem(self):
+        a = Polynomial(0)
+        self.assertEqual(a[-inf], 0)
+
+    def test_monomial_getitem(self):
         """Test getitem on slices, out of bounds, and in bound indices."""
+        m = Monomial(1, 10)
+        self.assertEqual([0] * 10 + [1], m[:])
+        self.assertEqual([0, 0], m[:2])
+        self.assertEqual([0, 0, 0, 1], m[7:])
+        self.assertEqual(1, m[10])
+        self.assertEqual(0, m[3])
+        self.assertRaises(IndexError, m.__getitem__, -inf)
+        self.assertRaises(IndexError, m.__getitem__, 11)
+
+    def test_polynomial_setitem(self):
+        """Test setitem on slices, out of bounds, and in bound indices."""
         a = Polynomial(6, 5, 4, 3, 2, 1)
         a[:] = [1, 2, 3, 4, 5, 6]
         self.assertEqual([1, 2, 3, 4, 5, 6], a[:])
@@ -1180,6 +1195,59 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEqual([1, 1, 2, 3, 4, 5], a[:])
         self.assertRaises(IndexError, a.__setitem__, -inf, 1)
         self.assertRaises(IndexError, a.__setitem__, 6, 1)
+
+    def test_monomial_setitem(self):
+        """Test setitem on slices, out of bounds, and in bound indices."""
+        m = Monomial(6, 5)
+        self.assertRaises(TermError, m.__setitem__, slice(0, -1, 1), [1, 2, 3, 4, 5, 6])
+        self.assertRaises(TermError, m.__setitem__, 1, 3)
+        m[6] = 10
+        self.assertEqual(10, m[6])
+
+    def test_monomial_vector(self):
+        """Test _vector for Monomials."""
+        m = Monomial(6, 5)
+        self.assertEqual([0, 0, 0, 0, 0, 6], m._vector)
+        m._vector = [0, 0, 0, 0]
+        self.assertEqual(0, m.coefficient)
+
+    def test_monomial_terms(self):
+        """Test _vector for Monomials."""
+        m = Monomial(6, 5)
+        m.coefficient = 0
+        self.assertEqual([(0, 0)], m.terms)
+        m.terms = [(10, 5), (10, 5), (10, 5), (10, 5)]
+        self.assertEqual(40, m.coefficient)
+        self.assertEqual(5, m.degree)
+
+        m.terms = [(10, 5), (10, 5), (0, 4), (0, 3),
+                   (0, 2), (0, 1), (10, 5), (10, 5)]
+        self.assertEqual(40, m.coefficient)
+        self.assertEqual(5, m.degree)
+
+        m.terms = [(25, 6), (-25, 6), (25, 4)]
+        self.assertEqual(25, m.coefficient)
+        self.assertEqual(4, m.degree)
+
+        m.terms = [(25, 6), (-25, 5), (25, 5)]
+        self.assertEqual(25, m.coefficient)
+        self.assertEqual(6, m.degree)
+
+        bad_terms = [(25, 6), (-25, 6), (25, 4), (25, 3)]
+        self.assertRaises(TermError, m.__setattr__, "terms", bad_terms)
+
+    def test_monomial_set_degree(self):
+        """Test setting Monomial degree"""
+        m = Monomial(6, 5)
+        self.assertEqual(5, m.degree)
+        m.degree = 4
+        self.assertEqual(4, m.degree)
+
+    def test_constant_set_degree(self):
+        """Test setting Monomial degree"""
+        c = Constant(6)
+        self.assertEqual(0, c.degree)
+        self.assertRaises(DegreeError, c.__setattr__, "degree", 1)
 
     def test_extract_polynomial_raises_errors(self):
         """Test that extract_polynomial errors on bad input."""
@@ -1233,7 +1301,7 @@ class TestPolynomialsOperations(unittest.TestCase):
             return x ** 2 + 2 * x + 3
 
         for i in range(-100, 100):
-            i = i/100
+            i = i / 100
             self.assertEqual(eqn(i), a.calculate(i))
 
     def test_calculate_zero_polynomial(self):
@@ -1289,10 +1357,16 @@ class TestPolynomialsOperations(unittest.TestCase):
         from polynomial.core import _degree
         self.assertEqual(_degree([(0, 2), (0, 1), (1, 0)]), 0)
 
+    def test_mul(self):
+        """Test mul handles empty terms correctly."""
+        from polynomial.core import _mul
+        self.assertEqual(_mul([], [(1, 2), (3, 1)]), [(0, 0)])
+
     def test_add(self):
         """Test add handles empty terms correctly."""
         from polynomial.core import _add
         self.assertEqual(_add([], [(1, 2), (3, 1)]), [(1, 2), (3, 1)])
+        self.assertEqual(_add([(1, 2), (3, 1)], []), [(1, 2), (3, 1)])
 
     def test_sub(self):
         """Test sub handles empty terms correctly."""
