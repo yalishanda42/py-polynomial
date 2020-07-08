@@ -34,6 +34,7 @@ def extract_polynomial(method):
 
     If casting is not possible or not appropriate, raise a ValueError.
     """
+
     def decorated(self, other):
         if isinstance(other, Polynomial):
             return method(self, other)
@@ -42,7 +43,7 @@ def extract_polynomial(method):
 
         raise ValueError(
             "{0}.{1} requires a Polynomial or number, got {2}."
-            .format(
+                .format(
                 self.__class__.__name__,
                 method.__name__,
                 type(other).__name__
@@ -90,7 +91,7 @@ def _degree(vec, tuples=True):
 def _mul(lhs, rhs):
     """Return lhs * rhs."""
     if not lhs or not rhs:
-        return
+        return [(0, 0)]
     deg = _degree(lhs) + _degree(rhs) + 1
 
     res = [0] * deg
@@ -160,21 +161,19 @@ class Polynomial:
         Polynomial([(1,4), (2,3), (3,2), (4,1), (5,0)], from_monomials=True)
         Polynomial(((i + 1, 4 - i) for i in range(5)), from_monomials=True)
         """
-        iterable = list(iterable)
-
         if from_monomials:
-            for i, monomial in enumerate(iterable):
+            def monomial_to_tuple(monomial):
                 if isinstance(monomial, Monomial):
-                    iterable[i] = (monomial.a, monomial.degree)
-                elif len(monomial) == 2:
-                    continue
-                else:
-                    raise TypeError("{} cannot be a monomial.".
-                                    format(monomial))
-            self.terms = iterable
+                    return monomial.a, monomial.degree
+                if len(monomial) == 2:
+                    return monomial
+
+                raise TypeError("{} cannot be a monomial.".
+                                format(monomial))
+
+            self.terms = [monomial_to_tuple(monomial) for monomial in iterable]
         else:
-            self._vector = iterable[::-1]
-            self._trim()
+            self._vector = _trim(list(iterable)[::-1])
 
     @classmethod
     def zero_instance(cls):
@@ -232,7 +231,7 @@ class Polynomial:
 
         return Polynomial(
             [c * x for c, x
-                in zip(self, reversed(factors))]
+             in zip(self, reversed(factors))]
         )
 
     @property
@@ -252,14 +251,14 @@ class Polynomial:
         if not terms:
             _vector = [0]
         else:
-            max_deg = max(terms, key=lambda x: x[1])[1] + 1
-            _vector = [0] * max_deg
+            list_len = max(terms, key=lambda x: x[1])[1] + 1
+            _vector = [0] * list_len
 
             for coeff, deg in terms:
                 _vector[deg] += coeff
 
+            _vector = _trim(_vector)
         self._vector = _vector
-        self._trim()
 
     @property
     def monomials(self):
@@ -369,7 +368,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         # eg. -         5       x^     2
         s_d = self.degree
         terms = ["{0}{1}{2}{3}".
-                 format(*components(ak, k, k == s_d))
+                     format(*components(ak, k, k == s_d))
                  for ak, k in self.terms]
 
         return " ".join(terms)
@@ -457,9 +456,8 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
     def __neg__(self):
         """Return -self."""
-        _vector = [-x for x in _trim(self._vector)]
         ret_val = deepcopy(self)
-        ret_val._vector = _vector
+        ret_val._vector = [-x for x in _trim(self._vector)]
         return ret_val
 
     @extract_polynomial
@@ -601,8 +599,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         if other < 0:
             self <<= -other
         else:
-            self._vector = self._vector[other:]
-            self._trim()
+            self._vector = _trim(self._vector[other:])
 
         return self
 
@@ -624,7 +621,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         raise ValueError(
             "Can not check {0} for membership. A two-tuple, list of "
             "two-tuples, a set, or a Polynomial are required."
-            .format(type(item).__name__)
+                .format(type(item).__name__)
         )
 
     def terms_are_valid(self, terms):
@@ -644,10 +641,13 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
 def setvalue_decorator(error, _terms_are_valid, _fn):
     """Decorate __setattr__, checking if self._vector is still valid."""
-    def method(self, *args, **kwargs):
-        _fn(self, *args, **kwargs)
-        if not _terms_are_valid(self, _to_terms(self._vector)):
+
+    def method(self, name, new_value):
+        _fn(self, name, new_value)
+        if (name == '_vector' and
+            not _terms_are_valid(self, _to_terms(self._vector))):
             raise error
+
     return method
 
 
@@ -658,7 +658,7 @@ class FixedDegreePolynomial(Polynomial):
         """Init a subclass of self."""
         deg = kwargs["valid_degrees"]
         if not isinstance(deg, tuple):
-            deg = (deg, )
+            deg = (deg,)
 
         cls.valid_degrees = deg
 
@@ -720,8 +720,80 @@ class Monomial(FixedTermPolynomial, valid_term_counts=(0, 1)):
             raise ValueError("Monomial's degree should be a natural number.")
         if degree < 0:
             raise ValueError("Polynomials cannot have negative-degree terms.")
-        coeffs = [coefficient] + [0] * degree
-        Polynomial.__init__(self, coeffs)
+        self._degree = degree
+        self._coeff = coefficient
+
+    def _trim(self):
+        """Trims self._vector to length. Keeps constant terms."""
+
+    @property
+    def terms(self):
+        """Get the terms of self as a list of tuples in coeff, deg form.
+
+        Terms are returned from largest degree to smallest degree, excluding
+        any terms with a zero coefficient.
+        """
+        if self._coeff == 0:
+            return [(0, 0)]
+        return [(self._coeff, self._degree)]
+
+    @terms.setter
+    def terms(self, terms):
+        """Set the terms of self as a list of tuples in coeff, deg form."""
+        if not terms:
+            self._coeff = 0
+        elif len(terms) == 1:
+            self._coeff, self._degree = terms[0]
+        else:
+            terms = sorted([term for term in terms if term[0] != 0],
+                           key=lambda x: x[1])
+            if terms[0][1] == terms[-1][1]:
+                self._coeff = sum(term[0] for term in terms)
+                self._degree = terms[0][1]
+            else:
+                err_msg = "terms has more than one non-zero term."
+                curr_coeff, curr_deg = terms[0]
+                termx = []
+
+                for coeff, deg in terms[1:]:
+                    if curr_deg == deg:
+                        curr_coeff += coeff
+                    else:
+                        if curr_coeff != 0:
+                            if termx:
+                                raise TermError(err_msg)
+                            termx.append((curr_coeff, curr_deg))
+                        curr_coeff = coeff
+                        curr_deg = deg
+                if termx:
+                    if curr_coeff:
+                        raise TermError(err_msg)
+                    self._coeff, self._degree = termx[0]
+                else:
+                    self._coeff = curr_coeff
+                    self._degree = curr_deg
+
+    @property
+    def _vector(self):
+        """Get _vector."""
+        if self.degree == -inf:
+            return [0]
+        return [0] * self._degree + [self._coeff]
+
+    @_vector.setter
+    def _vector(self, _vector):
+        """Set _vector."""
+        max_deg = len(_vector) - 1
+        is_set = False
+        for index, coeff in enumerate(reversed(_vector)):
+            if coeff != 0:
+                if is_set:
+                    raise TermError("_vector has > 1 non-zero term.")
+                self._coeff = coeff
+                self._degree = max_deg - index
+                is_set = True
+        if not is_set:
+            self._coeff = 0
 
     @classmethod
     def zero_instance(cls):
@@ -731,12 +803,27 @@ class Monomial(FixedTermPolynomial, valid_term_counts=(0, 1)):
     @property
     def coefficient(self):
         """Return the coefficient of the monomial."""
-        return self.a
+        return self._coeff
 
     @coefficient.setter
-    def coefficient(self, new_value):
+    def coefficient(self, coeff):
         """Set the coefficient of the monomial."""
-        self.a = new_value
+        self._coeff = coeff
+
+    @property
+    def degree(self):
+        """Return the degree of the monomial."""
+        if self._coeff == 0:
+            self._degree = -inf
+        elif self._degree == -inf:
+            self._degree = 0
+
+        return self._degree
+
+    @degree.setter
+    def degree(self, degree):
+        """Set the degree of the monomial."""
+        self._degree = degree
 
     @extract_polynomial
     def __mul__(self, other):
@@ -745,7 +832,8 @@ class Monomial(FixedTermPolynomial, valid_term_counts=(0, 1)):
         The class which is more permissive will be returned.
         """
         if isinstance(other, Monomial) and self and other:
-            return Monomial(self.a * other.a, self.degree + other.degree)
+            return Monomial(self.coefficient * other.coefficient,
+                            self.degree + other.degree)
         return super().__mul__(other)
 
     @extract_polynomial
@@ -852,7 +940,30 @@ class Monomial(FixedTermPolynomial, valid_term_counts=(0, 1)):
 
     def __repr__(self):
         """Return repr(self)."""
-        return "Monomial({0!r}, {1!r})".format(self.a, self.degree)
+        deg = max(0, self.degree)
+        return "Monomial({0!r}, {1!r})".format(self.coefficient, deg)
+
+    def __getitem__(self, degree):
+        """Get the coefficient of the term with the given degree."""
+        if isinstance(degree, slice):
+            return self._vector[degree]
+        if degree == self.degree:
+            return self._coeff
+        if degree > self.degree or degree < 0:
+            raise IndexError("Attempt to get coefficient of term with \
+degree {0} of a {1}-degree monomial".format(degree, self.degree))
+        return 0
+
+    def __setitem__(self, degree, new_value):
+        """Set the coefficient of the term with the given degree."""
+        if isinstance(degree, slice):
+            _vector = self._vector
+            _vector[degree] = new_value
+            self._vector = _vector
+        elif degree == self.degree:
+            self.coefficient = new_value
+        else:
+            raise TermError("Can not set more than 1 term on Monomial.")
 
 
 class Constant(FixedDegreePolynomial, Monomial, valid_degrees=(0, -inf)):
@@ -874,14 +985,24 @@ class Constant(FixedDegreePolynomial, Monomial, valid_degrees=(0, -inf)):
         return super().__eq__(other)
 
     @property
+    def degree(self):
+        """Return self.degree."""
+        return 0 if self._coeff else -inf
+
+    @degree.setter
+    def degree(self, degree):
+        """Set self.degree."""
+        raise DegreeError("Can't change the degree of Constant")
+
+    @property
     def const(self):
         """Return the constant term."""
-        return self._vector[0]
+        return self.coefficient
 
     @const.setter
     def const(self, val):
         """Set the constant term."""
-        self._vector[0] = val
+        self.coefficient = val
 
     @extract_polynomial
     def __mul__(self, other):
