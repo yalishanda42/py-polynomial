@@ -55,7 +55,8 @@ class QuadraticTrinomial(FixedDegreePolynomial, Trinomial, valid_degrees=2):
     @property
     def discriminant(self):
         """Return the discriminant of ax^2 + bx + c = 0."""
-        return self.b ** 2 - 4 * self.a * self.c
+        c, b, a = self._vector
+        return b * b - 4 * a * c
 
     @property
     def complex_roots(self):
@@ -63,10 +64,11 @@ class QuadraticTrinomial(FixedDegreePolynomial, Trinomial, valid_degrees=2):
 
         + root is first, - root is second.
         """
-        D = self.discriminant
+        c, b, a = self._vector
+        D = b * b - 4 * a * c
         sqrtD = sqrt(D) if D >= 0 else sqrt(-D) * 1j
-        return ((-self.b + sqrtD) / (2 * self.a),
-                (-self.b - sqrtD) / (2 * self.a))
+        a = a * 2
+        return (-b + sqrtD) / a, (-b - sqrtD) / a
 
     @property
     def real_roots(self):

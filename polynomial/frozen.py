@@ -79,9 +79,18 @@ class ZeroPolynomial(Freezable, Constant, valid_degrees=-inf):
     def __init__(self):
         """Equivalent to Polynomial()."""
         Constant.__init__(self, 0)
-        self._vector = tuple(self._vector)
         self._trim = self._no_op
         self._freeze()
+
+    @property
+    def _vector(self):
+        """Return self._vector."""
+        return (0, )
+
+    @property
+    def degree(self):
+        """Return self.degree."""
+        return -inf
 
     @classmethod
     def zero_instance(cls):
