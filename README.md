@@ -12,72 +12,105 @@
 `pip3 install py-polynomial`
 
 ## Sample functionality
+### Flexible initialization
 ``` pycon
->>> from polynomial import Polynomial as P
->>> a = P(1, 2, 3, 4)
->>> a
-Polynomial(1, 2, 3, 4)
+>>> from polynomial import Polynomial
 
+>>> a = Polynomial(1, 2, 3, 4)
 >>> str(a)
 x^3 + 2x^2 + 3x + 4
 
->>> b = P([4 - x for x in range(4)])  # Flexible initialization
+>>> b = Polynomial([4 - x for x in range(4)])
 >>> str(b)
 4x^3 + 3x^2 + 2x + 1
+```
 
->>> b.derivative                      # First derivative
+### First derivative
+``` pycon
+>>> b.derivative
 Polynomial(12, 6, 2)
 
 >>> str(b.derivative)
 12x^2 + 6x + 2
+```
 
->>> str(b.nth_derivative(2))          # Second or higher derivative
+### Second or higher derivative
+``` pycon
+>>> str(b.nth_derivative(2))
 24x + 6
+```
 
->>> str(a + b)                        # Addition
+### Addition
+``` pycon
+>>> str(a + b)
 5x^3 + 5x^2 + 5x + 5
+```
 
->>> (a + b).calculate(5)              # Calculating value for a given x
+### Calculating value for a given x
+``` pycon
+>>> (a + b).calculate(5)
 780
+```
 
->>> p = P(1, 2) * P(1, 2)             # Multiplication
+### Multiplication
+``` pycon
+>>> p = Polynomial(1, 2) * Polynomial(1, 2)
 >>> p
 Polynomial(1, 4, 4)
+```
 
->>> p[0] = -4                         # Accessing coefficient by degree
+### Accessing coefficient by degree
+``` pycon
+>>> p[0] = -4
 >>> p
 Polynomial(1, 4, -4)
+```
 
->>> p[1:] = [4, -1]                   # Slicing
+### Slicing
+``` pycon
+>>> p[1:] = [4, -1]
 >>> p
 Polynomial(-1, 4, -4)
+```
 
->>> (p.a, p.b, p.c)                   # Accessing coefficients by name convention
+### Accessing coefficients by name convention
+``` pycon
+>>> (p.a, p.b, p.c)
 (-1, 4, -4)
 
 >>> p.a, p.c = 1, 4
 >>> (p.A, p.B, p.C)
 (1, 4, 4)
+```
 
->>> q, remainder = divmod(p, P(1, 2)) # Division and remainder
+### Division and remainder
+``` pycon
+>>> q, remainder = divmod(p, Polynomial(1, 2))
 >>> q
 Polynomial(1.0, 2.0)
 >>> remainder
 Polynomial()
 
->>> p // P(1, 2)
+>>> p // Polynomial(1, 2)
 Polynomial(1.0, 2.0)
 
->>> P(1, 2, 3) % P(1, 2)
+>>> P(1, 2, 3) % Polynomial(1, 2)
 Polynomial(3)
+```
 
->>> P(2, 1) in P(4, 3, 2, 1)          # Check whether it contains given terms
+### Check whether it contains given terms
+``` pycon
+>>> Polynomial(2, 1) in Polynomial(4, 3, 2, 1)
 True
+```
 
->>> str(P("abc"))                     # Misc
+### Misc
+``` pycon
+>>> str(Polynomial("abc"))
 ax^2 + bx + c
 ```
 
+### Roots and discriminants
 ``` pycon
 >>> from polynomial import QuadraticTrinomial, Monomial
 >>> y = QuadraticTrinomial(1, -2, 1)
