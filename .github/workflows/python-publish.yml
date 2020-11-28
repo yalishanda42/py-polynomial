@@ -23,7 +23,7 @@ jobs:
         python3 -m venv polynomialenv
         . polynomialenv/bin/activate
         python3 -m pip install --upgrade pip
-        pip3 install setuptools wheel twine
+        pip3 install setuptools wheel twine portray
     - name: Build and publish
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
@@ -32,3 +32,8 @@ jobs:
         . polynomialenv/bin/activate
         python3 setup.py sdist bdist_wheel
         twine upload dist/*
+    - name: Create and deploy documentation
+      run: |
+        . polynomialenv/bin/activate
+        portray on_github_pages
+        

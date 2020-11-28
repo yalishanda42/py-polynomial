@@ -15,7 +15,7 @@ from polynomial import (
     DegreeError,
     TermError,
 )
-from polynomial.core import extract_polynomial
+from polynomial.core import _extract_polynomial
 from polynomial.frozen import Freezable
 
 
@@ -1253,7 +1253,7 @@ class TestPolynomialsOperations(unittest.TestCase):
         """Test that extract_polynomial errors on bad input."""
         bad_inputs = ["a", [1, 2, 3], (1, 2), None]
 
-        @extract_polynomial
+        @_extract_polynomial
         def fn(a, b):
             pass
 

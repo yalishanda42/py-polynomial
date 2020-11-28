@@ -3,7 +3,7 @@ from math import inf
 from polynomial.core import (
     Constant,
     Polynomial,
-    extract_polynomial,
+    _extract_polynomial,
 )
 
 
@@ -102,12 +102,12 @@ class ZeroPolynomial(Freezable, Constant, valid_degrees=-inf):
         """Return self.const, which is always 0."""
         return 0
 
-    @extract_polynomial
+    @_extract_polynomial
     def __mul__(self, other):
         """Return self * other."""
         return other.zero_instance()
 
-    @extract_polynomial
+    @_extract_polynomial
     def __rmul__(self, other):
         """Return other * self."""
         return other.zero_instance()

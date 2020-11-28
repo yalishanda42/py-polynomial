@@ -17,7 +17,7 @@ class TermError(PolynomialError):
     """Raised when a Polynomial's term count changes."""
 
 
-def accepts_many_arguments(function):
+def _accepts_many_arguments(function):
     """Make a function that accepts an iterable handle many *args."""
 
     def decorated(self, *args, **kwargs):
@@ -29,7 +29,7 @@ def accepts_many_arguments(function):
     return decorated
 
 
-def extract_polynomial(method):
+def _extract_polynomial(method):
     """Call method with the second argument as a Polynomial.
 
     If casting is not possible or not appropriate, raise a ValueError.
@@ -53,7 +53,7 @@ def extract_polynomial(method):
     return decorated
 
 
-def get_more_permissive_class(a, b):
+def _get_more_permissive_class(a, b):
     """Return the most permissive class of a, b."""
     a_cls = a.__class__
     b_cls = b.__class__
@@ -142,7 +142,7 @@ def _sub(lhs, rhs):
 class Polynomial:
     """Implements a single-variable mathematical polynomial."""
 
-    @accepts_many_arguments
+    @_accepts_many_arguments
     def __init__(self, iterable, from_monomials=False):
         """Initialize the polynomial.
 
@@ -373,7 +373,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
         return " ".join(terms)
 
-    @extract_polynomial
+    @_extract_polynomial
     def __eq__(self, other):
         """Return self == other.
 
@@ -384,7 +384,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
         return self.degree == other.degree and self.terms == other.terms
 
-    @extract_polynomial
+    @_extract_polynomial
     def __ne__(self, other):
         """Return self != other.
 
@@ -406,7 +406,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
 
         return self._vector[0] != 0
 
-    @extract_polynomial
+    @_extract_polynomial
     def __add__(self, other):
         """Return self + other."""
         if not self:
@@ -419,32 +419,32 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
             _add(self.terms, other.terms)
         )
 
-    @extract_polynomial
+    @_extract_polynomial
     def __radd__(self, other):
         """Return other + self."""
         return self + other
 
-    @extract_polynomial
+    @_extract_polynomial
     def __iadd__(self, other):
         """Implement self += other."""
         return self.try_set_self(_add(self.terms, other.terms))
 
-    @extract_polynomial
+    @_extract_polynomial
     def __mul__(self, other):
         """Return self * other."""
         if not self or not other:
-            return get_more_permissive_class(self, other).zero_instance()
+            return _get_more_permissive_class(self, other).zero_instance()
 
         ret_val = deepcopy(self)
         ret_val *= other
         return ret_val
 
-    @extract_polynomial
+    @_extract_polynomial
     def __rmul__(self, other):
         """Return other * self."""
         return self * other
 
-    @extract_polynomial
+    @_extract_polynomial
     def __imul__(self, other):
         """Implement self *= other."""
         return self.try_set_self(_mul(self.terms, other.terms))
@@ -460,42 +460,42 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         ret_val._vector = [-x for x in _trim(self._vector)]
         return ret_val
 
-    @extract_polynomial
+    @_extract_polynomial
     def __sub__(self, other):
         """Return self - other."""
         return self + (-other)
 
-    @extract_polynomial
+    @_extract_polynomial
     def __rsub__(self, other):
         """Return other - self."""
         return other + (-self)
 
-    @extract_polynomial
+    @_extract_polynomial
     def __isub__(self, other):
         """Implement self -= other."""
         return self.try_set_self(_sub(self.terms, other.terms))
 
-    @extract_polynomial
+    @_extract_polynomial
     def __ifloordiv__(self, other):
         """Return self //= other."""
         return self.try_set_self(divmod(self, other)[0].terms)
 
-    @extract_polynomial
+    @_extract_polynomial
     def __floordiv__(self, other):
         """Return self // other."""
         return divmod(self, other)[0]
 
-    @extract_polynomial
+    @_extract_polynomial
     def __imod__(self, other):
         """Return self %= other."""
         return self.try_set_self(divmod(self, other)[1].terms)
 
-    @extract_polynomial
+    @_extract_polynomial
     def __mod__(self, other):
         """Return self % other."""
         return divmod(self, other)[1]
 
-    @extract_polynomial
+    @_extract_polynomial
     def __divmod__(self, other):
         """Return divmod(self, other).
 
@@ -639,7 +639,7 @@ degree {0} of a {1}-degree polynomial".format(degree, self.degree))
         return Polynomial(terms, from_monomials=True)
 
 
-def setvalue_decorator(error, _terms_are_valid, _fn):
+def _setvalue_decorator(error, _terms_are_valid, _fn):
     """Decorate __setattr__, checking if self._vector is still valid."""
 
     def method(self, name, new_value):
@@ -674,7 +674,7 @@ class FixedDegreePolynomial(Polynomial):
             )
 
         cls.terms_are_valid = terms_are_valid
-        cls.__setattr__ = setvalue_decorator(
+        cls.__setattr__ = _setvalue_decorator(
             DegreeError,
             _terms_are_valid,
             cls.__setattr__
@@ -704,7 +704,7 @@ class FixedTermPolynomial(Polynomial):
             )
 
         cls.terms_are_valid = terms_are_valid
-        cls.__setattr__ = setvalue_decorator(
+        cls.__setattr__ = _setvalue_decorator(
             TermError,
             _terms_are_valid,
             cls.__setattr__
@@ -825,7 +825,7 @@ class Monomial(FixedTermPolynomial, valid_term_counts=(0, 1)):
         """Set the degree of the monomial."""
         self._degree = degree
 
-    @extract_polynomial
+    @_extract_polynomial
     def __mul__(self, other):
         """Return self * other.
 
@@ -836,7 +836,7 @@ class Monomial(FixedTermPolynomial, valid_term_counts=(0, 1)):
                             self.degree + other.degree)
         return super().__mul__(other)
 
-    @extract_polynomial
+    @_extract_polynomial
     def __rmul__(self, other):
         """Return other * self.
 
@@ -1004,7 +1004,7 @@ class Constant(FixedDegreePolynomial, Monomial, valid_degrees=(0, -inf)):
         """Set the constant term."""
         self.coefficient = val
 
-    @extract_polynomial
+    @_extract_polynomial
     def __mul__(self, other):
         """Return self * other."""
         if isinstance(other, Constant):
