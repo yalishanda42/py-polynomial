@@ -295,47 +295,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#functions" class="md-nav__link">
-    Functions
-  </a>
-  
-    <nav class="md-nav" aria-label="Functions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#accepts_many_arguments" class="md-nav__link">
-    accepts_many_arguments
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#extract_polynomial" class="md-nav__link">
-    extract_polynomial
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#get_more_permissive_class" class="md-nav__link">
-    get_more_permissive_class
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#setvalue_decorator" class="md-nav__link">
-    setvalue_decorator
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#classes" class="md-nav__link">
     Classes
   </a>
@@ -1062,47 +1021,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#functions" class="md-nav__link">
-    Functions
-  </a>
-  
-    <nav class="md-nav" aria-label="Functions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#accepts_many_arguments" class="md-nav__link">
-    accepts_many_arguments
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#extract_polynomial" class="md-nav__link">
-    extract_polynomial
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#get_more_permissive_class" class="md-nav__link">
-    get_more_permissive_class
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#setvalue_decorator" class="md-nav__link">
-    setvalue_decorator
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#classes" class="md-nav__link">
     Classes
   </a>
@@ -1789,7 +1707,7 @@
 
     <span class="s2">&quot;&quot;&quot;Raised when a Polynomial&#39;s term count changes.&quot;&quot;&quot;</span>
 
-<span class="s s-Atom">def</span> <span class="nf">accepts_many_arguments</span><span class="p">(</span><span class="s s-Atom">function</span><span class="p">)</span><span class="s s-Atom">:</span>
+<span class="s s-Atom">def</span> <span class="k">_</span><span class="nf">accepts_many_arguments</span><span class="p">(</span><span class="s s-Atom">function</span><span class="p">)</span><span class="s s-Atom">:</span>
 
     <span class="s2">&quot;&quot;&quot;Make a function that accepts an iterable handle many *args.&quot;&quot;&quot;</span>
 
@@ -1805,7 +1723,7 @@
 
     <span class="s s-Atom">return</span> <span class="s s-Atom">decorated</span>
 
-<span class="s s-Atom">def</span> <span class="nf">extract_polynomial</span><span class="p">(</span><span class="s s-Atom">method</span><span class="p">)</span><span class="s s-Atom">:</span>
+<span class="s s-Atom">def</span> <span class="k">_</span><span class="nf">extract_polynomial</span><span class="p">(</span><span class="s s-Atom">method</span><span class="p">)</span><span class="s s-Atom">:</span>
 
     <span class="s2">&quot;&quot;&quot;Call method with the second argument as a Polynomial.</span>
 
@@ -1841,7 +1759,7 @@
 
     <span class="s s-Atom">return</span> <span class="s s-Atom">decorated</span>
 
-<span class="s s-Atom">def</span> <span class="nf">get_more_permissive_class</span><span class="p">(</span><span class="s s-Atom">a</span><span class="p">,</span> <span class="s s-Atom">b</span><span class="p">)</span><span class="s s-Atom">:</span>
+<span class="s s-Atom">def</span> <span class="k">_</span><span class="nf">get_more_permissive_class</span><span class="p">(</span><span class="s s-Atom">a</span><span class="p">,</span> <span class="s s-Atom">b</span><span class="p">)</span><span class="s s-Atom">:</span>
 
     <span class="s2">&quot;&quot;&quot;Return the most permissive class of a, b.&quot;&quot;&quot;</span>
 
@@ -1969,7 +1887,7 @@
 
     <span class="s2">&quot;&quot;&quot;Implements a single-variable mathematical polynomial.&quot;&quot;&quot;</span>
 
-    <span class="s s-Atom">@accepts_many_arguments</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">accepts_many_arguments</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">init__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">iterable</span><span class="p">,</span> <span class="s s-Atom">from_monomials</span><span class="o">=</span><span class="nv">False</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -2353,7 +2271,7 @@
 
         <span class="s s-Atom">return</span> <span class="s2">&quot; &quot;</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s s-Atom">terms</span><span class="p">)</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">eq__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -2369,7 +2287,7 @@
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">self</span><span class="p">.</span><span class="s s-Atom">degree</span> <span class="o">==</span> <span class="s s-Atom">other</span><span class="p">.</span><span class="s s-Atom">degree</span> <span class="s s-Atom">and</span> <span class="s s-Atom">self</span><span class="p">.</span><span class="s s-Atom">terms</span> <span class="o">==</span> <span class="s s-Atom">other</span><span class="p">.</span><span class="s s-Atom">terms</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">ne__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -2401,7 +2319,7 @@
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">self</span><span class="p">.</span><span class="k">_</span><span class="s s-Atom">vector</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">!</span><span class="o">=</span> <span class="mi">0</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">add__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -2421,7 +2339,7 @@
 
         <span class="p">)</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">radd__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -2429,7 +2347,7 @@
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">self</span> <span class="o">+</span> <span class="s s-Atom">other</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">iadd__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -2437,7 +2355,7 @@
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">self</span><span class="p">.</span><span class="nf">try_set_self</span><span class="p">(</span><span class="k">_</span><span class="nf">add</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">.</span><span class="s s-Atom">terms</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">.</span><span class="s s-Atom">terms</span><span class="p">))</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">mul__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -2445,7 +2363,7 @@
 
         <span class="s s-Atom">if</span> <span class="o">not</span> <span class="s s-Atom">self</span> <span class="s s-Atom">or</span> <span class="o">not</span> <span class="nn">other</span><span class="p">:</span>
 
-            <span class="s s-Atom">return</span> <span class="nf">get_more_permissive_class</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">).</span><span class="nf">zero_instance</span><span class="p">()</span>
+            <span class="s s-Atom">return</span> <span class="k">_</span><span class="nf">get_more_permissive_class</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">).</span><span class="nf">zero_instance</span><span class="p">()</span>
 
         <span class="s s-Atom">ret_val</span> <span class="o">=</span> <span class="nf">deepcopy</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">)</span>
 
@@ -2453,7 +2371,7 @@
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">ret_val</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">rmul__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -2461,7 +2379,7 @@
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">self</span> <span class="o">*</span> <span class="s s-Atom">other</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">imul__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -2487,7 +2405,7 @@
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">ret_val</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">sub__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -2495,7 +2413,7 @@
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">self</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="s s-Atom">other</span><span class="p">)</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">rsub__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -2503,7 +2421,7 @@
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">other</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="s s-Atom">self</span><span class="p">)</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">isub__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -2511,7 +2429,7 @@
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">self</span><span class="p">.</span><span class="nf">try_set_self</span><span class="p">(</span><span class="k">_</span><span class="nf">sub</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">.</span><span class="s s-Atom">terms</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">.</span><span class="s s-Atom">terms</span><span class="p">))</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">ifloordiv__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -2519,7 +2437,7 @@
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">self</span><span class="p">.</span><span class="nf">try_set_self</span><span class="p">(</span><span class="nf">divmod</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="s s-Atom">terms</span><span class="p">)</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">floordiv__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -2527,7 +2445,7 @@
 
         <span class="s s-Atom">return</span> <span class="nf">divmod</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">imod__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -2535,7 +2453,7 @@
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">self</span><span class="p">.</span><span class="nf">try_set_self</span><span class="p">(</span><span class="nf">divmod</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)[</span><span class="mi">1</span><span class="p">].</span><span class="s s-Atom">terms</span><span class="p">)</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">mod__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -2543,7 +2461,7 @@
 
         <span class="s s-Atom">return</span> <span class="nf">divmod</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">divmod__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -2777,7 +2695,7 @@
 
         <span class="s s-Atom">return</span> <span class="nv">Polynomial</span><span class="p">(</span><span class="s s-Atom">terms</span><span class="p">,</span> <span class="s s-Atom">from_monomials</span><span class="o">=</span><span class="nv">True</span><span class="p">)</span>
 
-<span class="s s-Atom">def</span> <span class="nf">setvalue_decorator</span><span class="p">(</span><span class="s s-Atom">error</span><span class="p">,</span> <span class="k">_</span><span class="s s-Atom">terms_are_valid</span><span class="p">,</span> <span class="k">_</span><span class="s s-Atom">fn</span><span class="p">)</span><span class="s s-Atom">:</span>
+<span class="s s-Atom">def</span> <span class="k">_</span><span class="nf">setvalue_decorator</span><span class="p">(</span><span class="s s-Atom">error</span><span class="p">,</span> <span class="k">_</span><span class="s s-Atom">terms_are_valid</span><span class="p">,</span> <span class="k">_</span><span class="s s-Atom">fn</span><span class="p">)</span><span class="s s-Atom">:</span>
 
     <span class="s2">&quot;&quot;&quot;Decorate __setattr__, checking if self._vector is still valid.&quot;&quot;&quot;</span>
 
@@ -2827,7 +2745,7 @@
 
         <span class="s s-Atom">cls</span><span class="p">.</span><span class="s s-Atom">terms_are_valid</span> <span class="o">=</span> <span class="s s-Atom">terms_are_valid</span>
 
-        <span class="s s-Atom">cls</span><span class="p">.</span><span class="k">__</span><span class="s s-Atom">setattr__</span> <span class="o">=</span> <span class="nf">setvalue_decorator</span><span class="p">(</span>
+        <span class="s s-Atom">cls</span><span class="p">.</span><span class="k">__</span><span class="s s-Atom">setattr__</span> <span class="o">=</span> <span class="k">_</span><span class="nf">setvalue_decorator</span><span class="p">(</span>
 
             <span class="nv">DegreeError</span><span class="p">,</span>
 
@@ -2871,7 +2789,7 @@
 
         <span class="s s-Atom">cls</span><span class="p">.</span><span class="s s-Atom">terms_are_valid</span> <span class="o">=</span> <span class="s s-Atom">terms_are_valid</span>
 
-        <span class="s s-Atom">cls</span><span class="p">.</span><span class="k">__</span><span class="s s-Atom">setattr__</span> <span class="o">=</span> <span class="nf">setvalue_decorator</span><span class="p">(</span>
+        <span class="s s-Atom">cls</span><span class="p">.</span><span class="k">__</span><span class="s s-Atom">setattr__</span> <span class="o">=</span> <span class="k">_</span><span class="nf">setvalue_decorator</span><span class="p">(</span>
 
             <span class="nv">TermError</span><span class="p">,</span>
 
@@ -3079,7 +2997,7 @@
 
         <span class="s s-Atom">self</span><span class="p">.</span><span class="k">_</span><span class="s s-Atom">degree</span> <span class="o">=</span> <span class="s s-Atom">degree</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">mul__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -3097,7 +3015,7 @@
 
         <span class="s s-Atom">return</span> <span class="nf">super</span><span class="p">().</span><span class="k">__</span><span class="nf">mul__</span><span class="p">(</span><span class="s s-Atom">other</span><span class="p">)</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">rmul__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -3361,7 +3279,7 @@
 
         <span class="s s-Atom">self</span><span class="p">.</span><span class="s s-Atom">coefficient</span> <span class="o">=</span> <span class="s s-Atom">val</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">mul__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -3403,125 +3321,6 @@
 <div class="codehilite"><pre><span></span><code><span class="n">inf</span>
 </code></pre></div>
 
-<h2 id="functions">Functions</h2>
-<h3 id="accepts_many_arguments">accepts_many_arguments</h3>
-<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">accepts_many_arguments</span><span class="p">(</span>
-    <span class="n">function</span>
-<span class="p">)</span>
-</code></pre></div>
-
-<p>Make a function that accepts an iterable handle many *args.</p>
-<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="n">def</span> <span class="n">accepts_many_arguments</span><span class="p">(</span><span class="k">function</span><span class="p">):</span>
-
-    <span class="ss">&quot;&quot;&quot;Make a function that accepts an iterable handle many *args.&quot;&quot;&quot;</span>
-
-    <span class="n">def</span> <span class="n">decorated</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-
-        <span class="k">if</span> <span class="n">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">and</span> <span class="k">not</span> <span class="n">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">complex</span><span class="p">)):</span>
-
-            <span class="k">function</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">)</span>
-
-        <span class="k">else</span><span class="p">:</span>
-
-            <span class="k">function</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">decorated</span>
-</code></pre></div>
-
-</details>
-<h3 id="extract_polynomial">extract_polynomial</h3>
-<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">extract_polynomial</span><span class="p">(</span>
-    <span class="n">method</span>
-<span class="p">)</span>
-</code></pre></div>
-
-<p>Call method with the second argument as a Polynomial.</p>
-<p>If casting is not possible or not appropriate, raise a ValueError.</p>
-<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="n">def</span> <span class="n">extract_polynomial</span><span class="p">(</span><span class="k">method</span><span class="p">):</span>
-
-    <span class="ss">&quot;&quot;&quot;Call method with the second argument as a Polynomial.</span>
-
-<span class="ss">    If casting is not possible or not appropriate, raise a ValueError.</span>
-
-<span class="ss">    &quot;&quot;&quot;</span>
-
-    <span class="n">def</span> <span class="n">decorated</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-
-        <span class="k">if</span> <span class="n">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Polynomial</span><span class="p">):</span>
-
-            <span class="k">return</span> <span class="k">method</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">complex</span><span class="p">)):</span>
-
-            <span class="k">return</span> <span class="k">method</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">Constant</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
-
-        <span class="n">raise</span> <span class="n">ValueError</span><span class="p">(</span>
-
-            <span class="ss">&quot;{0}.{1} requires a Polynomial or number, got {2}.&quot;</span>
-
-                <span class="p">.</span><span class="n">format</span><span class="p">(</span>
-
-                <span class="k">self</span><span class="p">.</span><span class="n">__class__</span><span class="p">.</span><span class="n">__name__</span><span class="p">,</span>
-
-                <span class="k">method</span><span class="p">.</span><span class="n">__name__</span><span class="p">,</span>
-
-                <span class="k">type</span><span class="p">(</span><span class="n">other</span><span class="p">).</span><span class="n">__name__</span>
-
-            <span class="p">)</span>
-
-        <span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">decorated</span>
-</code></pre></div>
-
-</details>
-<h3 id="get_more_permissive_class">get_more_permissive_class</h3>
-<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">get_more_permissive_class</span><span class="p">(</span>
-    <span class="n">a</span><span class="p">,</span>
-    <span class="n">b</span>
-<span class="p">)</span>
-</code></pre></div>
-
-<p>Return the most permissive class of a, b.</p>
-<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="n">def</span> <span class="n">get_more_permissive_class</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-
-    <span class="ss">&quot;&quot;&quot;Return the most permissive class of a, b.&quot;&quot;&quot;</span>
-
-    <span class="n">a_cls</span> <span class="o">=</span> <span class="n">a</span><span class="p">.</span><span class="n">__class__</span>
-
-    <span class="n">b_cls</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">__class__</span>
-
-    <span class="k">return</span> <span class="n">b_cls</span> <span class="k">if</span> <span class="n">issubclass</span><span class="p">(</span><span class="n">a_cls</span><span class="p">,</span> <span class="n">b_cls</span><span class="p">)</span> <span class="k">else</span> <span class="n">a_cls</span>
-</code></pre></div>
-
-</details>
-<h3 id="setvalue_decorator">setvalue_decorator</h3>
-<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">setvalue_decorator</span><span class="p">(</span>
-    <span class="n">error</span><span class="p">,</span>
-    <span class="n">_terms_are_valid</span><span class="p">,</span>
-    <span class="n">_fn</span>
-<span class="p">)</span>
-</code></pre></div>
-
-<p>Decorate <strong>setattr</strong>, checking if self._vector is still valid.</p>
-<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="n">def</span> <span class="n">setvalue_decorator</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">_terms_are_valid</span><span class="p">,</span> <span class="n">_fn</span><span class="p">):</span>
-
-    <span class="ss">&quot;&quot;&quot;Decorate __setattr__, checking if self._vector is still valid.&quot;&quot;&quot;</span>
-
-    <span class="n">def</span> <span class="k">method</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">new_value</span><span class="p">):</span>
-
-        <span class="n">_fn</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">new_value</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="p">(</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;_vector&#39;</span> <span class="k">and</span>
-
-            <span class="k">not</span> <span class="n">_terms_are_valid</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">_to_terms</span><span class="p">(</span><span class="k">self</span><span class="p">.</span><span class="n">_vector</span><span class="p">))):</span>
-
-            <span class="n">raise</span> <span class="n">error</span>
-
-    <span class="k">return</span> <span class="k">method</span>
-</code></pre></div>
-
-</details>
 <h2 id="classes">Classes</h2>
 <h3 id="constant">Constant</h3>
 <div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">Constant</span><span class="p">(</span>
@@ -3590,7 +3389,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">coefficient</span> <span class="o">=</span> <span class="n">val</span>
 
-    <span class="err">@</span><span class="n">extract_polynomial</span>
+    <span class="err">@</span><span class="n">_extract_polynomial</span>
 
     <span class="n">def</span> <span class="n">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
 
@@ -3909,7 +3708,7 @@ set self.<strong>traceback</strong> to tb and return self.</p>
 
         <span class="n">cls</span>.<span class="n">terms_are_valid</span> = <span class="n">terms_are_valid</span>
 
-        <span class="n">cls</span>.<span class="n">__setattr__</span> = <span class="n">setvalue_decorator</span>(
+        <span class="n">cls</span>.<span class="n">__setattr__</span> = <span class="n">_setvalue_decorator</span>(
 
             <span class="n">DegreeError</span>,
 
@@ -4148,7 +3947,7 @@ any terms with a zero coefficient.</p>
 
         <span class="n">cls</span>.<span class="n">terms_are_valid</span> = <span class="n">terms_are_valid</span>
 
-        <span class="n">cls</span>.<span class="n">__setattr__</span> = <span class="n">setvalue_decorator</span>(
+        <span class="n">cls</span>.<span class="n">__setattr__</span> = <span class="n">_setvalue_decorator</span>(
 
             <span class="n">TermError</span>,
 
@@ -4551,7 +4350,7 @@ any terms with a zero coefficient.</p>
 
 <span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">_degree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">degree</span><span class="w"></span>
 
-<span class="w">    </span><span class="nv">@extract_polynomial</span><span class="w"></span>
+<span class="w">    </span><span class="nv">@_extract_polynomial</span><span class="w"></span>
 
 <span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">__mul__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
 
@@ -4569,7 +4368,7 @@ any terms with a zero coefficient.</p>
 
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">super</span><span class="p">().</span><span class="n">__mul__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">    </span><span class="nv">@extract_polynomial</span><span class="w"></span>
+<span class="w">    </span><span class="nv">@_extract_polynomial</span><span class="w"></span>
 
 <span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">__rmul__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
 
@@ -4982,7 +4781,7 @@ any terms with a zero coefficient.</p>
 
     <span class="s2">&quot;&quot;&quot;Implements a single-variable mathematical polynomial.&quot;&quot;&quot;</span>
 
-    <span class="s s-Atom">@accepts_many_arguments</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">accepts_many_arguments</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">init__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">iterable</span><span class="p">,</span> <span class="s s-Atom">from_monomials</span><span class="o">=</span><span class="nv">False</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -5366,7 +5165,7 @@ any terms with a zero coefficient.</p>
 
         <span class="s s-Atom">return</span> <span class="s2">&quot; &quot;</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s s-Atom">terms</span><span class="p">)</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">eq__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -5382,7 +5181,7 @@ any terms with a zero coefficient.</p>
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">self</span><span class="p">.</span><span class="s s-Atom">degree</span> <span class="o">==</span> <span class="s s-Atom">other</span><span class="p">.</span><span class="s s-Atom">degree</span> <span class="s s-Atom">and</span> <span class="s s-Atom">self</span><span class="p">.</span><span class="s s-Atom">terms</span> <span class="o">==</span> <span class="s s-Atom">other</span><span class="p">.</span><span class="s s-Atom">terms</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">ne__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -5414,7 +5213,7 @@ any terms with a zero coefficient.</p>
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">self</span><span class="p">.</span><span class="k">_</span><span class="s s-Atom">vector</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">!</span><span class="o">=</span> <span class="mi">0</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">add__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -5434,7 +5233,7 @@ any terms with a zero coefficient.</p>
 
         <span class="p">)</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">radd__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -5442,7 +5241,7 @@ any terms with a zero coefficient.</p>
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">self</span> <span class="o">+</span> <span class="s s-Atom">other</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">iadd__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -5450,7 +5249,7 @@ any terms with a zero coefficient.</p>
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">self</span><span class="p">.</span><span class="nf">try_set_self</span><span class="p">(</span><span class="k">_</span><span class="nf">add</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">.</span><span class="s s-Atom">terms</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">.</span><span class="s s-Atom">terms</span><span class="p">))</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">mul__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -5458,7 +5257,7 @@ any terms with a zero coefficient.</p>
 
         <span class="s s-Atom">if</span> <span class="o">not</span> <span class="s s-Atom">self</span> <span class="s s-Atom">or</span> <span class="o">not</span> <span class="nn">other</span><span class="p">:</span>
 
-            <span class="s s-Atom">return</span> <span class="nf">get_more_permissive_class</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">).</span><span class="nf">zero_instance</span><span class="p">()</span>
+            <span class="s s-Atom">return</span> <span class="k">_</span><span class="nf">get_more_permissive_class</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">).</span><span class="nf">zero_instance</span><span class="p">()</span>
 
         <span class="s s-Atom">ret_val</span> <span class="o">=</span> <span class="nf">deepcopy</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">)</span>
 
@@ -5466,7 +5265,7 @@ any terms with a zero coefficient.</p>
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">ret_val</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">rmul__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -5474,7 +5273,7 @@ any terms with a zero coefficient.</p>
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">self</span> <span class="o">*</span> <span class="s s-Atom">other</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">imul__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -5500,7 +5299,7 @@ any terms with a zero coefficient.</p>
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">ret_val</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">sub__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -5508,7 +5307,7 @@ any terms with a zero coefficient.</p>
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">self</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="s s-Atom">other</span><span class="p">)</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">rsub__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -5516,7 +5315,7 @@ any terms with a zero coefficient.</p>
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">other</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="s s-Atom">self</span><span class="p">)</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">isub__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -5524,7 +5323,7 @@ any terms with a zero coefficient.</p>
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">self</span><span class="p">.</span><span class="nf">try_set_self</span><span class="p">(</span><span class="k">_</span><span class="nf">sub</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">.</span><span class="s s-Atom">terms</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">.</span><span class="s s-Atom">terms</span><span class="p">))</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">ifloordiv__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -5532,7 +5331,7 @@ any terms with a zero coefficient.</p>
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">self</span><span class="p">.</span><span class="nf">try_set_self</span><span class="p">(</span><span class="nf">divmod</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="s s-Atom">terms</span><span class="p">)</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">floordiv__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -5540,7 +5339,7 @@ any terms with a zero coefficient.</p>
 
         <span class="s s-Atom">return</span> <span class="nf">divmod</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">imod__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -5548,7 +5347,7 @@ any terms with a zero coefficient.</p>
 
         <span class="s s-Atom">return</span> <span class="s s-Atom">self</span><span class="p">.</span><span class="nf">try_set_self</span><span class="p">(</span><span class="nf">divmod</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)[</span><span class="mi">1</span><span class="p">].</span><span class="s s-Atom">terms</span><span class="p">)</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">mod__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
@@ -5556,7 +5355,7 @@ any terms with a zero coefficient.</p>
 
         <span class="s s-Atom">return</span> <span class="nf">divmod</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
 
-    <span class="s s-Atom">@extract_polynomial</span>
+    <span class="s s-Atom">@</span><span class="k">_</span><span class="s s-Atom">extract_polynomial</span>
 
     <span class="s s-Atom">def</span> <span class="k">__</span><span class="nf">divmod__</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">,</span> <span class="s s-Atom">other</span><span class="p">)</span><span class="s s-Atom">:</span>
 
