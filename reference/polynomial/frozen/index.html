@@ -1,0 +1,1775 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="shortcut icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.5.14">
+    
+    
+      
+        <title>Frozen - py-polynomial</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.d3202873.min.css">
+      
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ff0a5ce4.min.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#4cae4f">
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="green" data-md-color-accent="lightgreen">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-polynomialfrozen" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="../../.." title="py-polynomial" class="md-header-nav__button md-logo" aria-label="py-polynomial">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            py-polynomial
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Frozen
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/allexks/py-polynomial/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    py-polynomial
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="py-polynomial" class="md-nav__button md-logo" aria-label="py-polynomial">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    py-polynomial
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/allexks/py-polynomial/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    py-polynomial
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../.." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+    
+    <label class="md-nav__link" for="nav-2">
+      Reference
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Reference" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        <span class="md-nav__icon md-icon"></span>
+        Reference
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2-1" type="checkbox" id="nav-2-1" checked>
+    
+    <label class="md-nav__link" for="nav-2-1">
+      Polynomial
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Polynomial" data-md-level="2">
+      <label class="md-nav__title" for="nav-2-1">
+        <span class="md-nav__icon md-icon"></span>
+        Polynomial
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../binomial/" title="Binomial" class="md-nav__link">
+      Binomial
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../core/" title="Core" class="md-nav__link">
+      Core
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Frozen
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" title="Frozen" class="md-nav__link md-nav__link--active">
+      Frozen
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#variables" class="md-nav__link">
+    Variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#freezable" class="md-nav__link">
+    Freezable
+  </a>
+  
+    <nav class="md-nav" aria-label="Freezable">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#descendants" class="md-nav__link">
+    Descendants
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frozenpolynomial" class="md-nav__link">
+    FrozenPolynomial
+  </a>
+  
+    <nav class="md-nav" aria-label="FrozenPolynomial">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-methods" class="md-nav__link">
+    Static methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Static methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#from_polynomial" class="md-nav__link">
+    from_polynomial
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zero_instance" class="md-nav__link">
+    zero_instance
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instance-variables" class="md-nav__link">
+    Instance variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#calculate" class="md-nav__link">
+    calculate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nth_derivative" class="md-nav__link">
+    nth_derivative
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#terms_are_valid" class="md-nav__link">
+    terms_are_valid
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#try_set_self" class="md-nav__link">
+    try_set_self
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zeropolynomial" class="md-nav__link">
+    ZeroPolynomial
+  </a>
+  
+    <nav class="md-nav" aria-label="ZeroPolynomial">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_1" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#class-variables" class="md-nav__link">
+    Class variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-methods_1" class="md-nav__link">
+    Static methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Static methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zero_instance_1" class="md-nav__link">
+    zero_instance
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instance-variables_1" class="md-nav__link">
+    Instance variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_1" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#calculate_1" class="md-nav__link">
+    calculate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nth_derivative_1" class="md-nav__link">
+    nth_derivative
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#terms_are_valid_1" class="md-nav__link">
+    terms_are_valid
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#try_set_self_1" class="md-nav__link">
+    try_set_self
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../" title="Index" class="md-nav__link">
+      Index
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../trinomial/" title="Trinomial" class="md-nav__link">
+      Trinomial
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#variables" class="md-nav__link">
+    Variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#freezable" class="md-nav__link">
+    Freezable
+  </a>
+  
+    <nav class="md-nav" aria-label="Freezable">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#descendants" class="md-nav__link">
+    Descendants
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frozenpolynomial" class="md-nav__link">
+    FrozenPolynomial
+  </a>
+  
+    <nav class="md-nav" aria-label="FrozenPolynomial">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-methods" class="md-nav__link">
+    Static methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Static methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#from_polynomial" class="md-nav__link">
+    from_polynomial
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zero_instance" class="md-nav__link">
+    zero_instance
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instance-variables" class="md-nav__link">
+    Instance variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#calculate" class="md-nav__link">
+    calculate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nth_derivative" class="md-nav__link">
+    nth_derivative
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#terms_are_valid" class="md-nav__link">
+    terms_are_valid
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#try_set_self" class="md-nav__link">
+    try_set_self
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zeropolynomial" class="md-nav__link">
+    ZeroPolynomial
+  </a>
+  
+    <nav class="md-nav" aria-label="ZeroPolynomial">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_1" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#class-variables" class="md-nav__link">
+    Class variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-methods_1" class="md-nav__link">
+    Static methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Static methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zero_instance_1" class="md-nav__link">
+    zero_instance
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instance-variables_1" class="md-nav__link">
+    Instance variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_1" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#calculate_1" class="md-nav__link">
+    calculate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nth_derivative_1" class="md-nav__link">
+    nth_derivative
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#terms_are_valid_1" class="md-nav__link">
+    terms_are_valid
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#try_set_self_1" class="md-nav__link">
+    try_set_self
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/allexks/py-polynomial/edit/master/reference/polynomial/frozen.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                  
+                
+                
+                <h1 id="module-polynomialfrozen">Module polynomial.frozen</h1>
+<p>This module defines the Freezable interface and subclasses.</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="sd">&quot;&quot;&quot;This module defines the Freezable interface and subclasses.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">inf</span>
+
+<span class="kn">from</span> <span class="nn">polynomial.core</span> <span class="kn">import</span> <span class="p">(</span>
+
+    <span class="n">Constant</span><span class="p">,</span>
+
+    <span class="n">Polynomial</span><span class="p">,</span>
+
+    <span class="n">extract_polynomial</span><span class="p">,</span>
+
+<span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Freezable</span><span class="p">:</span>
+
+    <span class="sd">&quot;&quot;&quot;An interface for freezable objects.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_freeze</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Prevent further modification of self.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_frozen</span><span class="p">():</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_frozen</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="k">def</span> <span class="nf">_is_frozen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return true if self is frozen.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_frozen&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Implement self[x] = y; disallows setting item if frozen.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_frozen</span><span class="p">():</span>
+
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Can not modify items of frozen object.&quot;</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Implement self.x; disallows setting attr if frozen.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_frozen</span><span class="p">():</span>
+
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Can not modify frozen object.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_no_op</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Do nothing. Used as a dummy method.&quot;&quot;&quot;</span>
+
+<span class="k">class</span> <span class="nc">FrozenPolynomial</span><span class="p">(</span><span class="n">Freezable</span><span class="p">,</span> <span class="n">Polynomial</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;A polynomial which can not be directly modified.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Create a polynomial from the args, and then freeze it.&quot;&quot;&quot;</span>
+
+        <span class="n">Polynomial</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vector</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vector</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_op</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_freeze</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+
+    <span class="k">def</span> <span class="nf">zero_instance</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return the zero FrozenPolynomial.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">FrozenPolynomial</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+
+    <span class="k">def</span> <span class="nf">from_polynomial</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">polynomial</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Create a frozen copy of the polynomial.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">polynomial</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return repr(self).&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="s2">&quot;Frozen&quot;</span> <span class="o">+</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return hash(self).</span>
+
+<span class="sd">        Equal to the hash of a tuple with the coefficients sorted by their</span>
+
+<span class="sd">        degree descendingly.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vector</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">ZeroPolynomial</span><span class="p">(</span><span class="n">Freezable</span><span class="p">,</span> <span class="n">Constant</span><span class="p">,</span> <span class="n">valid_degrees</span><span class="o">=-</span><span class="n">inf</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;The zero polynomial.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Never used, since we would raise errors due to Freezable</span>
+
+    <span class="c1"># anyways.</span>
+
+    <span class="n">valid_term_counts</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Equivalent to Polynomial().&quot;&quot;&quot;</span>
+
+        <span class="n">Constant</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_op</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_freeze</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+
+    <span class="k">def</span> <span class="nf">_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return self._vector.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">)</span>
+
+    <span class="nd">@property</span>
+
+    <span class="k">def</span> <span class="nf">degree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return self.degree.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="o">-</span><span class="n">inf</span>
+
+    <span class="nd">@classmethod</span>
+
+    <span class="k">def</span> <span class="nf">zero_instance</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return an instance of the ZeroPolynomial.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">ZeroPolynomial</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+
+    <span class="k">def</span> <span class="nf">const</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return self.const, which is always 0.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="nd">@extract_polynomial</span>
+
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return self * other.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">zero_instance</span><span class="p">()</span>
+
+    <span class="nd">@extract_polynomial</span>
+
+    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return other * self.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">zero_instance</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__ipow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return self **= power.</span>
+
+<span class="sd">        Does not mutate self.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">other</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+
+            <span class="k">return</span> <span class="n">Constant</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># This call simply enforces other &gt;= 0 and is int.</span>
+
+        <span class="c1"># Could be moved out into a decorator.</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__ipow__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ZeroPolynomial</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return repr(self).&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="s2">&quot;ZeroPolynomial()&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return hash(self). Equal to the hash of an empty tuple.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="nb">tuple</span><span class="p">())</span>
+</code></pre></div>
+
+</details>
+<h2 id="variables">Variables</h2>
+<div class="codehilite"><pre><span></span><code><span class="n">inf</span>
+</code></pre></div>
+
+<h2 id="classes">Classes</h2>
+<h3 id="freezable">Freezable</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">Freezable</span><span class="p">(</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>An interface for freezable objects.</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nl">Freezable</span><span class="p">:</span><span class="w"></span>
+
+<span class="w">    </span><span class="ss">&quot;&quot;&quot;An interface for freezable objects.&quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">_freeze</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="ss">&quot;&quot;&quot;Prevent further modification of self.&quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">_is_frozen</span><span class="p">()</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">self</span><span class="p">.</span><span class="n">_frozen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">True</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">_is_frozen</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="ss">&quot;&quot;&quot;Return true if self is frozen.&quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">getattr</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;_frozen&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">False</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">__setitem__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="k">key</span><span class="p">,</span><span class="w"> </span><span class="k">value</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="ss">&quot;&quot;&quot;Implement self[x] = y; disallows setting item if frozen.&quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">_is_frozen</span><span class="p">()</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">raise</span><span class="w"> </span><span class="n">AttributeError</span><span class="p">(</span><span class="ss">&quot;Can not modify items of frozen object.&quot;</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">super</span><span class="p">().</span><span class="n">__setitem__</span><span class="p">(</span><span class="k">key</span><span class="p">,</span><span class="w"> </span><span class="k">value</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">__setattr__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="k">key</span><span class="p">,</span><span class="w"> </span><span class="k">value</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="ss">&quot;&quot;&quot;Implement self.x; disallows setting attr if frozen.&quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">_is_frozen</span><span class="p">()</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="k">object</span><span class="p">.</span><span class="n">__setattr__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="k">key</span><span class="p">,</span><span class="w"> </span><span class="k">value</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">else</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">raise</span><span class="w"> </span><span class="n">AttributeError</span><span class="p">(</span><span class="ss">&quot;Can not modify frozen object.&quot;</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">_no_op</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="ss">&quot;&quot;&quot;Do nothing. Used as a dummy method.&quot;&quot;&quot;</span><span class="w"></span>
+</code></pre></div>
+
+</details>
+<hr />
+<h4 id="descendants">Descendants</h4>
+<ul>
+<li>polynomial.frozen.FrozenPolynomial</li>
+<li>polynomial.frozen.ZeroPolynomial</li>
+</ul>
+<h3 id="frozenpolynomial">FrozenPolynomial</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">FrozenPolynomial</span><span class="p">(</span>
+    <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>A polynomial which can not be directly modified.</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="n">FrozenPolynomial</span><span class="p">(</span><span class="n">Freezable</span><span class="p">,</span><span class="w"> </span><span class="n">Polynomial</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">    </span><span class="ss">&quot;&quot;&quot;A polynomial which can not be directly modified.&quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="ss">&quot;&quot;&quot;Create a polynomial from the args, and then freeze it.&quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">Polynomial</span><span class="p">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">_vector</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tuple</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">_vector</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">_trim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">_no_op</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">_freeze</span><span class="p">()</span><span class="w"></span>
+
+<span class="w">    </span><span class="nv">@classmethod</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">zero_instance</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="ss">&quot;&quot;&quot;Return the zero FrozenPolynomial.&quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">FrozenPolynomial</span><span class="p">()</span><span class="w"></span>
+
+<span class="w">    </span><span class="nv">@classmethod</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">from_polynomial</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span><span class="w"> </span><span class="n">polynomial</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="ss">&quot;&quot;&quot;Create a frozen copy of the polynomial.&quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">cls</span><span class="p">(</span><span class="n">polynomial</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">__repr__</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="ss">&quot;&quot;&quot;Return repr(self).&quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="ss">&quot;Frozen&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">super</span><span class="p">().</span><span class="n">__repr__</span><span class="p">()</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">__hash__</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="ss">&quot;&quot;&quot;Return hash(self).</span>
+
+<span class="ss">        Equal to the hash of a tuple with the coefficients sorted by their</span>
+
+<span class="ss">        degree descendingly.</span>
+
+<span class="ss">        &quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">hash</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">_vector</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+</details>
+<hr />
+<h4 id="ancestors-in-mro">Ancestors (in MRO)</h4>
+<ul>
+<li>polynomial.frozen.Freezable</li>
+<li>polynomial.core.Polynomial</li>
+</ul>
+<h4 id="static-methods">Static methods</h4>
+<h5 id="from_polynomial">from_polynomial</h5>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">from_polynomial</span><span class="p">(</span>
+    <span class="n">polynomial</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Create a frozen copy of the polynomial.</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="nv">@classmethod</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">from_polynomial</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span><span class="w"> </span><span class="n">polynomial</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="ss">&quot;&quot;&quot;Create a frozen copy of the polynomial.&quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">cls</span><span class="p">(</span><span class="n">polynomial</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+</details>
+<h5 id="zero_instance">zero_instance</h5>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">zero_instance</span><span class="p">(</span>
+
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Return the zero FrozenPolynomial.</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="nv">@classmethod</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">zero_instance</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="ss">&quot;&quot;&quot;Return the zero FrozenPolynomial.&quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">FrozenPolynomial</span><span class="p">()</span><span class="w"></span>
+</code></pre></div>
+
+</details>
+<h4 id="instance-variables">Instance variables</h4>
+<div class="codehilite"><pre><span></span><code><span class="n">degree</span>
+</code></pre></div>
+
+<p>Return the degree of the polynomial.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">derivative</span>
+</code></pre></div>
+
+<p>Return a polynomial object which is the derivative of self.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">monomials</span>
+</code></pre></div>
+
+<p>Return a list with all terms in the form of monomials.</p>
+<p>List is sorted from the highest degree term to the lowest.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">terms</span>
+</code></pre></div>
+
+<p>Get the terms of self as a list of tuples in coeff, deg form.</p>
+<p>Terms are returned from largest degree to smallest degree, excluding
+any terms with a zero coefficient.</p>
+<h4 id="methods">Methods</h4>
+<h5 id="calculate">calculate</h5>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">x</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Calculate the value of the polynomial at a given point.</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>    <span class="n">def</span> <span class="n">calculate</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+
+        <span class="ss">&quot;&quot;&quot;Calculate the value of the polynomial at a given point.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="k">self</span><span class="p">.</span><span class="n">degree</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+
+            <span class="k">return</span> <span class="mi">0</span>
+
+        <span class="k">return</span> <span class="k">sum</span><span class="p">(</span><span class="n">ak</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">ak</span><span class="p">,</span> <span class="n">k</span> <span class="k">in</span> <span class="k">self</span><span class="p">.</span><span class="n">terms</span><span class="p">)</span>
+</code></pre></div>
+
+</details>
+<h5 id="nth_derivative">nth_derivative</h5>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">nth_derivative</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Return the polynomial object which is the nth derivative of self.</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">nth_derivative</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="ss">&quot;&quot;&quot;Return the polynomial object which is the nth derivative of self.&quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="nc">int</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">raise</span><span class="w"> </span><span class="n">ValueError</span><span class="p">(</span><span class="w"></span>
+
+<span class="w">                </span><span class="ss">&quot;n must be a non-negative integer (got {0})&quot;</span><span class="p">.</span><span class="nf">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">            </span><span class="p">)</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">self</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="nl">degree</span><span class="p">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="err">#</span><span class="w"> </span><span class="n">Short</span><span class="w"> </span><span class="n">circuit</span><span class="w"> </span><span class="n">since</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">result</span><span class="w"> </span><span class="n">would</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">zero</span><span class="p">.</span><span class="w"></span>
+
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">zero_instance</span><span class="p">()</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">deepcopy</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">factors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">degree</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">else</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">degree</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">factorial_term</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">factors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">1</span><span class="o">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">d</span><span class="w"></span>
+
+<span class="w">            </span><span class="err">#</span><span class="w"> </span><span class="n">Calculate</span><span class="w"> </span><span class="n">n</span><span class="err">!</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">base</span><span class="w"> </span><span class="n">term</span><span class="p">.</span><span class="w"></span>
+
+<span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">factorial_term</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">                </span><span class="n">factors</span><span class="o">[</span><span class="n">0</span><span class="o">]</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="n">i</span><span class="w"></span>
+
+<span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="k">last</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">i</span><span class="w"></span>
+
+<span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="k">next</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+
+<span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="k">To</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">next</span><span class="w"> </span><span class="n">number</span><span class="p">,</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">multiply</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">last</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="k">by</span><span class="w"></span>
+
+<span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">divide</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="w"></span>
+
+<span class="w">                </span><span class="n">factors</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">factors</span><span class="o">[</span><span class="n">i - 1</span><span class="o">]</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">factorial_term</span><span class="w"></span>
+
+<span class="w">                </span><span class="n">factorial_term</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Polynomial</span><span class="p">(</span><span class="w"></span>
+
+<span class="w">            </span><span class="o">[</span><span class="n">c * x for c, x</span>
+
+<span class="n">             in zip(self, reversed(factors))</span><span class="o">]</span><span class="w"></span>
+
+<span class="w">        </span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+</details>
+<h5 id="terms_are_valid">terms_are_valid</h5>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">terms_are_valid</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">terms</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Return true if the terms are valid.</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>    <span class="n">def</span> <span class="n">terms_are_valid</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">terms</span><span class="p">):</span>
+
+        <span class="ss">&quot;&quot;&quot;Return true if the terms are valid.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="k">True</span>
+</code></pre></div>
+
+</details>
+<h5 id="try_set_self">try_set_self</h5>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">try_set_self</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">terms</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Try applying terms to self if possible.</p>
+<p>If not possible, returns a Polynomial with the terms.</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>    <span class="n">def</span> <span class="n">try_set_self</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">terms</span><span class="p">):</span>
+
+        <span class="ss">&quot;&quot;&quot;Try applying terms to self if possible.</span>
+
+<span class="ss">        If not possible, returns a Polynomial with the terms.</span>
+
+<span class="ss">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="k">self</span><span class="p">.</span><span class="n">terms_are_valid</span><span class="p">(</span><span class="n">terms</span><span class="p">):</span>
+
+            <span class="k">self</span><span class="p">.</span><span class="n">terms</span> <span class="o">=</span> <span class="n">terms</span>
+
+            <span class="k">return</span> <span class="k">self</span>
+
+        <span class="k">return</span> <span class="n">Polynomial</span><span class="p">(</span><span class="n">terms</span><span class="p">,</span> <span class="n">from_monomials</span><span class="o">=</span><span class="k">True</span><span class="p">)</span>
+</code></pre></div>
+
+</details>
+<h3 id="zeropolynomial">ZeroPolynomial</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">ZeroPolynomial</span><span class="p">(</span>
+
+<span class="p">)</span>
+</code></pre></div>
+
+<p>The zero polynomial.</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="n">ZeroPolynomial</span><span class="p">(</span><span class="n">Freezable</span><span class="p">,</span> <span class="n">Constant</span><span class="p">,</span> <span class="n">valid_degrees</span><span class="o">=-</span><span class="n">inf</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;The zero polynomial.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Never used, since we would raise errors due to Freezable</span>
+
+    <span class="c1"># anyways.</span>
+
+    <span class="n">valid_term_counts</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">)</span>
+
+    <span class="n">def</span> <span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Equivalent to Polynomial().&quot;&quot;&quot;</span>
+
+        <span class="n">Constant</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_op</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_freeze</span><span class="p">()</span>
+
+    <span class="err">@</span><span class="n">property</span>
+
+    <span class="n">def</span> <span class="n">_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return self._vector.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">)</span>
+
+    <span class="err">@</span><span class="n">property</span>
+
+    <span class="n">def</span> <span class="n">degree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return self.degree.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="o">-</span><span class="n">inf</span>
+
+    <span class="err">@</span><span class="n">classmethod</span>
+
+    <span class="n">def</span> <span class="n">zero_instance</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return an instance of the ZeroPolynomial.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">ZeroPolynomial</span><span class="p">()</span>
+
+    <span class="err">@</span><span class="n">property</span>
+
+    <span class="n">def</span> <span class="k">const</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return self.const, which is always 0.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="err">@</span><span class="n">extract_polynomial</span>
+
+    <span class="n">def</span> <span class="n">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return self * other.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">zero_instance</span><span class="p">()</span>
+
+    <span class="err">@</span><span class="n">extract_polynomial</span>
+
+    <span class="n">def</span> <span class="n">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return other * self.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">zero_instance</span><span class="p">()</span>
+
+    <span class="n">def</span> <span class="n">__ipow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return self **= power.</span>
+
+<span class="sd">        Does not mutate self.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">other</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+
+            <span class="k">return</span> <span class="n">Constant</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># This call simply enforces other &gt;= 0 and is int.</span>
+
+        <span class="c1"># Could be moved out into a decorator.</span>
+
+        <span class="n">super</span><span class="p">()</span><span class="o">.</span><span class="n">__ipow__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ZeroPolynomial</span><span class="p">()</span>
+
+    <span class="n">def</span> <span class="n">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return repr(self).&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="s2">&quot;ZeroPolynomial()&quot;</span>
+
+    <span class="n">def</span> <span class="n">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Return hash(self). Equal to the hash of an empty tuple.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">tuple</span><span class="p">())</span>
+</code></pre></div>
+
+</details>
+<hr />
+<h4 id="ancestors-in-mro_1">Ancestors (in MRO)</h4>
+<ul>
+<li>polynomial.frozen.Freezable</li>
+<li>polynomial.core.Constant</li>
+<li>polynomial.core.FixedDegreePolynomial</li>
+<li>polynomial.core.Monomial</li>
+<li>polynomial.core.FixedTermPolynomial</li>
+<li>polynomial.core.Polynomial</li>
+</ul>
+<h4 id="class-variables">Class variables</h4>
+<div class="codehilite"><pre><span></span><code><span class="n">valid_degrees</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="n">valid_term_counts</span>
+</code></pre></div>
+
+<h4 id="static-methods_1">Static methods</h4>
+<h5 id="zero_instance_1">zero_instance</h5>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">zero_instance</span><span class="p">(</span>
+
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Return an instance of the ZeroPolynomial.</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="nv">@classmethod</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">zero_instance</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="ss">&quot;&quot;&quot;Return an instance of the ZeroPolynomial.&quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ZeroPolynomial</span><span class="p">()</span><span class="w"></span>
+</code></pre></div>
+
+</details>
+<h4 id="instance-variables_1">Instance variables</h4>
+<div class="codehilite"><pre><span></span><code><span class="n">coefficient</span>
+</code></pre></div>
+
+<p>Return the coefficient of the monomial.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">const</span>
+</code></pre></div>
+
+<p>Return self.const, which is always 0.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">degree</span>
+</code></pre></div>
+
+<p>Return self.degree.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">derivative</span>
+</code></pre></div>
+
+<p>Return a polynomial object which is the derivative of self.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">monomials</span>
+</code></pre></div>
+
+<p>Return a list with all terms in the form of monomials.</p>
+<p>List is sorted from the highest degree term to the lowest.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">terms</span>
+</code></pre></div>
+
+<p>Get the terms of self as a list of tuples in coeff, deg form.</p>
+<p>Terms are returned from largest degree to smallest degree, excluding
+any terms with a zero coefficient.</p>
+<h4 id="methods_1">Methods</h4>
+<h5 id="calculate_1">calculate</h5>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">x</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Calculate the value of the polynomial at a given point.</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>    <span class="n">def</span> <span class="n">calculate</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+
+        <span class="ss">&quot;&quot;&quot;Calculate the value of the polynomial at a given point.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="k">self</span><span class="p">.</span><span class="n">degree</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+
+            <span class="k">return</span> <span class="mi">0</span>
+
+        <span class="k">return</span> <span class="k">sum</span><span class="p">(</span><span class="n">ak</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">ak</span><span class="p">,</span> <span class="n">k</span> <span class="k">in</span> <span class="k">self</span><span class="p">.</span><span class="n">terms</span><span class="p">)</span>
+</code></pre></div>
+
+</details>
+<h5 id="nth_derivative_1">nth_derivative</h5>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">nth_derivative</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Return the polynomial object which is the nth derivative of self.</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">nth_derivative</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">        </span><span class="ss">&quot;&quot;&quot;Return the polynomial object which is the nth derivative of self.&quot;&quot;&quot;</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="nc">int</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">raise</span><span class="w"> </span><span class="n">ValueError</span><span class="p">(</span><span class="w"></span>
+
+<span class="w">                </span><span class="ss">&quot;n must be a non-negative integer (got {0})&quot;</span><span class="p">.</span><span class="nf">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">            </span><span class="p">)</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">self</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="nl">degree</span><span class="p">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="err">#</span><span class="w"> </span><span class="n">Short</span><span class="w"> </span><span class="n">circuit</span><span class="w"> </span><span class="n">since</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">result</span><span class="w"> </span><span class="n">would</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">zero</span><span class="p">.</span><span class="w"></span>
+
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">zero_instance</span><span class="p">()</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">deepcopy</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">factors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">degree</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">else</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">degree</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">factorial_term</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+
+<span class="w">            </span><span class="n">factors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">1</span><span class="o">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">d</span><span class="w"></span>
+
+<span class="w">            </span><span class="err">#</span><span class="w"> </span><span class="n">Calculate</span><span class="w"> </span><span class="n">n</span><span class="err">!</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">base</span><span class="w"> </span><span class="n">term</span><span class="p">.</span><span class="w"></span>
+
+<span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">factorial_term</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">                </span><span class="n">factors</span><span class="o">[</span><span class="n">0</span><span class="o">]</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="n">i</span><span class="w"></span>
+
+<span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="k">last</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">i</span><span class="w"></span>
+
+<span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="k">next</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+
+<span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="k">To</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">next</span><span class="w"> </span><span class="n">number</span><span class="p">,</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">multiply</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">last</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="k">by</span><span class="w"></span>
+
+<span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">divide</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="w"></span>
+
+<span class="w">                </span><span class="n">factors</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">factors</span><span class="o">[</span><span class="n">i - 1</span><span class="o">]</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">factorial_term</span><span class="w"></span>
+
+<span class="w">                </span><span class="n">factorial_term</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Polynomial</span><span class="p">(</span><span class="w"></span>
+
+<span class="w">            </span><span class="o">[</span><span class="n">c * x for c, x</span>
+
+<span class="n">             in zip(self, reversed(factors))</span><span class="o">]</span><span class="w"></span>
+
+<span class="w">        </span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+</details>
+<h5 id="terms_are_valid_1">terms_are_valid</h5>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">terms_are_valid</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">terms</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>        <span class="n">def</span> <span class="n">terms_are_valid</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">terms</span><span class="p">):</span>
+
+            <span class="k">return</span> <span class="p">(</span>
+
+                <span class="n">_terms_are_valid</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">terms</span><span class="p">)</span>
+
+                <span class="k">and</span> <span class="n">orig_terms_are_valid</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">terms</span><span class="p">)</span>
+
+            <span class="p">)</span>
+</code></pre></div>
+
+</details>
+<h5 id="try_set_self_1">try_set_self</h5>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">try_set_self</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">terms</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Try applying terms to self if possible.</p>
+<p>If not possible, returns a Polynomial with the terms.</p>
+<details class="example"><summary>View Source</summary><div class="codehilite"><pre><span></span><code>    <span class="n">def</span> <span class="n">try_set_self</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="n">terms</span><span class="p">):</span>
+
+        <span class="ss">&quot;&quot;&quot;Try applying terms to self if possible.</span>
+
+<span class="ss">        If not possible, returns a Polynomial with the terms.</span>
+
+<span class="ss">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="k">self</span><span class="p">.</span><span class="n">terms_are_valid</span><span class="p">(</span><span class="n">terms</span><span class="p">):</span>
+
+            <span class="k">self</span><span class="p">.</span><span class="n">terms</span> <span class="o">=</span> <span class="n">terms</span>
+
+            <span class="k">return</span> <span class="k">self</span>
+
+        <span class="k">return</span> <span class="n">Polynomial</span><span class="p">(</span><span class="n">terms</span><span class="p">,</span> <span class="n">from_monomials</span><span class="o">=</span><span class="k">True</span><span class="p">)</span>
+</code></pre></div>
+
+</details>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../core/" title="Core" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Core
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../" title="Index" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Index
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Powered by
+        <a href="http://timothycrosley.github.io/portray">portray.</a>
+        You too can
+        <a href="http://timothycrosley.github.io/portray">
+          portray</a>
+        your Python project well using automatic documentation.
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../../assets/javascripts/vendor.2d1db4bd.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.6627ddf3.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../../..",
+          features: [],
+          search: Object.assign({
+            worker: "../../../assets/javascripts/worker/search.5eca75d3.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>
