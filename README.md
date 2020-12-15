@@ -4,7 +4,8 @@
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/py-polynomial.svg)](https://pypi.python.org/pypi/py-polynomial/)
 [![PyPI license](https://img.shields.io/pypi/l/py-polynomial.svg)](https://pypi.python.org/pypi/py-polynomial/)
 
-[![allexks](https://circleci.com/gh/allexks/py-polynomial.svg?style=svg)](https://circleci.com/gh/allexks/py-polynomial)
+![Unit Tests](https://github.com/allexks/py-polynomial/workflows/Unit%20Tests/badge.svg)
+![Code Documentation Style](https://github.com/allexks/py-polynomial/workflows/Code%20Documentation%20Style/badge.svg)
 [![CodeFactor](https://www.codefactor.io/repository/github/allexks/py-polynomial/badge)](https://www.codefactor.io/repository/github/allexks/py-polynomial)
 [![codecov](https://codecov.io/gh/allexks/py-polynomial/branch/master/graph/badge.svg)](https://codecov.io/gh/allexks/py-polynomial)
 
