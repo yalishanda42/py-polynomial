@@ -1,6 +1,7 @@
 # Python package defining single-variable polynomials and operations with them
 
 [![PyPI version](https://badge.fury.io/py/py-polynomial.svg)](https://badge.fury.io/py/py-polynomial)
+[![Downloads](https://static.pepy.tech/personalized-badge/py-polynomial?period=total&units=none&left_color=grey&right_color=brightgreen&left_text=Downloads)](https://pepy.tech/project/py-polynomial)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/py-polynomial.svg)](https://pypi.python.org/pypi/py-polynomial/)
 [![PyPI license](https://img.shields.io/pypi/l/py-polynomial.svg)](https://pypi.python.org/pypi/py-polynomial/)
 
@@ -10,9 +11,12 @@
 [![codecov](https://codecov.io/gh/allexks/py-polynomial/branch/master/graph/badge.svg)](https://codecov.io/gh/allexks/py-polynomial)
 
 ## Installation
-`pip3 install py-polynomial`
+`pip install py-polynomial`
 
-## Sample functionality
+## Documentation
+[Click here for code-derived documentation and help](https://allexks.github.io/py-polynomial/)
+
+## Quick examples
 ### Flexible initialization
 ``` pycon
 >>> from polynomial import Polynomial
