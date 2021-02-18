@@ -236,20 +236,18 @@ class Polynomial:
 
     def integral(self, a, b):
         """Return the integral of self from a to b."""
-        res = self.indefinite_integral
-        # Last term of indefinite integral is C.
-        res[0] = 0
+        res = self._indefinite_integral
         return res.calculate(b) - res.calculate(a)
 
     @property
-    def indefinite_integral(self):
+    def _indefinite_integral(self):
         """Return the polynomial object which is the integral of self."""
         if not self:
-            return Polynomial("C")
+            return Polynomial()
 
         return Polynomial(
             [c/x for c, x in
-                zip(self, range(self.degree + 1, 0, -1))] + ["C"]
+                zip(self, range(self.degree + 1, 0, -1))] + [0]
             )
 
     @property
