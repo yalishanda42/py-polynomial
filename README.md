@@ -109,6 +109,12 @@ Polynomial(3)
 True
 ```
 
+### Definite integral
+```pycon
+>>> Polynomial(3, 2, 1).integral(0, 1)
+3
+```
+
 ### Misc
 ``` pycon
 >>> str(Polynomial("abc"))
