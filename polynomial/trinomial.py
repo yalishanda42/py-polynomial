@@ -50,8 +50,9 @@ class QuadraticTrinomial(FixedDegreePolynomial, Trinomial, valid_degrees=2):
         """Initialize the trinomial as ax^2 + bx + c."""
         if a == 0:
             raise ValueError("Object not a quadratic trinomial since a==0!")
-        else :
+        else:
             print("yes c'est ça !")
+            print("Enter dans la branche gredey !")
         Polynomial.__init__(self, a, b, c)
 
     @property
