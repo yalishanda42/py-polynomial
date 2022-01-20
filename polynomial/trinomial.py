@@ -46,10 +46,12 @@ class Trinomial(FixedTermPolynomial, valid_term_counts=(0, 1, 2, 3)):
 class QuadraticTrinomial(FixedDegreePolynomial, Trinomial, valid_degrees=2):
     """Implements quadratic trinomials and their related methods."""
 
-    def __init__(self, a=1, b=1, c=1):
+    def __init__(self, a=2, b=3, c=4):
         """Initialize the trinomial as ax^2 + bx + c."""
         if a == 0:
             raise ValueError("Object not a quadratic trinomial since a==0!")
+        else :
+            print("yes c'est ça !")
         Polynomial.__init__(self, a, b, c)
 
     @property
