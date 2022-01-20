@@ -1310,6 +1310,23 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEqual(0, Constant(0).calculate(5))
         self.assertEqual(0, Monomial(0, 1).calculate(1.1))
 
+    def test_call(self):
+        """Tests calculate on a simple polynomial."""
+        a = Polynomial(1, 2, 3)
+
+        def eqn(x):
+            return x ** 2 + 2 * x + 3
+
+        for i in range(-100, 100):
+            i = i / 100
+            self.assertEqual(eqn(i), a(i))
+
+    def test_call_zero_polynomial(self):
+        """Test that calculations of zero polynomial values always give 0."""
+        self.assertEqual(0, ZeroPolynomial()(1))
+        self.assertEqual(0, Constant(0)(5))
+        self.assertEqual(0, Monomial(0, 1)(1.1))
+
     def test_setattr_raises_error(self):
         """Test that setting invalid terms raises an error."""
         invalid_setattrs = [

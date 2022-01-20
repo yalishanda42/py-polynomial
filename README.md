@@ -55,6 +55,9 @@ Polynomial(12, 6, 2)
 ``` pycon
 >>> (a + b).calculate(5)
 780
+
+>>> а(2)  #  equivalent to a.calculate(2)
+26
 ```
 
 ### Multiplication

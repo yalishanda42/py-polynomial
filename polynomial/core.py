@@ -291,6 +291,10 @@ class Polynomial:
 
         return sum(ak * (x ** k) for ak, k in self.terms)
 
+    def __call__(self, x):
+        """Calculate the value of the polynomial at a given point."""
+        return self.calculate(x)
+
     def __getattr__(self, name):
         """Get coefficient by letter name: ax^n + bx^{n-1} + ... + yx + z."""
         if len(name) != 1:
