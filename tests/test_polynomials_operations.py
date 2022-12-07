@@ -1310,6 +1310,25 @@ class TestPolynomialsOperations(unittest.TestCase):
         self.assertEqual(0, Constant(0).calculate(5))
         self.assertEqual(0, Monomial(0, 1).calculate(1.1))
 
+    def test_calculate_horner(self):
+        """Tests calculate_horner on a simple polynomial."""
+        a = Polynomial(1, 2, 3)
+
+        def eqn(x):
+            return x ** 2 + 2 * x + 3
+
+        for i in range(-100, 100):
+            i = i / 100
+            self.assertAlmostEqual(eqn(i), a.calculate_horner(i))
+
+    def test_calculate_horner_zero_polynomial(self):
+        """Test that calculations of zero polynomial values
+        using Horner`s method always give 0.
+        """
+        self.assertEqual(0, ZeroPolynomial().calculate_horner(1))
+        self.assertEqual(0, Constant(0).calculate_horner(5))
+        self.assertEqual(0, Monomial(0, 1).calculate_horner(1.1))
+
     def test_call(self):
         """Tests calculate on a simple polynomial."""
         a = Polynomial(1, 2, 3)
