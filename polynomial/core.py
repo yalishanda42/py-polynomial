@@ -291,6 +291,18 @@ class Polynomial:
 
         return sum(ak * (x ** k) for ak, k in self.terms)
 
+    def calculate_horner(self, x):
+        """Calculate the value of the polynomial at a given point.
+
+        This method is using Horner`s method and faster than calling
+        calculate for almost all polynomials except monomials but might
+        produce slightly different results when using floats.
+        """
+        result = 0
+        for coeff in self:
+            result = coeff + x * result
+        return result
+
     def __call__(self, x):
         """Calculate the value of the polynomial at a given point."""
         return self.calculate(x)
