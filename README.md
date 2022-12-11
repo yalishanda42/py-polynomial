@@ -14,7 +14,7 @@
 `pip install py-polynomial`
 
 ## Documentation
-[Click here for code-derived documentation and help](https://allexks.github.io/py-polynomial/)
+[Click here for code-derived documentation and help](https://yalishanda42.github.io/py-polynomial/)
 
 ## Quick examples
 ### Flexible initialization
