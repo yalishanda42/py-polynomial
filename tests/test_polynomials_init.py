@@ -9,6 +9,8 @@ from polynomial import (
     LinearBinomial,
     Trinomial,
     QuadraticTrinomial,
+    Quadrinomial,
+    CubicQuadrinomial,
 )
 
 
@@ -152,6 +154,42 @@ class TestPolynomialsInit(unittest.TestCase):
 
         self.assertEqual(expected, qt)
 
+    def test_quadrinomial_init_from_monomials(self):
+        """Ensure a quadrinomial is successfully initialized from monomials."""
+        m1 = Monomial(3, 3)
+        m2 = Monomial(4, 4)
+        m3 = Monomial(5, 5)
+        expected = Polynomial([m1, m2, m3], from_monomials=True)
+
+        t = Trinomial(m1, m2, m3)
+
+        self.assertEqual(expected, t)
+
+    def test_quadrinomial_default_init(self):
+        """Test that the default quadrinomial is 'x^4 + x^3 + x^2 + x'."""
+        expected = Polynomial(1, 1, 1, 1, 0)
+
+        q = Quadrinomial()
+
+        self.assertEqual(expected, q)
+
+    def test_cubic_quadrinomial_init(self):
+        """Test that a cubic quadrinomial is successfully initialized."""
+        a, b, c, d = 2, 3, 4, 5
+        expected = Polynomial(a, b, c, d)
+
+        cq = CubicQuadrinomial(a, b, c, d)
+
+        self.assertEqual(expected, cq)
+
+    def test_cubic_quadrinomial_default_init(self):
+        """Test that the default cubic quadrinomial is 'x^3 + x^2 + x + 1'."""
+        expected = Polynomial(1, 1, 1, 1)
+
+        cq = CubicQuadrinomial()
+
+        self.assertEqual(expected, cq)
+
     def test_linear_binomial_fails_leading_zero(self):
         """Test that LinearBinomial(0, ?) raises a ValueError."""
         self.assertRaises(ValueError, LinearBinomial, 0, 1)
@@ -159,6 +197,10 @@ class TestPolynomialsInit(unittest.TestCase):
     def test_quadratic_trinomial_fails_leading_zero(self):
         """Test that QuadraticTrinomial(0, ?) raises a ValueError."""
         self.assertRaises(ValueError, QuadraticTrinomial, 0, 1)
+
+    def test_cubic_quadrinomial_fails_leading_zero(self):
+        """Test that CubicQuadrinomial(0, ?) raises a ValueError."""
+        self.assertRaises(ValueError, CubicQuadrinomial, 0, 1)
 
     def test_monomial_degree_positive_int(self):
         """Test that monomial only accepts a positive int."""

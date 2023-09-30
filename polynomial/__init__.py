@@ -14,3 +14,4 @@ from .core import (
 from .frozen import FrozenPolynomial, ZeroPolynomial
 from .binomial import Binomial, LinearBinomial
 from .trinomial import Trinomial, QuadraticTrinomial
+from .quadrinomial import Quadrinomial, CubicQuadrinomial

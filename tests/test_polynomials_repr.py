@@ -10,10 +10,12 @@ from polynomial import (
     Monomial,
     Polynomial,
     QuadraticTrinomial,
+    CubicQuadrinomial,
     ZeroPolynomial,
     FrozenPolynomial,
     Trinomial,
-    Binomial
+    Binomial,
+    Quadrinomial
 )
 
 
@@ -89,6 +91,23 @@ class TestPolynomialsRepr(unittest.TestCase):
         expect = "QuadraticTrinomial(1, -4, 4)"
 
         r = repr(QuadraticTrinomial(1, -4, 4))
+
+        self.assertEqual(expect, r)
+
+    def test_quadrinomial(self):
+        """Test that repr() output of a Quadrinomial is valid."""
+        expect = "Quadrinomial(Monomial(6, 9), Monomial(5, 5), "\
+                 "Monomial(2, 3), Monomial(1, 1))"
+
+        r = repr(Quadrinomial((6, 9), (5, 5), (2, 3), (1, 1)))
+
+        self.assertEqual(expect, r)
+
+    def test_cubic_quadrinomial(self):
+        """Test that repr() output of a CubicQuadrinomial is valid."""
+        expect = "CubicQuadrinomial(1, -4, 2, 0)"
+
+        r = repr(CubicQuadrinomial(1, -4, 2, 0))
 
         self.assertEqual(expect, r)
 
